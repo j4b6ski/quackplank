@@ -161,6 +161,30 @@ fun drawMode(edit: bool) = {
     rl.DrawText(mode, x, rl.GetScreenHeight() - 16, 12, rl.WHITE);
 }
 
+fun createRoad(world: b2.b2WorldId, road: ref List[Vec2],
+               bodies: ref mut List[b2.b2BodyId]) = {
+    var anchor = b2.b2DefaultBodyDef();
+    let left = road.pointer[0];
+    anchor.position = b2.b2Vec2(left.x, left.y);
+    bodies.push(b2.b2CreateBody(world, &anchor));
+    var def = b2.b2DefaultBodyDef();
+    def.type_ = b2.b2_dynamicBody;
+    let mass = b2.b2MassData(1.0, b2.b2Vec2_zero, 0.0);
+    var i = 1;
+    while (i < road.length() - 1) {
+        let point = road.pointer[i];
+        def.position = b2.b2Vec2(point.x, point.y);
+        let body = b2.b2CreateBody(world, &def);
+        b2.b2Body_SetMassData(body, mass);
+        bodies.push(body);
+        i += 1;
+    }
+
+    let right = road.pointer[road.length() - 1];
+    anchor.position = b2.b2Vec2(right.x, right.y);
+    bodies.push(b2.b2CreateBody(world, &anchor));
+}
+
 fun main() = {
     rl.InitWindow(800, 600, "QuackPlank");
     check(rl.IsWindowReady());
@@ -176,13 +200,16 @@ fun main() = {
     let level = level1();
     var edit = true;
     var world = b2.b2_nullWorldId;
+    var roadBodies: List[b2.b2BodyId];
     while (not rl.WindowShouldClose()) {
         if (rl.IsKeyPressed(rl.KEY_SPACE)) {
             if (edit) {
                 let def = b2.b2DefaultWorldDef();
                 world = b2.b2CreateWorld(&def);
+                createRoad(world, &level.road, &roadBodies);
             } else {
                 b2.b2DestroyWorld(world);
+                roadBodies.clear();
             }
             edit = not edit;
         }
