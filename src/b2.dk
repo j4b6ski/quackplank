@@ -15,7 +15,8 @@ extern("C") {
         revision: i32;
     }
 
-    fundecl b2GetVersion() -> b2Version;
+    @c_symbol_name("b2GetVersion")
+    private fundecl b2GetVersion_() -> b2Version;
     fundecl b2GetTicks() -> u64;
     fundecl b2GetMilliseconds(ticks: u64) -> f32;
     fundecl b2GetMillisecondsAndReset(ticks: cptr mut u64) -> f32;
@@ -72,10 +73,14 @@ let b2Mat22_zero = b2Mat22(b2Vec2(0.0, 0.0), b2Vec2(0.0, 0.0));
 
 extern("C") {
     fundecl b2IsValidFloat(a: f32) -> bool;
-    fundecl b2IsValidVec2(v: b2Vec2) -> bool;
-    fundecl b2IsValidRotation(q: b2Rot) -> bool;
-    fundecl b2IsValidAABB(aabb: b2AABB) -> bool;
-    fundecl b2IsValidPlane(a: b2Plane) -> bool;
+    @c_symbol_name("b2IsValidVec2")
+    private fundecl b2IsValidVec2_(v: b2Vec2) -> bool;
+    @c_symbol_name("b2IsValidRotation")
+    private fundecl b2IsValidRotation_(q: b2Rot) -> bool;
+    @c_symbol_name("b2IsValidAABB")
+    private fundecl b2IsValidAABB_(aabb: b2AABB) -> bool;
+    @c_symbol_name("b2IsValidPlane")
+    private fundecl b2IsValidPlane_(a: b2Plane) -> bool;
     @c_symbol_name("b2MinInt_")
     fundecl b2MinInt(a: i32, b: i32) -> i32;
     @c_symbol_name("b2MaxInt_")
@@ -93,116 +98,65 @@ extern("C") {
     @c_symbol_name("b2ClampFloat_")
     fundecl b2ClampFloat(a: f32, lower: f32, upper: f32) -> f32;
     fundecl b2Atan2(y: f32, x: f32) -> f32;
-    fundecl b2ComputeCosSin(radians: f32) -> b2CosSin;
-    @c_symbol_name("b2Dot_")
-    fundecl b2Dot(a: b2Vec2, b: b2Vec2) -> f32;
-    @c_symbol_name("b2Cross_")
-    fundecl b2Cross(a: b2Vec2, b: b2Vec2) -> f32;
-    @c_symbol_name("b2CrossVS_")
-    fundecl b2CrossVS(v: b2Vec2, s: f32) -> b2Vec2;
-    @c_symbol_name("b2CrossSV_")
-    fundecl b2CrossSV(s: f32, v: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2LeftPerp_")
-    fundecl b2LeftPerp(v: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2RightPerp_")
-    fundecl b2RightPerp(v: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2Add_")
-    fundecl b2Add(a: b2Vec2, b: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2Sub_")
-    fundecl b2Sub(a: b2Vec2, b: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2Neg_")
-    fundecl b2Neg(a: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2Lerp_")
-    fundecl b2Lerp(a: b2Vec2, b: b2Vec2, t: f32) -> b2Vec2;
-    @c_symbol_name("b2Mul_")
-    fundecl b2Mul(a: b2Vec2, b: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2MulSV_")
-    fundecl b2MulSV(s: f32, v: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2MulAdd_")
-    fundecl b2MulAdd(a: b2Vec2, s: f32, b: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2MulSub_")
-    fundecl b2MulSub(a: b2Vec2, s: f32, b: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2Abs_")
-    fundecl b2Abs(a: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2Min_")
-    fundecl b2Min(a: b2Vec2, b: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2Max_")
-    fundecl b2Max(a: b2Vec2, b: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2Clamp_")
-    fundecl b2Clamp(v: b2Vec2, a: b2Vec2, b: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2Length_")
-    fundecl b2Length(v: b2Vec2) -> f32;
-    @c_symbol_name("b2Distance_")
-    fundecl b2Distance(a: b2Vec2, b: b2Vec2) -> f32;
-    @c_symbol_name("b2Normalize_")
-    fundecl b2Normalize(v: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2IsNormalized_")
-    fundecl b2IsNormalized(a: b2Vec2) -> bool;
-    @c_symbol_name("b2GetLengthAndNormalize_")
-    fundecl b2GetLengthAndNormalize(length: cptr mut f32, v: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2NormalizeRot_")
-    fundecl b2NormalizeRot(q: b2Rot) -> b2Rot;
-    @c_symbol_name("b2IntegrateRotation_")
-    fundecl b2IntegrateRotation(q1: b2Rot, deltaAngle: f32) -> b2Rot;
-    @c_symbol_name("b2LengthSquared_")
-    fundecl b2LengthSquared(v: b2Vec2) -> f32;
-    @c_symbol_name("b2DistanceSquared_")
-    fundecl b2DistanceSquared(a: b2Vec2, b: b2Vec2) -> f32;
-    @c_symbol_name("b2MakeRot_")
-    fundecl b2MakeRot(radians: f32) -> b2Rot;
-    fundecl b2ComputeRotationBetweenUnitVectors(v1: b2Vec2, v2: b2Vec2) -> b2Rot;
-    @c_symbol_name("b2IsNormalizedRot_")
-    fundecl b2IsNormalizedRot(q: b2Rot) -> bool;
-    @c_symbol_name("b2NLerp_")
-    fundecl b2NLerp(q1: b2Rot, q2: b2Rot, t: f32) -> b2Rot;
-    @c_symbol_name("b2ComputeAngularVelocity_")
-    fundecl b2ComputeAngularVelocity(q1: b2Rot, q2: b2Rot, inv_h: f32) -> f32;
-    @c_symbol_name("b2Rot_GetAngle_")
-    fundecl b2Rot_GetAngle(q: b2Rot) -> f32;
-    @c_symbol_name("b2Rot_GetXAxis_")
-    fundecl b2Rot_GetXAxis(q: b2Rot) -> b2Vec2;
-    @c_symbol_name("b2Rot_GetYAxis_")
-    fundecl b2Rot_GetYAxis(q: b2Rot) -> b2Vec2;
-    @c_symbol_name("b2MulRot_")
-    fundecl b2MulRot(q: b2Rot, r: b2Rot) -> b2Rot;
-    @c_symbol_name("b2InvMulRot_")
-    fundecl b2InvMulRot(q: b2Rot, r: b2Rot) -> b2Rot;
-    @c_symbol_name("b2RelativeAngle_")
-    fundecl b2RelativeAngle(b: b2Rot, a: b2Rot) -> f32;
+    @c_symbol_name("b2ComputeCosSin")
+    private fundecl b2ComputeCosSin_(radians: f32) -> b2CosSin;
+    private fundecl b2Dot_(a: b2Vec2, b: b2Vec2) -> f32;
+    private fundecl b2Cross_(a: b2Vec2, b: b2Vec2) -> f32;
+    private fundecl b2CrossVS_(v: b2Vec2, s: f32) -> b2Vec2;
+    private fundecl b2CrossSV_(s: f32, v: b2Vec2) -> b2Vec2;
+    private fundecl b2LeftPerp_(v: b2Vec2) -> b2Vec2;
+    private fundecl b2RightPerp_(v: b2Vec2) -> b2Vec2;
+    private fundecl b2Add_(a: b2Vec2, b: b2Vec2) -> b2Vec2;
+    private fundecl b2Sub_(a: b2Vec2, b: b2Vec2) -> b2Vec2;
+    private fundecl b2Neg_(a: b2Vec2) -> b2Vec2;
+    private fundecl b2Lerp_(a: b2Vec2, b: b2Vec2, t: f32) -> b2Vec2;
+    private fundecl b2Mul_(a: b2Vec2, b: b2Vec2) -> b2Vec2;
+    private fundecl b2MulSV_(s: f32, v: b2Vec2) -> b2Vec2;
+    private fundecl b2MulAdd_(a: b2Vec2, s: f32, b: b2Vec2) -> b2Vec2;
+    private fundecl b2MulSub_(a: b2Vec2, s: f32, b: b2Vec2) -> b2Vec2;
+    private fundecl b2Abs_(a: b2Vec2) -> b2Vec2;
+    private fundecl b2Min_(a: b2Vec2, b: b2Vec2) -> b2Vec2;
+    private fundecl b2Max_(a: b2Vec2, b: b2Vec2) -> b2Vec2;
+    private fundecl b2Clamp_(v: b2Vec2, a: b2Vec2, b: b2Vec2) -> b2Vec2;
+    private fundecl b2Length_(v: b2Vec2) -> f32;
+    private fundecl b2Distance_(a: b2Vec2, b: b2Vec2) -> f32;
+    private fundecl b2Normalize_(v: b2Vec2) -> b2Vec2;
+    private fundecl b2IsNormalized_(a: b2Vec2) -> bool;
+    private fundecl b2GetLengthAndNormalize_(length: cptr mut f32, v: b2Vec2) -> b2Vec2;
+    private fundecl b2NormalizeRot_(q: b2Rot) -> b2Rot;
+    private fundecl b2IntegrateRotation_(q1: b2Rot, deltaAngle: f32) -> b2Rot;
+    private fundecl b2LengthSquared_(v: b2Vec2) -> f32;
+    private fundecl b2DistanceSquared_(a: b2Vec2, b: b2Vec2) -> f32;
+    private fundecl b2MakeRot_(radians: f32) -> b2Rot;
+    @c_symbol_name("b2ComputeRotationBetweenUnitVectors")
+    private fundecl b2ComputeRotationBetweenUnitVectors_(v1: b2Vec2, v2: b2Vec2) -> b2Rot;
+    private fundecl b2IsNormalizedRot_(q: b2Rot) -> bool;
+    private fundecl b2NLerp_(q1: b2Rot, q2: b2Rot, t: f32) -> b2Rot;
+    private fundecl b2ComputeAngularVelocity_(q1: b2Rot, q2: b2Rot, inv_h: f32) -> f32;
+    private fundecl b2Rot_GetAngle_(q: b2Rot) -> f32;
+    private fundecl b2Rot_GetXAxis_(q: b2Rot) -> b2Vec2;
+    private fundecl b2Rot_GetYAxis_(q: b2Rot) -> b2Vec2;
+    private fundecl b2MulRot_(q: b2Rot, r: b2Rot) -> b2Rot;
+    private fundecl b2InvMulRot_(q: b2Rot, r: b2Rot) -> b2Rot;
+    private fundecl b2RelativeAngle_(b: b2Rot, a: b2Rot) -> f32;
     @c_symbol_name("b2UnwindAngle_")
     fundecl b2UnwindAngle(radians: f32) -> f32;
-    @c_symbol_name("b2RotateVector_")
-    fundecl b2RotateVector(q: b2Rot, v: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2InvRotateVector_")
-    fundecl b2InvRotateVector(q: b2Rot, v: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2TransformPoint_")
-    fundecl b2TransformPoint(t: b2Transform, p: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2InvTransformPoint_")
-    fundecl b2InvTransformPoint(t: b2Transform, p: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2MulTransforms_")
-    fundecl b2MulTransforms(A: b2Transform, B: b2Transform) -> b2Transform;
-    @c_symbol_name("b2InvMulTransforms_")
-    fundecl b2InvMulTransforms(A: b2Transform, B: b2Transform) -> b2Transform;
-    @c_symbol_name("b2MulMV_")
-    fundecl b2MulMV(A: b2Mat22, v: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2GetInverse22_")
-    fundecl b2GetInverse22(A: b2Mat22) -> b2Mat22;
-    @c_symbol_name("b2Solve22_")
-    fundecl b2Solve22(A: b2Mat22, b: b2Vec2) -> b2Vec2;
-    @c_symbol_name("b2AABB_Contains_")
-    fundecl b2AABB_Contains(a: b2AABB, b: b2AABB) -> bool;
-    @c_symbol_name("b2AABB_Center_")
-    fundecl b2AABB_Center(a: b2AABB) -> b2Vec2;
-    @c_symbol_name("b2AABB_Extents_")
-    fundecl b2AABB_Extents(a: b2AABB) -> b2Vec2;
-    @c_symbol_name("b2AABB_Union_")
-    fundecl b2AABB_Union(a: b2AABB, b: b2AABB) -> b2AABB;
-    @c_symbol_name("b2AABB_Overlaps_")
-    fundecl b2AABB_Overlaps(a: b2AABB, b: b2AABB) -> bool;
-    @c_symbol_name("b2MakeAABB_")
-    fundecl b2MakeAABB(points: cptr b2Vec2, count: i32, radius: f32) -> b2AABB;
-    @c_symbol_name("b2PlaneSeparation_")
-    fundecl b2PlaneSeparation(plane: b2Plane, point: b2Vec2) -> f32;
+    private fundecl b2RotateVector_(q: b2Rot, v: b2Vec2) -> b2Vec2;
+    private fundecl b2InvRotateVector_(q: b2Rot, v: b2Vec2) -> b2Vec2;
+    private fundecl b2TransformPoint_(t: b2Transform, p: b2Vec2) -> b2Vec2;
+    private fundecl b2InvTransformPoint_(t: b2Transform, p: b2Vec2) -> b2Vec2;
+    private fundecl b2MulTransforms_(A: b2Transform, B: b2Transform) -> b2Transform;
+    private fundecl b2InvMulTransforms_(A: b2Transform, B: b2Transform) -> b2Transform;
+    private fundecl b2MulMV_(A: b2Mat22, v: b2Vec2) -> b2Vec2;
+    private fundecl b2GetInverse22_(A: b2Mat22) -> b2Mat22;
+    private fundecl b2Solve22_(A: b2Mat22, b: b2Vec2) -> b2Vec2;
+    private fundecl b2AABB_Contains_(a: b2AABB, b: b2AABB) -> bool;
+    private fundecl b2AABB_Center_(a: b2AABB) -> b2Vec2;
+    private fundecl b2AABB_Extents_(a: b2AABB) -> b2Vec2;
+    private fundecl b2AABB_Union_(a: b2AABB, b: b2AABB) -> b2AABB;
+    private fundecl b2AABB_Overlaps_(a: b2AABB, b: b2AABB) -> bool;
+    private fundecl b2MakeAABB_(points: cptr b2Vec2, count: i32, radius: f32) -> b2AABB;
+    private fundecl b2PlaneSeparation_(plane: b2Plane, point: b2Vec2) -> f32;
     @c_symbol_name("b2SpringDamper_")
     fundecl b2SpringDamper(hertz: f32, dampingRatio: f32, position: f32, velocity: f32, timeStep: f32) -> f32;
     fundecl b2SetLengthUnitsPerMeter(lengthUnits: f32) -> ();
@@ -278,24 +232,39 @@ extern("C") {
 
     fundecl b2IsValidRay(input: cptr b2RayCastInput) -> bool;
     fundecl b2MakePolygon(hull: cptr b2Hull, radius: f32) -> b2Polygon;
-    fundecl b2MakeOffsetPolygon(hull: cptr b2Hull, position: b2Vec2, rotation: b2Rot) -> b2Polygon;
-    fundecl b2MakeOffsetRoundedPolygon(hull: cptr b2Hull, position: b2Vec2, rotation: b2Rot, radius: f32) -> b2Polygon;
+    @c_symbol_name("b2MakeOffsetPolygon")
+    private fundecl b2MakeOffsetPolygon_(hull: cptr b2Hull, position: b2Vec2, rotation: b2Rot) -> b2Polygon;
+    @c_symbol_name("b2MakeOffsetRoundedPolygon")
+    private fundecl b2MakeOffsetRoundedPolygon_(hull: cptr b2Hull, position: b2Vec2, rotation: b2Rot, radius: f32) -> b2Polygon;
     fundecl b2MakeSquare(halfWidth: f32) -> b2Polygon;
     fundecl b2MakeBox(halfWidth: f32, halfHeight: f32) -> b2Polygon;
     fundecl b2MakeRoundedBox(halfWidth: f32, halfHeight: f32, radius: f32) -> b2Polygon;
-    fundecl b2MakeOffsetBox(halfWidth: f32, halfHeight: f32, center: b2Vec2, rotation: b2Rot) -> b2Polygon;
-    fundecl b2MakeOffsetRoundedBox(halfWidth: f32, halfHeight: f32, center: b2Vec2, rotation: b2Rot, radius: f32) -> b2Polygon;
-    fundecl b2TransformPolygon(transform: b2Transform, polygon: cptr b2Polygon) -> b2Polygon;
-    fundecl b2ComputeCircleMass(shape: cptr b2Circle, density: f32) -> b2MassData;
-    fundecl b2ComputeCapsuleMass(shape: cptr b2Capsule, density: f32) -> b2MassData;
-    fundecl b2ComputePolygonMass(shape: cptr b2Polygon, density: f32) -> b2MassData;
-    fundecl b2ComputeCircleAABB(shape: cptr b2Circle, transform: b2Transform) -> b2AABB;
-    fundecl b2ComputeCapsuleAABB(shape: cptr b2Capsule, transform: b2Transform) -> b2AABB;
-    fundecl b2ComputePolygonAABB(shape: cptr b2Polygon, transform: b2Transform) -> b2AABB;
-    fundecl b2ComputeSegmentAABB(shape: cptr b2Segment, transform: b2Transform) -> b2AABB;
-    fundecl b2PointInCircle(point: b2Vec2, shape: cptr b2Circle) -> bool;
-    fundecl b2PointInCapsule(point: b2Vec2, shape: cptr b2Capsule) -> bool;
-    fundecl b2PointInPolygon(point: b2Vec2, shape: cptr b2Polygon) -> bool;
+    @c_symbol_name("b2MakeOffsetBox")
+    private fundecl b2MakeOffsetBox_(halfWidth: f32, halfHeight: f32, center: b2Vec2, rotation: b2Rot) -> b2Polygon;
+    @c_symbol_name("b2MakeOffsetRoundedBox")
+    private fundecl b2MakeOffsetRoundedBox_(halfWidth: f32, halfHeight: f32, center: b2Vec2, rotation: b2Rot, radius: f32) -> b2Polygon;
+    @c_symbol_name("b2TransformPolygon")
+    private fundecl b2TransformPolygon_(transform: b2Transform, polygon: cptr b2Polygon) -> b2Polygon;
+    @c_symbol_name("b2ComputeCircleMass")
+    private fundecl b2ComputeCircleMass_(shape: cptr b2Circle, density: f32) -> b2MassData;
+    @c_symbol_name("b2ComputeCapsuleMass")
+    private fundecl b2ComputeCapsuleMass_(shape: cptr b2Capsule, density: f32) -> b2MassData;
+    @c_symbol_name("b2ComputePolygonMass")
+    private fundecl b2ComputePolygonMass_(shape: cptr b2Polygon, density: f32) -> b2MassData;
+    @c_symbol_name("b2ComputeCircleAABB")
+    private fundecl b2ComputeCircleAABB_(shape: cptr b2Circle, transform: b2Transform) -> b2AABB;
+    @c_symbol_name("b2ComputeCapsuleAABB")
+    private fundecl b2ComputeCapsuleAABB_(shape: cptr b2Capsule, transform: b2Transform) -> b2AABB;
+    @c_symbol_name("b2ComputePolygonAABB")
+    private fundecl b2ComputePolygonAABB_(shape: cptr b2Polygon, transform: b2Transform) -> b2AABB;
+    @c_symbol_name("b2ComputeSegmentAABB")
+    private fundecl b2ComputeSegmentAABB_(shape: cptr b2Segment, transform: b2Transform) -> b2AABB;
+    @c_symbol_name("b2PointInCircle")
+    private fundecl b2PointInCircle_(point: b2Vec2, shape: cptr b2Circle) -> bool;
+    @c_symbol_name("b2PointInCapsule")
+    private fundecl b2PointInCapsule_(point: b2Vec2, shape: cptr b2Capsule) -> bool;
+    @c_symbol_name("b2PointInPolygon")
+    private fundecl b2PointInPolygon_(point: b2Vec2, shape: cptr b2Polygon) -> bool;
     fundecl b2RayCastCircle(input: cptr b2RayCastInput, shape: cptr b2Circle) -> b2CastOutput;
     fundecl b2RayCastCapsule(input: cptr b2RayCastInput, shape: cptr b2Capsule) -> b2CastOutput;
     fundecl b2RayCastSegment(input: cptr b2RayCastInput, shape: cptr b2Segment, oneSided: bool) -> b2CastOutput;
@@ -321,7 +290,8 @@ extern("C") {
         distanceSquared: f32;
     }
 
-    fundecl b2SegmentDistance(p1: b2Vec2, q1: b2Vec2, p2: b2Vec2, q2: b2Vec2) -> b2SegmentDistanceResult;
+    @c_symbol_name("b2SegmentDistance")
+    private fundecl b2SegmentDistance_(p1: b2Vec2, q1: b2Vec2, p2: b2Vec2, q2: b2Vec2) -> b2SegmentDistanceResult;
 
     class b2SimplexCache {
         count: u16;
@@ -380,7 +350,8 @@ extern("C") {
 
     fundecl b2ShapeCast(input: cptr b2ShapeCastPairInput) -> b2CastOutput;
     fundecl b2MakeProxy(points: cptr b2Vec2, count: i32, radius: f32) -> b2ShapeProxy;
-    fundecl b2MakeOffsetProxy(points: cptr b2Vec2, count: i32, radius: f32, position: b2Vec2, rotation: b2Rot) -> b2ShapeProxy;
+    @c_symbol_name("b2MakeOffsetProxy")
+    private fundecl b2MakeOffsetProxy_(points: cptr b2Vec2, count: i32, radius: f32, position: b2Vec2, rotation: b2Rot) -> b2ShapeProxy;
 
     class b2Sweep {
         localCenter: b2Vec2;
@@ -390,7 +361,8 @@ extern("C") {
         q2: b2Rot;
     }
 
-    fundecl b2GetSweepTransform(sweep: cptr b2Sweep, time: f32) -> b2Transform;
+    @c_symbol_name("b2GetSweepTransform")
+    private fundecl b2GetSweepTransform_(sweep: cptr b2Sweep, time: f32) -> b2Transform;
 
     class b2TOIInput {
         proxyA: b2ShapeProxy;
@@ -414,7 +386,8 @@ extern("C") {
         fraction: f32;
     }
 
-    fundecl b2TimeOfImpact(input: cptr b2TOIInput) -> b2TOIOutput;
+    @c_symbol_name("b2TimeOfImpact")
+    private fundecl b2TimeOfImpact_(input: cptr b2TOIInput) -> b2TOIOutput;
 
     class b2ManifoldPoint {
         point: b2Vec2;
@@ -436,18 +409,30 @@ extern("C") {
         pointCount: i32;
     }
 
-    fundecl b2CollideCircles(circleA: cptr b2Circle, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold;
-    fundecl b2CollideCapsuleAndCircle(capsuleA: cptr b2Capsule, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold;
-    fundecl b2CollideSegmentAndCircle(segmentA: cptr b2Segment, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold;
-    fundecl b2CollidePolygonAndCircle(polygonA: cptr b2Polygon, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold;
-    fundecl b2CollideCapsules(capsuleA: cptr b2Capsule, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform) -> b2Manifold;
-    fundecl b2CollideSegmentAndCapsule(segmentA: cptr b2Segment, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform) -> b2Manifold;
-    fundecl b2CollidePolygonAndCapsule(polygonA: cptr b2Polygon, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform) -> b2Manifold;
-    fundecl b2CollidePolygons(polygonA: cptr b2Polygon, xfA: b2Transform, polygonB: cptr b2Polygon, xfB: b2Transform) -> b2Manifold;
-    fundecl b2CollideSegmentAndPolygon(segmentA: cptr b2Segment, xfA: b2Transform, polygonB: cptr b2Polygon, xfB: b2Transform) -> b2Manifold;
-    fundecl b2CollideChainSegmentAndCircle(segmentA: cptr b2ChainSegment, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold;
-    fundecl b2CollideChainSegmentAndCapsule(segmentA: cptr b2ChainSegment, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform, cache: cptr mut b2SimplexCache) -> b2Manifold;
-    fundecl b2CollideChainSegmentAndPolygon(segmentA: cptr b2ChainSegment, xfA: b2Transform, polygonB: cptr b2Polygon, xfB: b2Transform, cache: cptr mut b2SimplexCache) -> b2Manifold;
+    @c_symbol_name("b2CollideCircles")
+    private fundecl b2CollideCircles_(circleA: cptr b2Circle, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold;
+    @c_symbol_name("b2CollideCapsuleAndCircle")
+    private fundecl b2CollideCapsuleAndCircle_(capsuleA: cptr b2Capsule, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold;
+    @c_symbol_name("b2CollideSegmentAndCircle")
+    private fundecl b2CollideSegmentAndCircle_(segmentA: cptr b2Segment, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold;
+    @c_symbol_name("b2CollidePolygonAndCircle")
+    private fundecl b2CollidePolygonAndCircle_(polygonA: cptr b2Polygon, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold;
+    @c_symbol_name("b2CollideCapsules")
+    private fundecl b2CollideCapsules_(capsuleA: cptr b2Capsule, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform) -> b2Manifold;
+    @c_symbol_name("b2CollideSegmentAndCapsule")
+    private fundecl b2CollideSegmentAndCapsule_(segmentA: cptr b2Segment, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform) -> b2Manifold;
+    @c_symbol_name("b2CollidePolygonAndCapsule")
+    private fundecl b2CollidePolygonAndCapsule_(polygonA: cptr b2Polygon, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform) -> b2Manifold;
+    @c_symbol_name("b2CollidePolygons")
+    private fundecl b2CollidePolygons_(polygonA: cptr b2Polygon, xfA: b2Transform, polygonB: cptr b2Polygon, xfB: b2Transform) -> b2Manifold;
+    @c_symbol_name("b2CollideSegmentAndPolygon")
+    private fundecl b2CollideSegmentAndPolygon_(segmentA: cptr b2Segment, xfA: b2Transform, polygonB: cptr b2Polygon, xfB: b2Transform) -> b2Manifold;
+    @c_symbol_name("b2CollideChainSegmentAndCircle")
+    private fundecl b2CollideChainSegmentAndCircle_(segmentA: cptr b2ChainSegment, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold;
+    @c_symbol_name("b2CollideChainSegmentAndCapsule")
+    private fundecl b2CollideChainSegmentAndCapsule_(segmentA: cptr b2ChainSegment, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform, cache: cptr mut b2SimplexCache) -> b2Manifold;
+    @c_symbol_name("b2CollideChainSegmentAndPolygon")
+    private fundecl b2CollideChainSegmentAndPolygon_(segmentA: cptr b2ChainSegment, xfA: b2Transform, polygonB: cptr b2Polygon, xfB: b2Transform, cache: cptr mut b2SimplexCache) -> b2Manifold;
 
     class b2DynamicTree {
         nodes: cptr mut u8;
@@ -470,10 +455,13 @@ extern("C") {
 
     fundecl b2DynamicTree_Create() -> b2DynamicTree;
     fundecl b2DynamicTree_Destroy(tree: cptr mut b2DynamicTree) -> ();
-    fundecl b2DynamicTree_CreateProxy(tree: cptr mut b2DynamicTree, aabb: b2AABB, categoryBits: u64, userData: u64) -> i32;
+    @c_symbol_name("b2DynamicTree_CreateProxy")
+    private fundecl b2DynamicTree_CreateProxy_(tree: cptr mut b2DynamicTree, aabb: b2AABB, categoryBits: u64, userData: u64) -> i32;
     fundecl b2DynamicTree_DestroyProxy(tree: cptr mut b2DynamicTree, proxyId: i32) -> ();
-    fundecl b2DynamicTree_MoveProxy(tree: cptr mut b2DynamicTree, proxyId: i32, aabb: b2AABB) -> ();
-    fundecl b2DynamicTree_EnlargeProxy(tree: cptr mut b2DynamicTree, proxyId: i32, aabb: b2AABB) -> ();
+    @c_symbol_name("b2DynamicTree_MoveProxy")
+    private fundecl b2DynamicTree_MoveProxy_(tree: cptr mut b2DynamicTree, proxyId: i32, aabb: b2AABB) -> ();
+    @c_symbol_name("b2DynamicTree_EnlargeProxy")
+    private fundecl b2DynamicTree_EnlargeProxy_(tree: cptr mut b2DynamicTree, proxyId: i32, aabb: b2AABB) -> ();
     fundecl b2DynamicTree_SetCategoryBits(tree: cptr mut b2DynamicTree, proxyId: i32, categoryBits: u64) -> ();
     fundecl b2DynamicTree_GetCategoryBits(tree: cptr mut b2DynamicTree, proxyId: i32) -> u64;
 }
@@ -481,27 +469,32 @@ extern("C") {
 const b2TreeQueryCallbackFcn = cptr u8;
 
 extern("C") {
-    fundecl b2DynamicTree_Query(tree: cptr b2DynamicTree, aabb: b2AABB, maskBits: u64, callback: b2TreeQueryCallbackFcn, context: cptr mut u8) -> b2TreeStats;
+    @c_symbol_name("b2DynamicTree_Query")
+    private fundecl b2DynamicTree_Query_(tree: cptr b2DynamicTree, aabb: b2AABB, maskBits: u64, callback: b2TreeQueryCallbackFcn, context: cptr mut u8) -> b2TreeStats;
 }
 
 const b2TreeRayCastCallbackFcn = cptr u8;
 
 extern("C") {
-    fundecl b2DynamicTree_RayCast(tree: cptr b2DynamicTree, input: cptr b2RayCastInput, maskBits: u64, callback: b2TreeRayCastCallbackFcn, context: cptr mut u8) -> b2TreeStats;
+    @c_symbol_name("b2DynamicTree_RayCast")
+    private fundecl b2DynamicTree_RayCast_(tree: cptr b2DynamicTree, input: cptr b2RayCastInput, maskBits: u64, callback: b2TreeRayCastCallbackFcn, context: cptr mut u8) -> b2TreeStats;
 }
 
 const b2TreeShapeCastCallbackFcn = cptr u8;
 
 extern("C") {
-    fundecl b2DynamicTree_ShapeCast(tree: cptr b2DynamicTree, input: cptr b2ShapeCastInput, maskBits: u64, callback: b2TreeShapeCastCallbackFcn, context: cptr mut u8) -> b2TreeStats;
+    @c_symbol_name("b2DynamicTree_ShapeCast")
+    private fundecl b2DynamicTree_ShapeCast_(tree: cptr b2DynamicTree, input: cptr b2ShapeCastInput, maskBits: u64, callback: b2TreeShapeCastCallbackFcn, context: cptr mut u8) -> b2TreeStats;
     fundecl b2DynamicTree_GetHeight(tree: cptr b2DynamicTree) -> i32;
     fundecl b2DynamicTree_GetAreaRatio(tree: cptr b2DynamicTree) -> f32;
-    fundecl b2DynamicTree_GetRootBounds(tree: cptr b2DynamicTree) -> b2AABB;
+    @c_symbol_name("b2DynamicTree_GetRootBounds")
+    private fundecl b2DynamicTree_GetRootBounds_(tree: cptr b2DynamicTree) -> b2AABB;
     fundecl b2DynamicTree_GetProxyCount(tree: cptr b2DynamicTree) -> i32;
     fundecl b2DynamicTree_Rebuild(tree: cptr mut b2DynamicTree, fullBuild: bool) -> i32;
     fundecl b2DynamicTree_GetByteCount(tree: cptr b2DynamicTree) -> i32;
     fundecl b2DynamicTree_GetUserData(tree: cptr b2DynamicTree, proxyId: i32) -> u64;
-    fundecl b2DynamicTree_GetAABB(tree: cptr b2DynamicTree, proxyId: i32) -> b2AABB;
+    @c_symbol_name("b2DynamicTree_GetAABB")
+    private fundecl b2DynamicTree_GetAABB_(tree: cptr b2DynamicTree, proxyId: i32) -> b2AABB;
     fundecl b2DynamicTree_Validate(tree: cptr b2DynamicTree) -> ();
     fundecl b2DynamicTree_ValidateNoEnlarged(tree: cptr b2DynamicTree) -> ();
 
@@ -523,8 +516,10 @@ extern("C") {
         iterationCount: i32;
     }
 
-    fundecl b2SolvePlanes(targetDelta: b2Vec2, planes: cptr mut b2CollisionPlane, count: i32) -> b2PlaneSolverResult;
-    fundecl b2ClipVector(vector: b2Vec2, planes: cptr b2CollisionPlane, count: i32) -> b2Vec2;
+    @c_symbol_name("b2SolvePlanes")
+    private fundecl b2SolvePlanes_(targetDelta: b2Vec2, planes: cptr mut b2CollisionPlane, count: i32) -> b2PlaneSolverResult;
+    @c_symbol_name("b2ClipVector")
+    private fundecl b2ClipVector_(vector: b2Vec2, planes: cptr b2CollisionPlane, count: i32) -> b2Vec2;
 
     class b2WorldId {
         index1: u16;
@@ -564,53 +559,43 @@ let b2_nullJointId = b2JointId(0i32, 0u16, 0u16);
 
 extern("C") {
     @c_symbol_name("B2_IS_NULL_b2WorldId_")
-    fundecl B2_IS_NULL(id: b2WorldId) -> bool;
+    private fundecl B2_IS_NULL_(id: b2WorldId) -> bool;
     @c_symbol_name("B2_IS_NULL_b2BodyId_")
-    fundecl B2_IS_NULL(id: b2BodyId) -> bool;
+    private fundecl B2_IS_NULL_(id: b2BodyId) -> bool;
     @c_symbol_name("B2_IS_NULL_b2ShapeId_")
-    fundecl B2_IS_NULL(id: b2ShapeId) -> bool;
+    private fundecl B2_IS_NULL_(id: b2ShapeId) -> bool;
     @c_symbol_name("B2_IS_NULL_b2ChainId_")
-    fundecl B2_IS_NULL(id: b2ChainId) -> bool;
+    private fundecl B2_IS_NULL_(id: b2ChainId) -> bool;
     @c_symbol_name("B2_IS_NULL_b2JointId_")
-    fundecl B2_IS_NULL(id: b2JointId) -> bool;
+    private fundecl B2_IS_NULL_(id: b2JointId) -> bool;
     @c_symbol_name("B2_IS_NON_NULL_b2WorldId_")
-    fundecl B2_IS_NON_NULL(id: b2WorldId) -> bool;
+    private fundecl B2_IS_NON_NULL_(id: b2WorldId) -> bool;
     @c_symbol_name("B2_IS_NON_NULL_b2BodyId_")
-    fundecl B2_IS_NON_NULL(id: b2BodyId) -> bool;
+    private fundecl B2_IS_NON_NULL_(id: b2BodyId) -> bool;
     @c_symbol_name("B2_IS_NON_NULL_b2ShapeId_")
-    fundecl B2_IS_NON_NULL(id: b2ShapeId) -> bool;
+    private fundecl B2_IS_NON_NULL_(id: b2ShapeId) -> bool;
     @c_symbol_name("B2_IS_NON_NULL_b2ChainId_")
-    fundecl B2_IS_NON_NULL(id: b2ChainId) -> bool;
+    private fundecl B2_IS_NON_NULL_(id: b2ChainId) -> bool;
     @c_symbol_name("B2_IS_NON_NULL_b2JointId_")
-    fundecl B2_IS_NON_NULL(id: b2JointId) -> bool;
+    private fundecl B2_IS_NON_NULL_(id: b2JointId) -> bool;
     @c_symbol_name("B2_ID_EQUALS_b2BodyId_")
-    fundecl B2_ID_EQUALS(id1: b2BodyId, id2: b2BodyId) -> bool;
+    private fundecl B2_ID_EQUALS_(id1: b2BodyId, id2: b2BodyId) -> bool;
     @c_symbol_name("B2_ID_EQUALS_b2ShapeId_")
-    fundecl B2_ID_EQUALS(id1: b2ShapeId, id2: b2ShapeId) -> bool;
+    private fundecl B2_ID_EQUALS_(id1: b2ShapeId, id2: b2ShapeId) -> bool;
     @c_symbol_name("B2_ID_EQUALS_b2ChainId_")
-    fundecl B2_ID_EQUALS(id1: b2ChainId, id2: b2ChainId) -> bool;
+    private fundecl B2_ID_EQUALS_(id1: b2ChainId, id2: b2ChainId) -> bool;
     @c_symbol_name("B2_ID_EQUALS_b2JointId_")
-    fundecl B2_ID_EQUALS(id1: b2JointId, id2: b2JointId) -> bool;
-    @c_symbol_name("b2StoreWorldId_")
-    fundecl b2StoreWorldId(id: b2WorldId) -> u32;
-    @c_symbol_name("b2LoadWorldId_")
-    fundecl b2LoadWorldId(x: u32) -> b2WorldId;
-    @c_symbol_name("b2StoreBodyId_")
-    fundecl b2StoreBodyId(id: b2BodyId) -> u64;
-    @c_symbol_name("b2LoadBodyId_")
-    fundecl b2LoadBodyId(x: u64) -> b2BodyId;
-    @c_symbol_name("b2StoreShapeId_")
-    fundecl b2StoreShapeId(id: b2ShapeId) -> u64;
-    @c_symbol_name("b2LoadShapeId_")
-    fundecl b2LoadShapeId(x: u64) -> b2ShapeId;
-    @c_symbol_name("b2StoreChainId_")
-    fundecl b2StoreChainId(id: b2ChainId) -> u64;
-    @c_symbol_name("b2LoadChainId_")
-    fundecl b2LoadChainId(x: u64) -> b2ChainId;
-    @c_symbol_name("b2StoreJointId_")
-    fundecl b2StoreJointId(id: b2JointId) -> u64;
-    @c_symbol_name("b2LoadJointId_")
-    fundecl b2LoadJointId(x: u64) -> b2JointId;
+    private fundecl B2_ID_EQUALS_(id1: b2JointId, id2: b2JointId) -> bool;
+    private fundecl b2StoreWorldId_(id: b2WorldId) -> u32;
+    private fundecl b2LoadWorldId_(x: u32) -> b2WorldId;
+    private fundecl b2StoreBodyId_(id: b2BodyId) -> u64;
+    private fundecl b2LoadBodyId_(x: u64) -> b2BodyId;
+    private fundecl b2StoreShapeId_(id: b2ShapeId) -> u64;
+    private fundecl b2LoadShapeId_(x: u64) -> b2ShapeId;
+    private fundecl b2StoreChainId_(id: b2ChainId) -> u64;
+    private fundecl b2LoadChainId_(x: u64) -> b2ChainId;
+    private fundecl b2StoreJointId_(id: b2JointId) -> u64;
+    private fundecl b2LoadJointId_(x: u64) -> b2JointId;
 }
 
 const B2_DEFAULT_CATEGORY_BITS: i32 = 1i32;
@@ -1208,319 +1193,632 @@ extern("C") {
 
     fundecl b2DefaultDebugDraw() -> b2DebugDraw;
 
-    fundecl b2CreateWorld(def: cptr b2WorldDef) -> b2WorldId;
-    fundecl b2DestroyWorld(worldId: b2WorldId) -> ();
-    fundecl b2World_IsValid(id: b2WorldId) -> bool;
-    fundecl b2World_Step(worldId: b2WorldId, timeStep: f32, subStepCount: i32) -> ();
-    fundecl b2World_Draw(worldId: b2WorldId, draw: cptr mut b2DebugDraw) -> ();
-    fundecl b2World_GetBodyEvents(worldId: b2WorldId) -> b2BodyEvents;
-    fundecl b2World_GetSensorEvents(worldId: b2WorldId) -> b2SensorEvents;
-    fundecl b2World_GetContactEvents(worldId: b2WorldId) -> b2ContactEvents;
-    fundecl b2World_OverlapAABB(worldId: b2WorldId, aabb: b2AABB, filter: b2QueryFilter, fcn: b2OverlapResultFcn, context: cptr mut u8) -> b2TreeStats;
-    fundecl b2World_OverlapShape(worldId: b2WorldId, proxy: cptr b2ShapeProxy, filter: b2QueryFilter, fcn: b2OverlapResultFcn, context: cptr mut u8) -> b2TreeStats;
-    fundecl b2World_CastRay(worldId: b2WorldId, origin: b2Vec2, translation: b2Vec2, filter: b2QueryFilter, fcn: b2CastResultFcn, context: cptr mut u8) -> b2TreeStats;
-    fundecl b2World_CastRayClosest(worldId: b2WorldId, origin: b2Vec2, translation: b2Vec2, filter: b2QueryFilter) -> b2RayResult;
-    fundecl b2World_CastShape(worldId: b2WorldId, proxy: cptr b2ShapeProxy, translation: b2Vec2, filter: b2QueryFilter, fcn: b2CastResultFcn, context: cptr mut u8) -> b2TreeStats;
-    fundecl b2World_CastMover(worldId: b2WorldId, mover: cptr b2Capsule, translation: b2Vec2, filter: b2QueryFilter) -> f32;
-    fundecl b2World_CollideMover(worldId: b2WorldId, mover: cptr b2Capsule, filter: b2QueryFilter, fcn: b2PlaneResultFcn, context: cptr mut u8) -> ();
-    fundecl b2World_EnableSleeping(worldId: b2WorldId, flag: bool) -> ();
-    fundecl b2World_IsSleepingEnabled(worldId: b2WorldId) -> bool;
-    fundecl b2World_EnableContinuous(worldId: b2WorldId, flag: bool) -> ();
-    fundecl b2World_IsContinuousEnabled(worldId: b2WorldId) -> bool;
-    fundecl b2World_SetRestitutionThreshold(worldId: b2WorldId, value: f32) -> ();
-    fundecl b2World_GetRestitutionThreshold(worldId: b2WorldId) -> f32;
-    fundecl b2World_SetHitEventThreshold(worldId: b2WorldId, value: f32) -> ();
-    fundecl b2World_GetHitEventThreshold(worldId: b2WorldId) -> f32;
-    fundecl b2World_SetCustomFilterCallback(worldId: b2WorldId, fcn: b2CustomFilterFcn, context: cptr mut u8) -> ();
-    fundecl b2World_SetPreSolveCallback(worldId: b2WorldId, fcn: b2PreSolveFcn, context: cptr mut u8) -> ();
-    fundecl b2World_SetGravity(worldId: b2WorldId, gravity: b2Vec2) -> ();
-    fundecl b2World_GetGravity(worldId: b2WorldId) -> b2Vec2;
-    fundecl b2World_Explode(worldId: b2WorldId, explosionDef: cptr b2ExplosionDef) -> ();
-    fundecl b2World_SetContactTuning(worldId: b2WorldId, hertz: f32, dampingRatio: f32, pushSpeed: f32) -> ();
-    fundecl b2World_SetMaximumLinearSpeed(worldId: b2WorldId, maximumLinearSpeed: f32) -> ();
-    fundecl b2World_GetMaximumLinearSpeed(worldId: b2WorldId) -> f32;
-    fundecl b2World_EnableWarmStarting(worldId: b2WorldId, flag: bool) -> ();
-    fundecl b2World_IsWarmStartingEnabled(worldId: b2WorldId) -> bool;
-    fundecl b2World_GetAwakeBodyCount(worldId: b2WorldId) -> i32;
-    fundecl b2World_GetProfile(worldId: b2WorldId) -> b2Profile;
-    fundecl b2World_GetCounters(worldId: b2WorldId) -> b2Counters;
-    fundecl b2World_SetUserData(worldId: b2WorldId, userData: cptr mut u8) -> ();
-    fundecl b2World_GetUserData(worldId: b2WorldId) -> cptr mut u8;
-    fundecl b2World_SetFrictionCallback(worldId: b2WorldId, callback: b2FrictionCallback) -> ();
-    fundecl b2World_SetRestitutionCallback(worldId: b2WorldId, callback: b2RestitutionCallback) -> ();
-    fundecl b2World_DumpMemoryStats(worldId: b2WorldId) -> ();
-    fundecl b2World_RebuildStaticTree(worldId: b2WorldId) -> ();
-    fundecl b2World_EnableSpeculative(worldId: b2WorldId, flag: bool) -> ();
-    fundecl b2CreateBody(worldId: b2WorldId, def: cptr b2BodyDef) -> b2BodyId;
-    fundecl b2DestroyBody(bodyId: b2BodyId) -> ();
-    fundecl b2Body_IsValid(id: b2BodyId) -> bool;
-    fundecl b2Body_GetType(bodyId: b2BodyId) -> b2BodyType;
-    fundecl b2Body_SetType(bodyId: b2BodyId, type_: b2BodyType) -> ();
-    fundecl b2Body_SetName(bodyId: b2BodyId, name: cptr char) -> ();
-    fundecl b2Body_GetName(bodyId: b2BodyId) -> cptr char;
-    fundecl b2Body_SetUserData(bodyId: b2BodyId, userData: cptr mut u8) -> ();
-    fundecl b2Body_GetUserData(bodyId: b2BodyId) -> cptr mut u8;
-    fundecl b2Body_GetPosition(bodyId: b2BodyId) -> b2Vec2;
-    fundecl b2Body_GetRotation(bodyId: b2BodyId) -> b2Rot;
-    fundecl b2Body_GetTransform(bodyId: b2BodyId) -> b2Transform;
-    fundecl b2Body_SetTransform(bodyId: b2BodyId, position: b2Vec2, rotation: b2Rot) -> ();
-    fundecl b2Body_GetLocalPoint(bodyId: b2BodyId, worldPoint: b2Vec2) -> b2Vec2;
-    fundecl b2Body_GetWorldPoint(bodyId: b2BodyId, localPoint: b2Vec2) -> b2Vec2;
-    fundecl b2Body_GetLocalVector(bodyId: b2BodyId, worldVector: b2Vec2) -> b2Vec2;
-    fundecl b2Body_GetWorldVector(bodyId: b2BodyId, localVector: b2Vec2) -> b2Vec2;
-    fundecl b2Body_GetLinearVelocity(bodyId: b2BodyId) -> b2Vec2;
-    fundecl b2Body_GetAngularVelocity(bodyId: b2BodyId) -> f32;
-    fundecl b2Body_SetLinearVelocity(bodyId: b2BodyId, linearVelocity: b2Vec2) -> ();
-    fundecl b2Body_SetAngularVelocity(bodyId: b2BodyId, angularVelocity: f32) -> ();
-    fundecl b2Body_SetTargetTransform(bodyId: b2BodyId, target: b2Transform, timeStep: f32) -> ();
-    fundecl b2Body_GetLocalPointVelocity(bodyId: b2BodyId, localPoint: b2Vec2) -> b2Vec2;
-    fundecl b2Body_GetWorldPointVelocity(bodyId: b2BodyId, worldPoint: b2Vec2) -> b2Vec2;
-    fundecl b2Body_ApplyForce(bodyId: b2BodyId, force: b2Vec2, point: b2Vec2, wake: bool) -> ();
-    fundecl b2Body_ApplyForceToCenter(bodyId: b2BodyId, force: b2Vec2, wake: bool) -> ();
-    fundecl b2Body_ApplyTorque(bodyId: b2BodyId, torque: f32, wake: bool) -> ();
-    fundecl b2Body_ApplyLinearImpulse(bodyId: b2BodyId, impulse: b2Vec2, point: b2Vec2, wake: bool) -> ();
-    fundecl b2Body_ApplyLinearImpulseToCenter(bodyId: b2BodyId, impulse: b2Vec2, wake: bool) -> ();
-    fundecl b2Body_ApplyAngularImpulse(bodyId: b2BodyId, impulse: f32, wake: bool) -> ();
-    fundecl b2Body_GetMass(bodyId: b2BodyId) -> f32;
-    fundecl b2Body_GetRotationalInertia(bodyId: b2BodyId) -> f32;
-    fundecl b2Body_GetLocalCenterOfMass(bodyId: b2BodyId) -> b2Vec2;
-    fundecl b2Body_GetWorldCenterOfMass(bodyId: b2BodyId) -> b2Vec2;
-    fundecl b2Body_SetMassData(bodyId: b2BodyId, massData: b2MassData) -> ();
-    fundecl b2Body_GetMassData(bodyId: b2BodyId) -> b2MassData;
-    fundecl b2Body_ApplyMassFromShapes(bodyId: b2BodyId) -> ();
-    fundecl b2Body_SetLinearDamping(bodyId: b2BodyId, linearDamping: f32) -> ();
-    fundecl b2Body_GetLinearDamping(bodyId: b2BodyId) -> f32;
-    fundecl b2Body_SetAngularDamping(bodyId: b2BodyId, angularDamping: f32) -> ();
-    fundecl b2Body_GetAngularDamping(bodyId: b2BodyId) -> f32;
-    fundecl b2Body_SetGravityScale(bodyId: b2BodyId, gravityScale: f32) -> ();
-    fundecl b2Body_GetGravityScale(bodyId: b2BodyId) -> f32;
-    fundecl b2Body_IsAwake(bodyId: b2BodyId) -> bool;
-    fundecl b2Body_SetAwake(bodyId: b2BodyId, awake: bool) -> ();
-    fundecl b2Body_EnableSleep(bodyId: b2BodyId, enableSleep: bool) -> ();
-    fundecl b2Body_IsSleepEnabled(bodyId: b2BodyId) -> bool;
-    fundecl b2Body_SetSleepThreshold(bodyId: b2BodyId, sleepThreshold: f32) -> ();
-    fundecl b2Body_GetSleepThreshold(bodyId: b2BodyId) -> f32;
-    fundecl b2Body_IsEnabled(bodyId: b2BodyId) -> bool;
-    fundecl b2Body_Disable(bodyId: b2BodyId) -> ();
-    fundecl b2Body_Enable(bodyId: b2BodyId) -> ();
-    fundecl b2Body_SetFixedRotation(bodyId: b2BodyId, flag: bool) -> ();
-    fundecl b2Body_IsFixedRotation(bodyId: b2BodyId) -> bool;
-    fundecl b2Body_SetBullet(bodyId: b2BodyId, flag: bool) -> ();
-    fundecl b2Body_IsBullet(bodyId: b2BodyId) -> bool;
-    fundecl b2Body_EnableContactEvents(bodyId: b2BodyId, flag: bool) -> ();
-    fundecl b2Body_EnableHitEvents(bodyId: b2BodyId, flag: bool) -> ();
-    fundecl b2Body_GetWorld(bodyId: b2BodyId) -> b2WorldId;
-    fundecl b2Body_GetShapeCount(bodyId: b2BodyId) -> i32;
-    fundecl b2Body_GetShapes(bodyId: b2BodyId, shapeArray: cptr mut b2ShapeId, capacity: i32) -> i32;
-    fundecl b2Body_GetJointCount(bodyId: b2BodyId) -> i32;
-    fundecl b2Body_GetJoints(bodyId: b2BodyId, jointArray: cptr mut b2JointId, capacity: i32) -> i32;
-    fundecl b2Body_GetContactCapacity(bodyId: b2BodyId) -> i32;
-    fundecl b2Body_GetContactData(bodyId: b2BodyId, contactData: cptr mut b2ContactData, capacity: i32) -> i32;
-    fundecl b2Body_ComputeAABB(bodyId: b2BodyId) -> b2AABB;
-    fundecl b2CreateCircleShape(bodyId: b2BodyId, def: cptr b2ShapeDef, circle: cptr b2Circle) -> b2ShapeId;
-    fundecl b2CreateSegmentShape(bodyId: b2BodyId, def: cptr b2ShapeDef, segment: cptr b2Segment) -> b2ShapeId;
-    fundecl b2CreateCapsuleShape(bodyId: b2BodyId, def: cptr b2ShapeDef, capsule: cptr b2Capsule) -> b2ShapeId;
-    fundecl b2CreatePolygonShape(bodyId: b2BodyId, def: cptr b2ShapeDef, polygon: cptr b2Polygon) -> b2ShapeId;
-    fundecl b2DestroyShape(shapeId: b2ShapeId, updateBodyMass: bool) -> ();
-    fundecl b2Shape_IsValid(id: b2ShapeId) -> bool;
-    fundecl b2Shape_GetType(shapeId: b2ShapeId) -> b2ShapeType;
-    fundecl b2Shape_GetBody(shapeId: b2ShapeId) -> b2BodyId;
-    fundecl b2Shape_GetWorld(shapeId: b2ShapeId) -> b2WorldId;
-    fundecl b2Shape_IsSensor(shapeId: b2ShapeId) -> bool;
-    fundecl b2Shape_SetUserData(shapeId: b2ShapeId, userData: cptr mut u8) -> ();
-    fundecl b2Shape_GetUserData(shapeId: b2ShapeId) -> cptr mut u8;
-    fundecl b2Shape_SetDensity(shapeId: b2ShapeId, density: f32, updateBodyMass: bool) -> ();
-    fundecl b2Shape_GetDensity(shapeId: b2ShapeId) -> f32;
-    fundecl b2Shape_SetFriction(shapeId: b2ShapeId, friction: f32) -> ();
-    fundecl b2Shape_GetFriction(shapeId: b2ShapeId) -> f32;
-    fundecl b2Shape_SetRestitution(shapeId: b2ShapeId, restitution: f32) -> ();
-    fundecl b2Shape_GetRestitution(shapeId: b2ShapeId) -> f32;
-    fundecl b2Shape_SetMaterial(shapeId: b2ShapeId, material: i32) -> ();
-    fundecl b2Shape_GetMaterial(shapeId: b2ShapeId) -> i32;
-    fundecl b2Shape_SetSurfaceMaterial(shapeId: b2ShapeId, surfaceMaterial: b2SurfaceMaterial) -> ();
-    fundecl b2Shape_GetSurfaceMaterial(shapeId: b2ShapeId) -> b2SurfaceMaterial;
-    fundecl b2Shape_GetFilter(shapeId: b2ShapeId) -> b2Filter;
-    fundecl b2Shape_SetFilter(shapeId: b2ShapeId, filter: b2Filter) -> ();
-    fundecl b2Shape_EnableSensorEvents(shapeId: b2ShapeId, flag: bool) -> ();
-    fundecl b2Shape_AreSensorEventsEnabled(shapeId: b2ShapeId) -> bool;
-    fundecl b2Shape_EnableContactEvents(shapeId: b2ShapeId, flag: bool) -> ();
-    fundecl b2Shape_AreContactEventsEnabled(shapeId: b2ShapeId) -> bool;
-    fundecl b2Shape_EnablePreSolveEvents(shapeId: b2ShapeId, flag: bool) -> ();
-    fundecl b2Shape_ArePreSolveEventsEnabled(shapeId: b2ShapeId) -> bool;
-    fundecl b2Shape_EnableHitEvents(shapeId: b2ShapeId, flag: bool) -> ();
-    fundecl b2Shape_AreHitEventsEnabled(shapeId: b2ShapeId) -> bool;
-    fundecl b2Shape_TestPoint(shapeId: b2ShapeId, point: b2Vec2) -> bool;
-    fundecl b2Shape_RayCast(shapeId: b2ShapeId, input: cptr b2RayCastInput) -> b2CastOutput;
-    fundecl b2Shape_GetCircle(shapeId: b2ShapeId) -> b2Circle;
-    fundecl b2Shape_GetSegment(shapeId: b2ShapeId) -> b2Segment;
-    fundecl b2Shape_GetChainSegment(shapeId: b2ShapeId) -> b2ChainSegment;
-    fundecl b2Shape_GetCapsule(shapeId: b2ShapeId) -> b2Capsule;
-    fundecl b2Shape_GetPolygon(shapeId: b2ShapeId) -> b2Polygon;
-    fundecl b2Shape_SetCircle(shapeId: b2ShapeId, circle: cptr b2Circle) -> ();
-    fundecl b2Shape_SetCapsule(shapeId: b2ShapeId, capsule: cptr b2Capsule) -> ();
-    fundecl b2Shape_SetSegment(shapeId: b2ShapeId, segment: cptr b2Segment) -> ();
-    fundecl b2Shape_SetPolygon(shapeId: b2ShapeId, polygon: cptr b2Polygon) -> ();
-    fundecl b2Shape_GetParentChain(shapeId: b2ShapeId) -> b2ChainId;
-    fundecl b2Shape_GetContactCapacity(shapeId: b2ShapeId) -> i32;
-    fundecl b2Shape_GetContactData(shapeId: b2ShapeId, contactData: cptr mut b2ContactData, capacity: i32) -> i32;
-    fundecl b2Shape_GetSensorCapacity(shapeId: b2ShapeId) -> i32;
-    fundecl b2Shape_GetSensorOverlaps(shapeId: b2ShapeId, overlaps: cptr mut b2ShapeId, capacity: i32) -> i32;
-    fundecl b2Shape_GetAABB(shapeId: b2ShapeId) -> b2AABB;
-    fundecl b2Shape_GetMassData(shapeId: b2ShapeId) -> b2MassData;
-    fundecl b2Shape_GetClosestPoint(shapeId: b2ShapeId, target: b2Vec2) -> b2Vec2;
-    fundecl b2CreateChain(bodyId: b2BodyId, def: cptr b2ChainDef) -> b2ChainId;
-    fundecl b2DestroyChain(chainId: b2ChainId) -> ();
-    fundecl b2Chain_GetWorld(chainId: b2ChainId) -> b2WorldId;
-    fundecl b2Chain_GetSegmentCount(chainId: b2ChainId) -> i32;
-    fundecl b2Chain_GetSegments(chainId: b2ChainId, segmentArray: cptr mut b2ShapeId, capacity: i32) -> i32;
-    fundecl b2Chain_SetFriction(chainId: b2ChainId, friction: f32) -> ();
-    fundecl b2Chain_GetFriction(chainId: b2ChainId) -> f32;
-    fundecl b2Chain_SetRestitution(chainId: b2ChainId, restitution: f32) -> ();
-    fundecl b2Chain_GetRestitution(chainId: b2ChainId) -> f32;
-    fundecl b2Chain_SetMaterial(chainId: b2ChainId, material: i32) -> ();
-    fundecl b2Chain_GetMaterial(chainId: b2ChainId) -> i32;
-    fundecl b2Chain_IsValid(id: b2ChainId) -> bool;
-    fundecl b2DestroyJoint(jointId: b2JointId) -> ();
-    fundecl b2Joint_IsValid(id: b2JointId) -> bool;
-    fundecl b2Joint_GetType(jointId: b2JointId) -> b2JointType;
-    fundecl b2Joint_GetBodyA(jointId: b2JointId) -> b2BodyId;
-    fundecl b2Joint_GetBodyB(jointId: b2JointId) -> b2BodyId;
-    fundecl b2Joint_GetWorld(jointId: b2JointId) -> b2WorldId;
-    fundecl b2Joint_SetLocalAnchorA(jointId: b2JointId, localAnchor: b2Vec2) -> ();
-    fundecl b2Joint_GetLocalAnchorA(jointId: b2JointId) -> b2Vec2;
-    fundecl b2Joint_SetLocalAnchorB(jointId: b2JointId, localAnchor: b2Vec2) -> ();
-    fundecl b2Joint_GetLocalAnchorB(jointId: b2JointId) -> b2Vec2;
-    fundecl b2Joint_GetReferenceAngle(jointId: b2JointId) -> f32;
-    fundecl b2Joint_SetReferenceAngle(jointId: b2JointId, angleInRadians: f32) -> ();
-    fundecl b2Joint_SetLocalAxisA(jointId: b2JointId, localAxis: b2Vec2) -> ();
-    fundecl b2Joint_GetLocalAxisA(jointId: b2JointId) -> b2Vec2;
-    fundecl b2Joint_SetCollideConnected(jointId: b2JointId, shouldCollide: bool) -> ();
-    fundecl b2Joint_GetCollideConnected(jointId: b2JointId) -> bool;
-    fundecl b2Joint_SetUserData(jointId: b2JointId, userData: cptr mut u8) -> ();
-    fundecl b2Joint_GetUserData(jointId: b2JointId) -> cptr mut u8;
-    fundecl b2Joint_WakeBodies(jointId: b2JointId) -> ();
-    fundecl b2Joint_GetConstraintForce(jointId: b2JointId) -> b2Vec2;
-    fundecl b2Joint_GetConstraintTorque(jointId: b2JointId) -> f32;
-    fundecl b2Joint_GetLinearSeparation(jointId: b2JointId) -> f32;
-    fundecl b2Joint_GetAngularSeparation(jointId: b2JointId) -> f32;
-    fundecl b2Joint_GetConstraintTuning(jointId: b2JointId, hertz: cptr mut f32, dampingRatio: cptr mut f32) -> ();
-    fundecl b2Joint_SetConstraintTuning(jointId: b2JointId, hertz: f32, dampingRatio: f32) -> ();
-    fundecl b2CreateDistanceJoint(worldId: b2WorldId, def: cptr b2DistanceJointDef) -> b2JointId;
-    fundecl b2DistanceJoint_SetLength(jointId: b2JointId, length: f32) -> ();
-    fundecl b2DistanceJoint_GetLength(jointId: b2JointId) -> f32;
-    fundecl b2DistanceJoint_EnableSpring(jointId: b2JointId, enableSpring: bool) -> ();
-    fundecl b2DistanceJoint_IsSpringEnabled(jointId: b2JointId) -> bool;
-    fundecl b2DistanceJoint_SetSpringHertz(jointId: b2JointId, hertz: f32) -> ();
-    fundecl b2DistanceJoint_SetSpringDampingRatio(jointId: b2JointId, dampingRatio: f32) -> ();
-    fundecl b2DistanceJoint_GetSpringHertz(jointId: b2JointId) -> f32;
-    fundecl b2DistanceJoint_GetSpringDampingRatio(jointId: b2JointId) -> f32;
-    fundecl b2DistanceJoint_EnableLimit(jointId: b2JointId, enableLimit: bool) -> ();
-    fundecl b2DistanceJoint_IsLimitEnabled(jointId: b2JointId) -> bool;
-    fundecl b2DistanceJoint_SetLengthRange(jointId: b2JointId, minLength: f32, maxLength: f32) -> ();
-    fundecl b2DistanceJoint_GetMinLength(jointId: b2JointId) -> f32;
-    fundecl b2DistanceJoint_GetMaxLength(jointId: b2JointId) -> f32;
-    fundecl b2DistanceJoint_GetCurrentLength(jointId: b2JointId) -> f32;
-    fundecl b2DistanceJoint_EnableMotor(jointId: b2JointId, enableMotor: bool) -> ();
-    fundecl b2DistanceJoint_IsMotorEnabled(jointId: b2JointId) -> bool;
-    fundecl b2DistanceJoint_SetMotorSpeed(jointId: b2JointId, motorSpeed: f32) -> ();
-    fundecl b2DistanceJoint_GetMotorSpeed(jointId: b2JointId) -> f32;
-    fundecl b2DistanceJoint_SetMaxMotorForce(jointId: b2JointId, force: f32) -> ();
-    fundecl b2DistanceJoint_GetMaxMotorForce(jointId: b2JointId) -> f32;
-    fundecl b2DistanceJoint_GetMotorForce(jointId: b2JointId) -> f32;
-    fundecl b2CreateMotorJoint(worldId: b2WorldId, def: cptr b2MotorJointDef) -> b2JointId;
-    fundecl b2MotorJoint_SetLinearOffset(jointId: b2JointId, linearOffset: b2Vec2) -> ();
-    fundecl b2MotorJoint_GetLinearOffset(jointId: b2JointId) -> b2Vec2;
-    fundecl b2MotorJoint_SetAngularOffset(jointId: b2JointId, angularOffset: f32) -> ();
-    fundecl b2MotorJoint_GetAngularOffset(jointId: b2JointId) -> f32;
-    fundecl b2MotorJoint_SetMaxForce(jointId: b2JointId, maxForce: f32) -> ();
-    fundecl b2MotorJoint_GetMaxForce(jointId: b2JointId) -> f32;
-    fundecl b2MotorJoint_SetMaxTorque(jointId: b2JointId, maxTorque: f32) -> ();
-    fundecl b2MotorJoint_GetMaxTorque(jointId: b2JointId) -> f32;
-    fundecl b2MotorJoint_SetCorrectionFactor(jointId: b2JointId, correctionFactor: f32) -> ();
-    fundecl b2MotorJoint_GetCorrectionFactor(jointId: b2JointId) -> f32;
-    fundecl b2CreateMouseJoint(worldId: b2WorldId, def: cptr b2MouseJointDef) -> b2JointId;
-    fundecl b2MouseJoint_SetTarget(jointId: b2JointId, target: b2Vec2) -> ();
-    fundecl b2MouseJoint_GetTarget(jointId: b2JointId) -> b2Vec2;
-    fundecl b2MouseJoint_SetSpringHertz(jointId: b2JointId, hertz: f32) -> ();
-    fundecl b2MouseJoint_GetSpringHertz(jointId: b2JointId) -> f32;
-    fundecl b2MouseJoint_SetSpringDampingRatio(jointId: b2JointId, dampingRatio: f32) -> ();
-    fundecl b2MouseJoint_GetSpringDampingRatio(jointId: b2JointId) -> f32;
-    fundecl b2MouseJoint_SetMaxForce(jointId: b2JointId, maxForce: f32) -> ();
-    fundecl b2MouseJoint_GetMaxForce(jointId: b2JointId) -> f32;
-    fundecl b2CreateFilterJoint(worldId: b2WorldId, def: cptr b2FilterJointDef) -> b2JointId;
-    fundecl b2CreatePrismaticJoint(worldId: b2WorldId, def: cptr b2PrismaticJointDef) -> b2JointId;
-    fundecl b2PrismaticJoint_EnableSpring(jointId: b2JointId, enableSpring: bool) -> ();
-    fundecl b2PrismaticJoint_IsSpringEnabled(jointId: b2JointId) -> bool;
-    fundecl b2PrismaticJoint_SetSpringHertz(jointId: b2JointId, hertz: f32) -> ();
-    fundecl b2PrismaticJoint_GetSpringHertz(jointId: b2JointId) -> f32;
-    fundecl b2PrismaticJoint_SetSpringDampingRatio(jointId: b2JointId, dampingRatio: f32) -> ();
-    fundecl b2PrismaticJoint_GetSpringDampingRatio(jointId: b2JointId) -> f32;
-    fundecl b2PrismaticJoint_SetTargetTranslation(jointId: b2JointId, translation: f32) -> ();
-    fundecl b2PrismaticJoint_GetTargetTranslation(jointId: b2JointId) -> f32;
-    fundecl b2PrismaticJoint_EnableLimit(jointId: b2JointId, enableLimit: bool) -> ();
-    fundecl b2PrismaticJoint_IsLimitEnabled(jointId: b2JointId) -> bool;
-    fundecl b2PrismaticJoint_GetLowerLimit(jointId: b2JointId) -> f32;
-    fundecl b2PrismaticJoint_GetUpperLimit(jointId: b2JointId) -> f32;
-    fundecl b2PrismaticJoint_SetLimits(jointId: b2JointId, lower: f32, upper: f32) -> ();
-    fundecl b2PrismaticJoint_EnableMotor(jointId: b2JointId, enableMotor: bool) -> ();
-    fundecl b2PrismaticJoint_IsMotorEnabled(jointId: b2JointId) -> bool;
-    fundecl b2PrismaticJoint_SetMotorSpeed(jointId: b2JointId, motorSpeed: f32) -> ();
-    fundecl b2PrismaticJoint_GetMotorSpeed(jointId: b2JointId) -> f32;
-    fundecl b2PrismaticJoint_SetMaxMotorForce(jointId: b2JointId, force: f32) -> ();
-    fundecl b2PrismaticJoint_GetMaxMotorForce(jointId: b2JointId) -> f32;
-    fundecl b2PrismaticJoint_GetMotorForce(jointId: b2JointId) -> f32;
-    fundecl b2PrismaticJoint_GetTranslation(jointId: b2JointId) -> f32;
-    fundecl b2PrismaticJoint_GetSpeed(jointId: b2JointId) -> f32;
-    fundecl b2CreateRevoluteJoint(worldId: b2WorldId, def: cptr b2RevoluteJointDef) -> b2JointId;
-    fundecl b2RevoluteJoint_EnableSpring(jointId: b2JointId, enableSpring: bool) -> ();
-    fundecl b2RevoluteJoint_IsSpringEnabled(jointId: b2JointId) -> bool;
-    fundecl b2RevoluteJoint_SetSpringHertz(jointId: b2JointId, hertz: f32) -> ();
-    fundecl b2RevoluteJoint_GetSpringHertz(jointId: b2JointId) -> f32;
-    fundecl b2RevoluteJoint_SetSpringDampingRatio(jointId: b2JointId, dampingRatio: f32) -> ();
-    fundecl b2RevoluteJoint_GetSpringDampingRatio(jointId: b2JointId) -> f32;
-    fundecl b2RevoluteJoint_SetTargetAngle(jointId: b2JointId, angle: f32) -> ();
-    fundecl b2RevoluteJoint_GetTargetAngle(jointId: b2JointId) -> f32;
-    fundecl b2RevoluteJoint_GetAngle(jointId: b2JointId) -> f32;
-    fundecl b2RevoluteJoint_EnableLimit(jointId: b2JointId, enableLimit: bool) -> ();
-    fundecl b2RevoluteJoint_IsLimitEnabled(jointId: b2JointId) -> bool;
-    fundecl b2RevoluteJoint_GetLowerLimit(jointId: b2JointId) -> f32;
-    fundecl b2RevoluteJoint_GetUpperLimit(jointId: b2JointId) -> f32;
-    fundecl b2RevoluteJoint_SetLimits(jointId: b2JointId, lower: f32, upper: f32) -> ();
-    fundecl b2RevoluteJoint_EnableMotor(jointId: b2JointId, enableMotor: bool) -> ();
-    fundecl b2RevoluteJoint_IsMotorEnabled(jointId: b2JointId) -> bool;
-    fundecl b2RevoluteJoint_SetMotorSpeed(jointId: b2JointId, motorSpeed: f32) -> ();
-    fundecl b2RevoluteJoint_GetMotorSpeed(jointId: b2JointId) -> f32;
-    fundecl b2RevoluteJoint_GetMotorTorque(jointId: b2JointId) -> f32;
-    fundecl b2RevoluteJoint_SetMaxMotorTorque(jointId: b2JointId, torque: f32) -> ();
-    fundecl b2RevoluteJoint_GetMaxMotorTorque(jointId: b2JointId) -> f32;
-    fundecl b2CreateWeldJoint(worldId: b2WorldId, def: cptr b2WeldJointDef) -> b2JointId;
-    fundecl b2WeldJoint_SetLinearHertz(jointId: b2JointId, hertz: f32) -> ();
-    fundecl b2WeldJoint_GetLinearHertz(jointId: b2JointId) -> f32;
-    fundecl b2WeldJoint_SetLinearDampingRatio(jointId: b2JointId, dampingRatio: f32) -> ();
-    fundecl b2WeldJoint_GetLinearDampingRatio(jointId: b2JointId) -> f32;
-    fundecl b2WeldJoint_SetAngularHertz(jointId: b2JointId, hertz: f32) -> ();
-    fundecl b2WeldJoint_GetAngularHertz(jointId: b2JointId) -> f32;
-    fundecl b2WeldJoint_SetAngularDampingRatio(jointId: b2JointId, dampingRatio: f32) -> ();
-    fundecl b2WeldJoint_GetAngularDampingRatio(jointId: b2JointId) -> f32;
-    fundecl b2CreateWheelJoint(worldId: b2WorldId, def: cptr b2WheelJointDef) -> b2JointId;
-    fundecl b2WheelJoint_EnableSpring(jointId: b2JointId, enableSpring: bool) -> ();
-    fundecl b2WheelJoint_IsSpringEnabled(jointId: b2JointId) -> bool;
-    fundecl b2WheelJoint_SetSpringHertz(jointId: b2JointId, hertz: f32) -> ();
-    fundecl b2WheelJoint_GetSpringHertz(jointId: b2JointId) -> f32;
-    fundecl b2WheelJoint_SetSpringDampingRatio(jointId: b2JointId, dampingRatio: f32) -> ();
-    fundecl b2WheelJoint_GetSpringDampingRatio(jointId: b2JointId) -> f32;
-    fundecl b2WheelJoint_EnableLimit(jointId: b2JointId, enableLimit: bool) -> ();
-    fundecl b2WheelJoint_IsLimitEnabled(jointId: b2JointId) -> bool;
-    fundecl b2WheelJoint_GetLowerLimit(jointId: b2JointId) -> f32;
-    fundecl b2WheelJoint_GetUpperLimit(jointId: b2JointId) -> f32;
-    fundecl b2WheelJoint_SetLimits(jointId: b2JointId, lower: f32, upper: f32) -> ();
-    fundecl b2WheelJoint_EnableMotor(jointId: b2JointId, enableMotor: bool) -> ();
-    fundecl b2WheelJoint_IsMotorEnabled(jointId: b2JointId) -> bool;
-    fundecl b2WheelJoint_SetMotorSpeed(jointId: b2JointId, motorSpeed: f32) -> ();
-    fundecl b2WheelJoint_GetMotorSpeed(jointId: b2JointId) -> f32;
-    fundecl b2WheelJoint_SetMaxMotorTorque(jointId: b2JointId, torque: f32) -> ();
-    fundecl b2WheelJoint_GetMaxMotorTorque(jointId: b2JointId) -> f32;
-    fundecl b2WheelJoint_GetMotorTorque(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2CreateWorld")
+    private fundecl b2CreateWorld_(def: cptr b2WorldDef) -> b2WorldId;
+    @c_symbol_name("b2DestroyWorld")
+    private fundecl b2DestroyWorld_(worldId: b2WorldId) -> ();
+    @c_symbol_name("b2World_IsValid")
+    private fundecl b2World_IsValid_(id: b2WorldId) -> bool;
+    @c_symbol_name("b2World_Step")
+    private fundecl b2World_Step_(worldId: b2WorldId, timeStep: f32, subStepCount: i32) -> ();
+    @c_symbol_name("b2World_Draw")
+    private fundecl b2World_Draw_(worldId: b2WorldId, draw: cptr mut b2DebugDraw) -> ();
+    @c_symbol_name("b2World_GetBodyEvents")
+    private fundecl b2World_GetBodyEvents_(worldId: b2WorldId) -> b2BodyEvents;
+    @c_symbol_name("b2World_GetSensorEvents")
+    private fundecl b2World_GetSensorEvents_(worldId: b2WorldId) -> b2SensorEvents;
+    @c_symbol_name("b2World_GetContactEvents")
+    private fundecl b2World_GetContactEvents_(worldId: b2WorldId) -> b2ContactEvents;
+    @c_symbol_name("b2World_OverlapAABB")
+    private fundecl b2World_OverlapAABB_(worldId: b2WorldId, aabb: b2AABB, filter: b2QueryFilter, fcn: b2OverlapResultFcn, context: cptr mut u8) -> b2TreeStats;
+    @c_symbol_name("b2World_OverlapShape")
+    private fundecl b2World_OverlapShape_(worldId: b2WorldId, proxy: cptr b2ShapeProxy, filter: b2QueryFilter, fcn: b2OverlapResultFcn, context: cptr mut u8) -> b2TreeStats;
+    @c_symbol_name("b2World_CastRay")
+    private fundecl b2World_CastRay_(worldId: b2WorldId, origin: b2Vec2, translation: b2Vec2, filter: b2QueryFilter, fcn: b2CastResultFcn, context: cptr mut u8) -> b2TreeStats;
+    @c_symbol_name("b2World_CastRayClosest")
+    private fundecl b2World_CastRayClosest_(worldId: b2WorldId, origin: b2Vec2, translation: b2Vec2, filter: b2QueryFilter) -> b2RayResult;
+    @c_symbol_name("b2World_CastShape")
+    private fundecl b2World_CastShape_(worldId: b2WorldId, proxy: cptr b2ShapeProxy, translation: b2Vec2, filter: b2QueryFilter, fcn: b2CastResultFcn, context: cptr mut u8) -> b2TreeStats;
+    @c_symbol_name("b2World_CastMover")
+    private fundecl b2World_CastMover_(worldId: b2WorldId, mover: cptr b2Capsule, translation: b2Vec2, filter: b2QueryFilter) -> f32;
+    @c_symbol_name("b2World_CollideMover")
+    private fundecl b2World_CollideMover_(worldId: b2WorldId, mover: cptr b2Capsule, filter: b2QueryFilter, fcn: b2PlaneResultFcn, context: cptr mut u8) -> ();
+    @c_symbol_name("b2World_EnableSleeping")
+    private fundecl b2World_EnableSleeping_(worldId: b2WorldId, flag: bool) -> ();
+    @c_symbol_name("b2World_IsSleepingEnabled")
+    private fundecl b2World_IsSleepingEnabled_(worldId: b2WorldId) -> bool;
+    @c_symbol_name("b2World_EnableContinuous")
+    private fundecl b2World_EnableContinuous_(worldId: b2WorldId, flag: bool) -> ();
+    @c_symbol_name("b2World_IsContinuousEnabled")
+    private fundecl b2World_IsContinuousEnabled_(worldId: b2WorldId) -> bool;
+    @c_symbol_name("b2World_SetRestitutionThreshold")
+    private fundecl b2World_SetRestitutionThreshold_(worldId: b2WorldId, value: f32) -> ();
+    @c_symbol_name("b2World_GetRestitutionThreshold")
+    private fundecl b2World_GetRestitutionThreshold_(worldId: b2WorldId) -> f32;
+    @c_symbol_name("b2World_SetHitEventThreshold")
+    private fundecl b2World_SetHitEventThreshold_(worldId: b2WorldId, value: f32) -> ();
+    @c_symbol_name("b2World_GetHitEventThreshold")
+    private fundecl b2World_GetHitEventThreshold_(worldId: b2WorldId) -> f32;
+    @c_symbol_name("b2World_SetCustomFilterCallback")
+    private fundecl b2World_SetCustomFilterCallback_(worldId: b2WorldId, fcn: b2CustomFilterFcn, context: cptr mut u8) -> ();
+    @c_symbol_name("b2World_SetPreSolveCallback")
+    private fundecl b2World_SetPreSolveCallback_(worldId: b2WorldId, fcn: b2PreSolveFcn, context: cptr mut u8) -> ();
+    @c_symbol_name("b2World_SetGravity")
+    private fundecl b2World_SetGravity_(worldId: b2WorldId, gravity: b2Vec2) -> ();
+    @c_symbol_name("b2World_GetGravity")
+    private fundecl b2World_GetGravity_(worldId: b2WorldId) -> b2Vec2;
+    @c_symbol_name("b2World_Explode")
+    private fundecl b2World_Explode_(worldId: b2WorldId, explosionDef: cptr b2ExplosionDef) -> ();
+    @c_symbol_name("b2World_SetContactTuning")
+    private fundecl b2World_SetContactTuning_(worldId: b2WorldId, hertz: f32, dampingRatio: f32, pushSpeed: f32) -> ();
+    @c_symbol_name("b2World_SetMaximumLinearSpeed")
+    private fundecl b2World_SetMaximumLinearSpeed_(worldId: b2WorldId, maximumLinearSpeed: f32) -> ();
+    @c_symbol_name("b2World_GetMaximumLinearSpeed")
+    private fundecl b2World_GetMaximumLinearSpeed_(worldId: b2WorldId) -> f32;
+    @c_symbol_name("b2World_EnableWarmStarting")
+    private fundecl b2World_EnableWarmStarting_(worldId: b2WorldId, flag: bool) -> ();
+    @c_symbol_name("b2World_IsWarmStartingEnabled")
+    private fundecl b2World_IsWarmStartingEnabled_(worldId: b2WorldId) -> bool;
+    @c_symbol_name("b2World_GetAwakeBodyCount")
+    private fundecl b2World_GetAwakeBodyCount_(worldId: b2WorldId) -> i32;
+    @c_symbol_name("b2World_GetProfile")
+    private fundecl b2World_GetProfile_(worldId: b2WorldId) -> b2Profile;
+    @c_symbol_name("b2World_GetCounters")
+    private fundecl b2World_GetCounters_(worldId: b2WorldId) -> b2Counters;
+    @c_symbol_name("b2World_SetUserData")
+    private fundecl b2World_SetUserData_(worldId: b2WorldId, userData: cptr mut u8) -> ();
+    @c_symbol_name("b2World_GetUserData")
+    private fundecl b2World_GetUserData_(worldId: b2WorldId) -> cptr mut u8;
+    @c_symbol_name("b2World_SetFrictionCallback")
+    private fundecl b2World_SetFrictionCallback_(worldId: b2WorldId, callback: b2FrictionCallback) -> ();
+    @c_symbol_name("b2World_SetRestitutionCallback")
+    private fundecl b2World_SetRestitutionCallback_(worldId: b2WorldId, callback: b2RestitutionCallback) -> ();
+    @c_symbol_name("b2World_DumpMemoryStats")
+    private fundecl b2World_DumpMemoryStats_(worldId: b2WorldId) -> ();
+    @c_symbol_name("b2World_RebuildStaticTree")
+    private fundecl b2World_RebuildStaticTree_(worldId: b2WorldId) -> ();
+    @c_symbol_name("b2World_EnableSpeculative")
+    private fundecl b2World_EnableSpeculative_(worldId: b2WorldId, flag: bool) -> ();
+    @c_symbol_name("b2CreateBody")
+    private fundecl b2CreateBody_(worldId: b2WorldId, def: cptr b2BodyDef) -> b2BodyId;
+    @c_symbol_name("b2DestroyBody")
+    private fundecl b2DestroyBody_(bodyId: b2BodyId) -> ();
+    @c_symbol_name("b2Body_IsValid")
+    private fundecl b2Body_IsValid_(id: b2BodyId) -> bool;
+    @c_symbol_name("b2Body_GetType")
+    private fundecl b2Body_GetType_(bodyId: b2BodyId) -> b2BodyType;
+    @c_symbol_name("b2Body_SetType")
+    private fundecl b2Body_SetType_(bodyId: b2BodyId, type_: b2BodyType) -> ();
+    @c_symbol_name("b2Body_SetName")
+    private fundecl b2Body_SetName_(bodyId: b2BodyId, name: cptr char) -> ();
+    @c_symbol_name("b2Body_GetName")
+    private fundecl b2Body_GetName_(bodyId: b2BodyId) -> cptr char;
+    @c_symbol_name("b2Body_SetUserData")
+    private fundecl b2Body_SetUserData_(bodyId: b2BodyId, userData: cptr mut u8) -> ();
+    @c_symbol_name("b2Body_GetUserData")
+    private fundecl b2Body_GetUserData_(bodyId: b2BodyId) -> cptr mut u8;
+    @c_symbol_name("b2Body_GetPosition")
+    private fundecl b2Body_GetPosition_(bodyId: b2BodyId) -> b2Vec2;
+    @c_symbol_name("b2Body_GetRotation")
+    private fundecl b2Body_GetRotation_(bodyId: b2BodyId) -> b2Rot;
+    @c_symbol_name("b2Body_GetTransform")
+    private fundecl b2Body_GetTransform_(bodyId: b2BodyId) -> b2Transform;
+    @c_symbol_name("b2Body_SetTransform")
+    private fundecl b2Body_SetTransform_(bodyId: b2BodyId, position: b2Vec2, rotation: b2Rot) -> ();
+    @c_symbol_name("b2Body_GetLocalPoint")
+    private fundecl b2Body_GetLocalPoint_(bodyId: b2BodyId, worldPoint: b2Vec2) -> b2Vec2;
+    @c_symbol_name("b2Body_GetWorldPoint")
+    private fundecl b2Body_GetWorldPoint_(bodyId: b2BodyId, localPoint: b2Vec2) -> b2Vec2;
+    @c_symbol_name("b2Body_GetLocalVector")
+    private fundecl b2Body_GetLocalVector_(bodyId: b2BodyId, worldVector: b2Vec2) -> b2Vec2;
+    @c_symbol_name("b2Body_GetWorldVector")
+    private fundecl b2Body_GetWorldVector_(bodyId: b2BodyId, localVector: b2Vec2) -> b2Vec2;
+    @c_symbol_name("b2Body_GetLinearVelocity")
+    private fundecl b2Body_GetLinearVelocity_(bodyId: b2BodyId) -> b2Vec2;
+    @c_symbol_name("b2Body_GetAngularVelocity")
+    private fundecl b2Body_GetAngularVelocity_(bodyId: b2BodyId) -> f32;
+    @c_symbol_name("b2Body_SetLinearVelocity")
+    private fundecl b2Body_SetLinearVelocity_(bodyId: b2BodyId, linearVelocity: b2Vec2) -> ();
+    @c_symbol_name("b2Body_SetAngularVelocity")
+    private fundecl b2Body_SetAngularVelocity_(bodyId: b2BodyId, angularVelocity: f32) -> ();
+    @c_symbol_name("b2Body_SetTargetTransform")
+    private fundecl b2Body_SetTargetTransform_(bodyId: b2BodyId, target: b2Transform, timeStep: f32) -> ();
+    @c_symbol_name("b2Body_GetLocalPointVelocity")
+    private fundecl b2Body_GetLocalPointVelocity_(bodyId: b2BodyId, localPoint: b2Vec2) -> b2Vec2;
+    @c_symbol_name("b2Body_GetWorldPointVelocity")
+    private fundecl b2Body_GetWorldPointVelocity_(bodyId: b2BodyId, worldPoint: b2Vec2) -> b2Vec2;
+    @c_symbol_name("b2Body_ApplyForce")
+    private fundecl b2Body_ApplyForce_(bodyId: b2BodyId, force: b2Vec2, point: b2Vec2, wake: bool) -> ();
+    @c_symbol_name("b2Body_ApplyForceToCenter")
+    private fundecl b2Body_ApplyForceToCenter_(bodyId: b2BodyId, force: b2Vec2, wake: bool) -> ();
+    @c_symbol_name("b2Body_ApplyTorque")
+    private fundecl b2Body_ApplyTorque_(bodyId: b2BodyId, torque: f32, wake: bool) -> ();
+    @c_symbol_name("b2Body_ApplyLinearImpulse")
+    private fundecl b2Body_ApplyLinearImpulse_(bodyId: b2BodyId, impulse: b2Vec2, point: b2Vec2, wake: bool) -> ();
+    @c_symbol_name("b2Body_ApplyLinearImpulseToCenter")
+    private fundecl b2Body_ApplyLinearImpulseToCenter_(bodyId: b2BodyId, impulse: b2Vec2, wake: bool) -> ();
+    @c_symbol_name("b2Body_ApplyAngularImpulse")
+    private fundecl b2Body_ApplyAngularImpulse_(bodyId: b2BodyId, impulse: f32, wake: bool) -> ();
+    @c_symbol_name("b2Body_GetMass")
+    private fundecl b2Body_GetMass_(bodyId: b2BodyId) -> f32;
+    @c_symbol_name("b2Body_GetRotationalInertia")
+    private fundecl b2Body_GetRotationalInertia_(bodyId: b2BodyId) -> f32;
+    @c_symbol_name("b2Body_GetLocalCenterOfMass")
+    private fundecl b2Body_GetLocalCenterOfMass_(bodyId: b2BodyId) -> b2Vec2;
+    @c_symbol_name("b2Body_GetWorldCenterOfMass")
+    private fundecl b2Body_GetWorldCenterOfMass_(bodyId: b2BodyId) -> b2Vec2;
+    @c_symbol_name("b2Body_SetMassData")
+    private fundecl b2Body_SetMassData_(bodyId: b2BodyId, massData: b2MassData) -> ();
+    @c_symbol_name("b2Body_GetMassData")
+    private fundecl b2Body_GetMassData_(bodyId: b2BodyId) -> b2MassData;
+    @c_symbol_name("b2Body_ApplyMassFromShapes")
+    private fundecl b2Body_ApplyMassFromShapes_(bodyId: b2BodyId) -> ();
+    @c_symbol_name("b2Body_SetLinearDamping")
+    private fundecl b2Body_SetLinearDamping_(bodyId: b2BodyId, linearDamping: f32) -> ();
+    @c_symbol_name("b2Body_GetLinearDamping")
+    private fundecl b2Body_GetLinearDamping_(bodyId: b2BodyId) -> f32;
+    @c_symbol_name("b2Body_SetAngularDamping")
+    private fundecl b2Body_SetAngularDamping_(bodyId: b2BodyId, angularDamping: f32) -> ();
+    @c_symbol_name("b2Body_GetAngularDamping")
+    private fundecl b2Body_GetAngularDamping_(bodyId: b2BodyId) -> f32;
+    @c_symbol_name("b2Body_SetGravityScale")
+    private fundecl b2Body_SetGravityScale_(bodyId: b2BodyId, gravityScale: f32) -> ();
+    @c_symbol_name("b2Body_GetGravityScale")
+    private fundecl b2Body_GetGravityScale_(bodyId: b2BodyId) -> f32;
+    @c_symbol_name("b2Body_IsAwake")
+    private fundecl b2Body_IsAwake_(bodyId: b2BodyId) -> bool;
+    @c_symbol_name("b2Body_SetAwake")
+    private fundecl b2Body_SetAwake_(bodyId: b2BodyId, awake: bool) -> ();
+    @c_symbol_name("b2Body_EnableSleep")
+    private fundecl b2Body_EnableSleep_(bodyId: b2BodyId, enableSleep: bool) -> ();
+    @c_symbol_name("b2Body_IsSleepEnabled")
+    private fundecl b2Body_IsSleepEnabled_(bodyId: b2BodyId) -> bool;
+    @c_symbol_name("b2Body_SetSleepThreshold")
+    private fundecl b2Body_SetSleepThreshold_(bodyId: b2BodyId, sleepThreshold: f32) -> ();
+    @c_symbol_name("b2Body_GetSleepThreshold")
+    private fundecl b2Body_GetSleepThreshold_(bodyId: b2BodyId) -> f32;
+    @c_symbol_name("b2Body_IsEnabled")
+    private fundecl b2Body_IsEnabled_(bodyId: b2BodyId) -> bool;
+    @c_symbol_name("b2Body_Disable")
+    private fundecl b2Body_Disable_(bodyId: b2BodyId) -> ();
+    @c_symbol_name("b2Body_Enable")
+    private fundecl b2Body_Enable_(bodyId: b2BodyId) -> ();
+    @c_symbol_name("b2Body_SetFixedRotation")
+    private fundecl b2Body_SetFixedRotation_(bodyId: b2BodyId, flag: bool) -> ();
+    @c_symbol_name("b2Body_IsFixedRotation")
+    private fundecl b2Body_IsFixedRotation_(bodyId: b2BodyId) -> bool;
+    @c_symbol_name("b2Body_SetBullet")
+    private fundecl b2Body_SetBullet_(bodyId: b2BodyId, flag: bool) -> ();
+    @c_symbol_name("b2Body_IsBullet")
+    private fundecl b2Body_IsBullet_(bodyId: b2BodyId) -> bool;
+    @c_symbol_name("b2Body_EnableContactEvents")
+    private fundecl b2Body_EnableContactEvents_(bodyId: b2BodyId, flag: bool) -> ();
+    @c_symbol_name("b2Body_EnableHitEvents")
+    private fundecl b2Body_EnableHitEvents_(bodyId: b2BodyId, flag: bool) -> ();
+    @c_symbol_name("b2Body_GetWorld")
+    private fundecl b2Body_GetWorld_(bodyId: b2BodyId) -> b2WorldId;
+    @c_symbol_name("b2Body_GetShapeCount")
+    private fundecl b2Body_GetShapeCount_(bodyId: b2BodyId) -> i32;
+    @c_symbol_name("b2Body_GetShapes")
+    private fundecl b2Body_GetShapes_(bodyId: b2BodyId, shapeArray: cptr mut b2ShapeId, capacity: i32) -> i32;
+    @c_symbol_name("b2Body_GetJointCount")
+    private fundecl b2Body_GetJointCount_(bodyId: b2BodyId) -> i32;
+    @c_symbol_name("b2Body_GetJoints")
+    private fundecl b2Body_GetJoints_(bodyId: b2BodyId, jointArray: cptr mut b2JointId, capacity: i32) -> i32;
+    @c_symbol_name("b2Body_GetContactCapacity")
+    private fundecl b2Body_GetContactCapacity_(bodyId: b2BodyId) -> i32;
+    @c_symbol_name("b2Body_GetContactData")
+    private fundecl b2Body_GetContactData_(bodyId: b2BodyId, contactData: cptr mut b2ContactData, capacity: i32) -> i32;
+    @c_symbol_name("b2Body_ComputeAABB")
+    private fundecl b2Body_ComputeAABB_(bodyId: b2BodyId) -> b2AABB;
+    @c_symbol_name("b2CreateCircleShape")
+    private fundecl b2CreateCircleShape_(bodyId: b2BodyId, def: cptr b2ShapeDef, circle: cptr b2Circle) -> b2ShapeId;
+    @c_symbol_name("b2CreateSegmentShape")
+    private fundecl b2CreateSegmentShape_(bodyId: b2BodyId, def: cptr b2ShapeDef, segment: cptr b2Segment) -> b2ShapeId;
+    @c_symbol_name("b2CreateCapsuleShape")
+    private fundecl b2CreateCapsuleShape_(bodyId: b2BodyId, def: cptr b2ShapeDef, capsule: cptr b2Capsule) -> b2ShapeId;
+    @c_symbol_name("b2CreatePolygonShape")
+    private fundecl b2CreatePolygonShape_(bodyId: b2BodyId, def: cptr b2ShapeDef, polygon: cptr b2Polygon) -> b2ShapeId;
+    @c_symbol_name("b2DestroyShape")
+    private fundecl b2DestroyShape_(shapeId: b2ShapeId, updateBodyMass: bool) -> ();
+    @c_symbol_name("b2Shape_IsValid")
+    private fundecl b2Shape_IsValid_(id: b2ShapeId) -> bool;
+    @c_symbol_name("b2Shape_GetType")
+    private fundecl b2Shape_GetType_(shapeId: b2ShapeId) -> b2ShapeType;
+    @c_symbol_name("b2Shape_GetBody")
+    private fundecl b2Shape_GetBody_(shapeId: b2ShapeId) -> b2BodyId;
+    @c_symbol_name("b2Shape_GetWorld")
+    private fundecl b2Shape_GetWorld_(shapeId: b2ShapeId) -> b2WorldId;
+    @c_symbol_name("b2Shape_IsSensor")
+    private fundecl b2Shape_IsSensor_(shapeId: b2ShapeId) -> bool;
+    @c_symbol_name("b2Shape_SetUserData")
+    private fundecl b2Shape_SetUserData_(shapeId: b2ShapeId, userData: cptr mut u8) -> ();
+    @c_symbol_name("b2Shape_GetUserData")
+    private fundecl b2Shape_GetUserData_(shapeId: b2ShapeId) -> cptr mut u8;
+    @c_symbol_name("b2Shape_SetDensity")
+    private fundecl b2Shape_SetDensity_(shapeId: b2ShapeId, density: f32, updateBodyMass: bool) -> ();
+    @c_symbol_name("b2Shape_GetDensity")
+    private fundecl b2Shape_GetDensity_(shapeId: b2ShapeId) -> f32;
+    @c_symbol_name("b2Shape_SetFriction")
+    private fundecl b2Shape_SetFriction_(shapeId: b2ShapeId, friction: f32) -> ();
+    @c_symbol_name("b2Shape_GetFriction")
+    private fundecl b2Shape_GetFriction_(shapeId: b2ShapeId) -> f32;
+    @c_symbol_name("b2Shape_SetRestitution")
+    private fundecl b2Shape_SetRestitution_(shapeId: b2ShapeId, restitution: f32) -> ();
+    @c_symbol_name("b2Shape_GetRestitution")
+    private fundecl b2Shape_GetRestitution_(shapeId: b2ShapeId) -> f32;
+    @c_symbol_name("b2Shape_SetMaterial")
+    private fundecl b2Shape_SetMaterial_(shapeId: b2ShapeId, material: i32) -> ();
+    @c_symbol_name("b2Shape_GetMaterial")
+    private fundecl b2Shape_GetMaterial_(shapeId: b2ShapeId) -> i32;
+    @c_symbol_name("b2Shape_SetSurfaceMaterial")
+    private fundecl b2Shape_SetSurfaceMaterial_(shapeId: b2ShapeId, surfaceMaterial: b2SurfaceMaterial) -> ();
+    @c_symbol_name("b2Shape_GetSurfaceMaterial")
+    private fundecl b2Shape_GetSurfaceMaterial_(shapeId: b2ShapeId) -> b2SurfaceMaterial;
+    @c_symbol_name("b2Shape_GetFilter")
+    private fundecl b2Shape_GetFilter_(shapeId: b2ShapeId) -> b2Filter;
+    @c_symbol_name("b2Shape_SetFilter")
+    private fundecl b2Shape_SetFilter_(shapeId: b2ShapeId, filter: b2Filter) -> ();
+    @c_symbol_name("b2Shape_EnableSensorEvents")
+    private fundecl b2Shape_EnableSensorEvents_(shapeId: b2ShapeId, flag: bool) -> ();
+    @c_symbol_name("b2Shape_AreSensorEventsEnabled")
+    private fundecl b2Shape_AreSensorEventsEnabled_(shapeId: b2ShapeId) -> bool;
+    @c_symbol_name("b2Shape_EnableContactEvents")
+    private fundecl b2Shape_EnableContactEvents_(shapeId: b2ShapeId, flag: bool) -> ();
+    @c_symbol_name("b2Shape_AreContactEventsEnabled")
+    private fundecl b2Shape_AreContactEventsEnabled_(shapeId: b2ShapeId) -> bool;
+    @c_symbol_name("b2Shape_EnablePreSolveEvents")
+    private fundecl b2Shape_EnablePreSolveEvents_(shapeId: b2ShapeId, flag: bool) -> ();
+    @c_symbol_name("b2Shape_ArePreSolveEventsEnabled")
+    private fundecl b2Shape_ArePreSolveEventsEnabled_(shapeId: b2ShapeId) -> bool;
+    @c_symbol_name("b2Shape_EnableHitEvents")
+    private fundecl b2Shape_EnableHitEvents_(shapeId: b2ShapeId, flag: bool) -> ();
+    @c_symbol_name("b2Shape_AreHitEventsEnabled")
+    private fundecl b2Shape_AreHitEventsEnabled_(shapeId: b2ShapeId) -> bool;
+    @c_symbol_name("b2Shape_TestPoint")
+    private fundecl b2Shape_TestPoint_(shapeId: b2ShapeId, point: b2Vec2) -> bool;
+    @c_symbol_name("b2Shape_RayCast")
+    private fundecl b2Shape_RayCast_(shapeId: b2ShapeId, input: cptr b2RayCastInput) -> b2CastOutput;
+    @c_symbol_name("b2Shape_GetCircle")
+    private fundecl b2Shape_GetCircle_(shapeId: b2ShapeId) -> b2Circle;
+    @c_symbol_name("b2Shape_GetSegment")
+    private fundecl b2Shape_GetSegment_(shapeId: b2ShapeId) -> b2Segment;
+    @c_symbol_name("b2Shape_GetChainSegment")
+    private fundecl b2Shape_GetChainSegment_(shapeId: b2ShapeId) -> b2ChainSegment;
+    @c_symbol_name("b2Shape_GetCapsule")
+    private fundecl b2Shape_GetCapsule_(shapeId: b2ShapeId) -> b2Capsule;
+    @c_symbol_name("b2Shape_GetPolygon")
+    private fundecl b2Shape_GetPolygon_(shapeId: b2ShapeId) -> b2Polygon;
+    @c_symbol_name("b2Shape_SetCircle")
+    private fundecl b2Shape_SetCircle_(shapeId: b2ShapeId, circle: cptr b2Circle) -> ();
+    @c_symbol_name("b2Shape_SetCapsule")
+    private fundecl b2Shape_SetCapsule_(shapeId: b2ShapeId, capsule: cptr b2Capsule) -> ();
+    @c_symbol_name("b2Shape_SetSegment")
+    private fundecl b2Shape_SetSegment_(shapeId: b2ShapeId, segment: cptr b2Segment) -> ();
+    @c_symbol_name("b2Shape_SetPolygon")
+    private fundecl b2Shape_SetPolygon_(shapeId: b2ShapeId, polygon: cptr b2Polygon) -> ();
+    @c_symbol_name("b2Shape_GetParentChain")
+    private fundecl b2Shape_GetParentChain_(shapeId: b2ShapeId) -> b2ChainId;
+    @c_symbol_name("b2Shape_GetContactCapacity")
+    private fundecl b2Shape_GetContactCapacity_(shapeId: b2ShapeId) -> i32;
+    @c_symbol_name("b2Shape_GetContactData")
+    private fundecl b2Shape_GetContactData_(shapeId: b2ShapeId, contactData: cptr mut b2ContactData, capacity: i32) -> i32;
+    @c_symbol_name("b2Shape_GetSensorCapacity")
+    private fundecl b2Shape_GetSensorCapacity_(shapeId: b2ShapeId) -> i32;
+    @c_symbol_name("b2Shape_GetSensorOverlaps")
+    private fundecl b2Shape_GetSensorOverlaps_(shapeId: b2ShapeId, overlaps: cptr mut b2ShapeId, capacity: i32) -> i32;
+    @c_symbol_name("b2Shape_GetAABB")
+    private fundecl b2Shape_GetAABB_(shapeId: b2ShapeId) -> b2AABB;
+    @c_symbol_name("b2Shape_GetMassData")
+    private fundecl b2Shape_GetMassData_(shapeId: b2ShapeId) -> b2MassData;
+    @c_symbol_name("b2Shape_GetClosestPoint")
+    private fundecl b2Shape_GetClosestPoint_(shapeId: b2ShapeId, target: b2Vec2) -> b2Vec2;
+    @c_symbol_name("b2CreateChain")
+    private fundecl b2CreateChain_(bodyId: b2BodyId, def: cptr b2ChainDef) -> b2ChainId;
+    @c_symbol_name("b2DestroyChain")
+    private fundecl b2DestroyChain_(chainId: b2ChainId) -> ();
+    @c_symbol_name("b2Chain_GetWorld")
+    private fundecl b2Chain_GetWorld_(chainId: b2ChainId) -> b2WorldId;
+    @c_symbol_name("b2Chain_GetSegmentCount")
+    private fundecl b2Chain_GetSegmentCount_(chainId: b2ChainId) -> i32;
+    @c_symbol_name("b2Chain_GetSegments")
+    private fundecl b2Chain_GetSegments_(chainId: b2ChainId, segmentArray: cptr mut b2ShapeId, capacity: i32) -> i32;
+    @c_symbol_name("b2Chain_SetFriction")
+    private fundecl b2Chain_SetFriction_(chainId: b2ChainId, friction: f32) -> ();
+    @c_symbol_name("b2Chain_GetFriction")
+    private fundecl b2Chain_GetFriction_(chainId: b2ChainId) -> f32;
+    @c_symbol_name("b2Chain_SetRestitution")
+    private fundecl b2Chain_SetRestitution_(chainId: b2ChainId, restitution: f32) -> ();
+    @c_symbol_name("b2Chain_GetRestitution")
+    private fundecl b2Chain_GetRestitution_(chainId: b2ChainId) -> f32;
+    @c_symbol_name("b2Chain_SetMaterial")
+    private fundecl b2Chain_SetMaterial_(chainId: b2ChainId, material: i32) -> ();
+    @c_symbol_name("b2Chain_GetMaterial")
+    private fundecl b2Chain_GetMaterial_(chainId: b2ChainId) -> i32;
+    @c_symbol_name("b2Chain_IsValid")
+    private fundecl b2Chain_IsValid_(id: b2ChainId) -> bool;
+    @c_symbol_name("b2DestroyJoint")
+    private fundecl b2DestroyJoint_(jointId: b2JointId) -> ();
+    @c_symbol_name("b2Joint_IsValid")
+    private fundecl b2Joint_IsValid_(id: b2JointId) -> bool;
+    @c_symbol_name("b2Joint_GetType")
+    private fundecl b2Joint_GetType_(jointId: b2JointId) -> b2JointType;
+    @c_symbol_name("b2Joint_GetBodyA")
+    private fundecl b2Joint_GetBodyA_(jointId: b2JointId) -> b2BodyId;
+    @c_symbol_name("b2Joint_GetBodyB")
+    private fundecl b2Joint_GetBodyB_(jointId: b2JointId) -> b2BodyId;
+    @c_symbol_name("b2Joint_GetWorld")
+    private fundecl b2Joint_GetWorld_(jointId: b2JointId) -> b2WorldId;
+    @c_symbol_name("b2Joint_SetLocalAnchorA")
+    private fundecl b2Joint_SetLocalAnchorA_(jointId: b2JointId, localAnchor: b2Vec2) -> ();
+    @c_symbol_name("b2Joint_GetLocalAnchorA")
+    private fundecl b2Joint_GetLocalAnchorA_(jointId: b2JointId) -> b2Vec2;
+    @c_symbol_name("b2Joint_SetLocalAnchorB")
+    private fundecl b2Joint_SetLocalAnchorB_(jointId: b2JointId, localAnchor: b2Vec2) -> ();
+    @c_symbol_name("b2Joint_GetLocalAnchorB")
+    private fundecl b2Joint_GetLocalAnchorB_(jointId: b2JointId) -> b2Vec2;
+    @c_symbol_name("b2Joint_GetReferenceAngle")
+    private fundecl b2Joint_GetReferenceAngle_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2Joint_SetReferenceAngle")
+    private fundecl b2Joint_SetReferenceAngle_(jointId: b2JointId, angleInRadians: f32) -> ();
+    @c_symbol_name("b2Joint_SetLocalAxisA")
+    private fundecl b2Joint_SetLocalAxisA_(jointId: b2JointId, localAxis: b2Vec2) -> ();
+    @c_symbol_name("b2Joint_GetLocalAxisA")
+    private fundecl b2Joint_GetLocalAxisA_(jointId: b2JointId) -> b2Vec2;
+    @c_symbol_name("b2Joint_SetCollideConnected")
+    private fundecl b2Joint_SetCollideConnected_(jointId: b2JointId, shouldCollide: bool) -> ();
+    @c_symbol_name("b2Joint_GetCollideConnected")
+    private fundecl b2Joint_GetCollideConnected_(jointId: b2JointId) -> bool;
+    @c_symbol_name("b2Joint_SetUserData")
+    private fundecl b2Joint_SetUserData_(jointId: b2JointId, userData: cptr mut u8) -> ();
+    @c_symbol_name("b2Joint_GetUserData")
+    private fundecl b2Joint_GetUserData_(jointId: b2JointId) -> cptr mut u8;
+    @c_symbol_name("b2Joint_WakeBodies")
+    private fundecl b2Joint_WakeBodies_(jointId: b2JointId) -> ();
+    @c_symbol_name("b2Joint_GetConstraintForce")
+    private fundecl b2Joint_GetConstraintForce_(jointId: b2JointId) -> b2Vec2;
+    @c_symbol_name("b2Joint_GetConstraintTorque")
+    private fundecl b2Joint_GetConstraintTorque_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2Joint_GetLinearSeparation")
+    private fundecl b2Joint_GetLinearSeparation_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2Joint_GetAngularSeparation")
+    private fundecl b2Joint_GetAngularSeparation_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2Joint_GetConstraintTuning")
+    private fundecl b2Joint_GetConstraintTuning_(jointId: b2JointId, hertz: cptr mut f32, dampingRatio: cptr mut f32) -> ();
+    @c_symbol_name("b2Joint_SetConstraintTuning")
+    private fundecl b2Joint_SetConstraintTuning_(jointId: b2JointId, hertz: f32, dampingRatio: f32) -> ();
+    @c_symbol_name("b2CreateDistanceJoint")
+    private fundecl b2CreateDistanceJoint_(worldId: b2WorldId, def: cptr b2DistanceJointDef) -> b2JointId;
+    @c_symbol_name("b2DistanceJoint_SetLength")
+    private fundecl b2DistanceJoint_SetLength_(jointId: b2JointId, length: f32) -> ();
+    @c_symbol_name("b2DistanceJoint_GetLength")
+    private fundecl b2DistanceJoint_GetLength_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2DistanceJoint_EnableSpring")
+    private fundecl b2DistanceJoint_EnableSpring_(jointId: b2JointId, enableSpring: bool) -> ();
+    @c_symbol_name("b2DistanceJoint_IsSpringEnabled")
+    private fundecl b2DistanceJoint_IsSpringEnabled_(jointId: b2JointId) -> bool;
+    @c_symbol_name("b2DistanceJoint_SetSpringHertz")
+    private fundecl b2DistanceJoint_SetSpringHertz_(jointId: b2JointId, hertz: f32) -> ();
+    @c_symbol_name("b2DistanceJoint_SetSpringDampingRatio")
+    private fundecl b2DistanceJoint_SetSpringDampingRatio_(jointId: b2JointId, dampingRatio: f32) -> ();
+    @c_symbol_name("b2DistanceJoint_GetSpringHertz")
+    private fundecl b2DistanceJoint_GetSpringHertz_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2DistanceJoint_GetSpringDampingRatio")
+    private fundecl b2DistanceJoint_GetSpringDampingRatio_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2DistanceJoint_EnableLimit")
+    private fundecl b2DistanceJoint_EnableLimit_(jointId: b2JointId, enableLimit: bool) -> ();
+    @c_symbol_name("b2DistanceJoint_IsLimitEnabled")
+    private fundecl b2DistanceJoint_IsLimitEnabled_(jointId: b2JointId) -> bool;
+    @c_symbol_name("b2DistanceJoint_SetLengthRange")
+    private fundecl b2DistanceJoint_SetLengthRange_(jointId: b2JointId, minLength: f32, maxLength: f32) -> ();
+    @c_symbol_name("b2DistanceJoint_GetMinLength")
+    private fundecl b2DistanceJoint_GetMinLength_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2DistanceJoint_GetMaxLength")
+    private fundecl b2DistanceJoint_GetMaxLength_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2DistanceJoint_GetCurrentLength")
+    private fundecl b2DistanceJoint_GetCurrentLength_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2DistanceJoint_EnableMotor")
+    private fundecl b2DistanceJoint_EnableMotor_(jointId: b2JointId, enableMotor: bool) -> ();
+    @c_symbol_name("b2DistanceJoint_IsMotorEnabled")
+    private fundecl b2DistanceJoint_IsMotorEnabled_(jointId: b2JointId) -> bool;
+    @c_symbol_name("b2DistanceJoint_SetMotorSpeed")
+    private fundecl b2DistanceJoint_SetMotorSpeed_(jointId: b2JointId, motorSpeed: f32) -> ();
+    @c_symbol_name("b2DistanceJoint_GetMotorSpeed")
+    private fundecl b2DistanceJoint_GetMotorSpeed_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2DistanceJoint_SetMaxMotorForce")
+    private fundecl b2DistanceJoint_SetMaxMotorForce_(jointId: b2JointId, force: f32) -> ();
+    @c_symbol_name("b2DistanceJoint_GetMaxMotorForce")
+    private fundecl b2DistanceJoint_GetMaxMotorForce_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2DistanceJoint_GetMotorForce")
+    private fundecl b2DistanceJoint_GetMotorForce_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2CreateMotorJoint")
+    private fundecl b2CreateMotorJoint_(worldId: b2WorldId, def: cptr b2MotorJointDef) -> b2JointId;
+    @c_symbol_name("b2MotorJoint_SetLinearOffset")
+    private fundecl b2MotorJoint_SetLinearOffset_(jointId: b2JointId, linearOffset: b2Vec2) -> ();
+    @c_symbol_name("b2MotorJoint_GetLinearOffset")
+    private fundecl b2MotorJoint_GetLinearOffset_(jointId: b2JointId) -> b2Vec2;
+    @c_symbol_name("b2MotorJoint_SetAngularOffset")
+    private fundecl b2MotorJoint_SetAngularOffset_(jointId: b2JointId, angularOffset: f32) -> ();
+    @c_symbol_name("b2MotorJoint_GetAngularOffset")
+    private fundecl b2MotorJoint_GetAngularOffset_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2MotorJoint_SetMaxForce")
+    private fundecl b2MotorJoint_SetMaxForce_(jointId: b2JointId, maxForce: f32) -> ();
+    @c_symbol_name("b2MotorJoint_GetMaxForce")
+    private fundecl b2MotorJoint_GetMaxForce_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2MotorJoint_SetMaxTorque")
+    private fundecl b2MotorJoint_SetMaxTorque_(jointId: b2JointId, maxTorque: f32) -> ();
+    @c_symbol_name("b2MotorJoint_GetMaxTorque")
+    private fundecl b2MotorJoint_GetMaxTorque_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2MotorJoint_SetCorrectionFactor")
+    private fundecl b2MotorJoint_SetCorrectionFactor_(jointId: b2JointId, correctionFactor: f32) -> ();
+    @c_symbol_name("b2MotorJoint_GetCorrectionFactor")
+    private fundecl b2MotorJoint_GetCorrectionFactor_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2CreateMouseJoint")
+    private fundecl b2CreateMouseJoint_(worldId: b2WorldId, def: cptr b2MouseJointDef) -> b2JointId;
+    @c_symbol_name("b2MouseJoint_SetTarget")
+    private fundecl b2MouseJoint_SetTarget_(jointId: b2JointId, target: b2Vec2) -> ();
+    @c_symbol_name("b2MouseJoint_GetTarget")
+    private fundecl b2MouseJoint_GetTarget_(jointId: b2JointId) -> b2Vec2;
+    @c_symbol_name("b2MouseJoint_SetSpringHertz")
+    private fundecl b2MouseJoint_SetSpringHertz_(jointId: b2JointId, hertz: f32) -> ();
+    @c_symbol_name("b2MouseJoint_GetSpringHertz")
+    private fundecl b2MouseJoint_GetSpringHertz_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2MouseJoint_SetSpringDampingRatio")
+    private fundecl b2MouseJoint_SetSpringDampingRatio_(jointId: b2JointId, dampingRatio: f32) -> ();
+    @c_symbol_name("b2MouseJoint_GetSpringDampingRatio")
+    private fundecl b2MouseJoint_GetSpringDampingRatio_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2MouseJoint_SetMaxForce")
+    private fundecl b2MouseJoint_SetMaxForce_(jointId: b2JointId, maxForce: f32) -> ();
+    @c_symbol_name("b2MouseJoint_GetMaxForce")
+    private fundecl b2MouseJoint_GetMaxForce_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2CreateFilterJoint")
+    private fundecl b2CreateFilterJoint_(worldId: b2WorldId, def: cptr b2FilterJointDef) -> b2JointId;
+    @c_symbol_name("b2CreatePrismaticJoint")
+    private fundecl b2CreatePrismaticJoint_(worldId: b2WorldId, def: cptr b2PrismaticJointDef) -> b2JointId;
+    @c_symbol_name("b2PrismaticJoint_EnableSpring")
+    private fundecl b2PrismaticJoint_EnableSpring_(jointId: b2JointId, enableSpring: bool) -> ();
+    @c_symbol_name("b2PrismaticJoint_IsSpringEnabled")
+    private fundecl b2PrismaticJoint_IsSpringEnabled_(jointId: b2JointId) -> bool;
+    @c_symbol_name("b2PrismaticJoint_SetSpringHertz")
+    private fundecl b2PrismaticJoint_SetSpringHertz_(jointId: b2JointId, hertz: f32) -> ();
+    @c_symbol_name("b2PrismaticJoint_GetSpringHertz")
+    private fundecl b2PrismaticJoint_GetSpringHertz_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2PrismaticJoint_SetSpringDampingRatio")
+    private fundecl b2PrismaticJoint_SetSpringDampingRatio_(jointId: b2JointId, dampingRatio: f32) -> ();
+    @c_symbol_name("b2PrismaticJoint_GetSpringDampingRatio")
+    private fundecl b2PrismaticJoint_GetSpringDampingRatio_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2PrismaticJoint_SetTargetTranslation")
+    private fundecl b2PrismaticJoint_SetTargetTranslation_(jointId: b2JointId, translation: f32) -> ();
+    @c_symbol_name("b2PrismaticJoint_GetTargetTranslation")
+    private fundecl b2PrismaticJoint_GetTargetTranslation_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2PrismaticJoint_EnableLimit")
+    private fundecl b2PrismaticJoint_EnableLimit_(jointId: b2JointId, enableLimit: bool) -> ();
+    @c_symbol_name("b2PrismaticJoint_IsLimitEnabled")
+    private fundecl b2PrismaticJoint_IsLimitEnabled_(jointId: b2JointId) -> bool;
+    @c_symbol_name("b2PrismaticJoint_GetLowerLimit")
+    private fundecl b2PrismaticJoint_GetLowerLimit_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2PrismaticJoint_GetUpperLimit")
+    private fundecl b2PrismaticJoint_GetUpperLimit_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2PrismaticJoint_SetLimits")
+    private fundecl b2PrismaticJoint_SetLimits_(jointId: b2JointId, lower: f32, upper: f32) -> ();
+    @c_symbol_name("b2PrismaticJoint_EnableMotor")
+    private fundecl b2PrismaticJoint_EnableMotor_(jointId: b2JointId, enableMotor: bool) -> ();
+    @c_symbol_name("b2PrismaticJoint_IsMotorEnabled")
+    private fundecl b2PrismaticJoint_IsMotorEnabled_(jointId: b2JointId) -> bool;
+    @c_symbol_name("b2PrismaticJoint_SetMotorSpeed")
+    private fundecl b2PrismaticJoint_SetMotorSpeed_(jointId: b2JointId, motorSpeed: f32) -> ();
+    @c_symbol_name("b2PrismaticJoint_GetMotorSpeed")
+    private fundecl b2PrismaticJoint_GetMotorSpeed_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2PrismaticJoint_SetMaxMotorForce")
+    private fundecl b2PrismaticJoint_SetMaxMotorForce_(jointId: b2JointId, force: f32) -> ();
+    @c_symbol_name("b2PrismaticJoint_GetMaxMotorForce")
+    private fundecl b2PrismaticJoint_GetMaxMotorForce_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2PrismaticJoint_GetMotorForce")
+    private fundecl b2PrismaticJoint_GetMotorForce_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2PrismaticJoint_GetTranslation")
+    private fundecl b2PrismaticJoint_GetTranslation_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2PrismaticJoint_GetSpeed")
+    private fundecl b2PrismaticJoint_GetSpeed_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2CreateRevoluteJoint")
+    private fundecl b2CreateRevoluteJoint_(worldId: b2WorldId, def: cptr b2RevoluteJointDef) -> b2JointId;
+    @c_symbol_name("b2RevoluteJoint_EnableSpring")
+    private fundecl b2RevoluteJoint_EnableSpring_(jointId: b2JointId, enableSpring: bool) -> ();
+    @c_symbol_name("b2RevoluteJoint_IsSpringEnabled")
+    private fundecl b2RevoluteJoint_IsSpringEnabled_(jointId: b2JointId) -> bool;
+    @c_symbol_name("b2RevoluteJoint_SetSpringHertz")
+    private fundecl b2RevoluteJoint_SetSpringHertz_(jointId: b2JointId, hertz: f32) -> ();
+    @c_symbol_name("b2RevoluteJoint_GetSpringHertz")
+    private fundecl b2RevoluteJoint_GetSpringHertz_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2RevoluteJoint_SetSpringDampingRatio")
+    private fundecl b2RevoluteJoint_SetSpringDampingRatio_(jointId: b2JointId, dampingRatio: f32) -> ();
+    @c_symbol_name("b2RevoluteJoint_GetSpringDampingRatio")
+    private fundecl b2RevoluteJoint_GetSpringDampingRatio_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2RevoluteJoint_SetTargetAngle")
+    private fundecl b2RevoluteJoint_SetTargetAngle_(jointId: b2JointId, angle: f32) -> ();
+    @c_symbol_name("b2RevoluteJoint_GetTargetAngle")
+    private fundecl b2RevoluteJoint_GetTargetAngle_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2RevoluteJoint_GetAngle")
+    private fundecl b2RevoluteJoint_GetAngle_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2RevoluteJoint_EnableLimit")
+    private fundecl b2RevoluteJoint_EnableLimit_(jointId: b2JointId, enableLimit: bool) -> ();
+    @c_symbol_name("b2RevoluteJoint_IsLimitEnabled")
+    private fundecl b2RevoluteJoint_IsLimitEnabled_(jointId: b2JointId) -> bool;
+    @c_symbol_name("b2RevoluteJoint_GetLowerLimit")
+    private fundecl b2RevoluteJoint_GetLowerLimit_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2RevoluteJoint_GetUpperLimit")
+    private fundecl b2RevoluteJoint_GetUpperLimit_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2RevoluteJoint_SetLimits")
+    private fundecl b2RevoluteJoint_SetLimits_(jointId: b2JointId, lower: f32, upper: f32) -> ();
+    @c_symbol_name("b2RevoluteJoint_EnableMotor")
+    private fundecl b2RevoluteJoint_EnableMotor_(jointId: b2JointId, enableMotor: bool) -> ();
+    @c_symbol_name("b2RevoluteJoint_IsMotorEnabled")
+    private fundecl b2RevoluteJoint_IsMotorEnabled_(jointId: b2JointId) -> bool;
+    @c_symbol_name("b2RevoluteJoint_SetMotorSpeed")
+    private fundecl b2RevoluteJoint_SetMotorSpeed_(jointId: b2JointId, motorSpeed: f32) -> ();
+    @c_symbol_name("b2RevoluteJoint_GetMotorSpeed")
+    private fundecl b2RevoluteJoint_GetMotorSpeed_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2RevoluteJoint_GetMotorTorque")
+    private fundecl b2RevoluteJoint_GetMotorTorque_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2RevoluteJoint_SetMaxMotorTorque")
+    private fundecl b2RevoluteJoint_SetMaxMotorTorque_(jointId: b2JointId, torque: f32) -> ();
+    @c_symbol_name("b2RevoluteJoint_GetMaxMotorTorque")
+    private fundecl b2RevoluteJoint_GetMaxMotorTorque_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2CreateWeldJoint")
+    private fundecl b2CreateWeldJoint_(worldId: b2WorldId, def: cptr b2WeldJointDef) -> b2JointId;
+    @c_symbol_name("b2WeldJoint_SetLinearHertz")
+    private fundecl b2WeldJoint_SetLinearHertz_(jointId: b2JointId, hertz: f32) -> ();
+    @c_symbol_name("b2WeldJoint_GetLinearHertz")
+    private fundecl b2WeldJoint_GetLinearHertz_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2WeldJoint_SetLinearDampingRatio")
+    private fundecl b2WeldJoint_SetLinearDampingRatio_(jointId: b2JointId, dampingRatio: f32) -> ();
+    @c_symbol_name("b2WeldJoint_GetLinearDampingRatio")
+    private fundecl b2WeldJoint_GetLinearDampingRatio_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2WeldJoint_SetAngularHertz")
+    private fundecl b2WeldJoint_SetAngularHertz_(jointId: b2JointId, hertz: f32) -> ();
+    @c_symbol_name("b2WeldJoint_GetAngularHertz")
+    private fundecl b2WeldJoint_GetAngularHertz_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2WeldJoint_SetAngularDampingRatio")
+    private fundecl b2WeldJoint_SetAngularDampingRatio_(jointId: b2JointId, dampingRatio: f32) -> ();
+    @c_symbol_name("b2WeldJoint_GetAngularDampingRatio")
+    private fundecl b2WeldJoint_GetAngularDampingRatio_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2CreateWheelJoint")
+    private fundecl b2CreateWheelJoint_(worldId: b2WorldId, def: cptr b2WheelJointDef) -> b2JointId;
+    @c_symbol_name("b2WheelJoint_EnableSpring")
+    private fundecl b2WheelJoint_EnableSpring_(jointId: b2JointId, enableSpring: bool) -> ();
+    @c_symbol_name("b2WheelJoint_IsSpringEnabled")
+    private fundecl b2WheelJoint_IsSpringEnabled_(jointId: b2JointId) -> bool;
+    @c_symbol_name("b2WheelJoint_SetSpringHertz")
+    private fundecl b2WheelJoint_SetSpringHertz_(jointId: b2JointId, hertz: f32) -> ();
+    @c_symbol_name("b2WheelJoint_GetSpringHertz")
+    private fundecl b2WheelJoint_GetSpringHertz_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2WheelJoint_SetSpringDampingRatio")
+    private fundecl b2WheelJoint_SetSpringDampingRatio_(jointId: b2JointId, dampingRatio: f32) -> ();
+    @c_symbol_name("b2WheelJoint_GetSpringDampingRatio")
+    private fundecl b2WheelJoint_GetSpringDampingRatio_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2WheelJoint_EnableLimit")
+    private fundecl b2WheelJoint_EnableLimit_(jointId: b2JointId, enableLimit: bool) -> ();
+    @c_symbol_name("b2WheelJoint_IsLimitEnabled")
+    private fundecl b2WheelJoint_IsLimitEnabled_(jointId: b2JointId) -> bool;
+    @c_symbol_name("b2WheelJoint_GetLowerLimit")
+    private fundecl b2WheelJoint_GetLowerLimit_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2WheelJoint_GetUpperLimit")
+    private fundecl b2WheelJoint_GetUpperLimit_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2WheelJoint_SetLimits")
+    private fundecl b2WheelJoint_SetLimits_(jointId: b2JointId, lower: f32, upper: f32) -> ();
+    @c_symbol_name("b2WheelJoint_EnableMotor")
+    private fundecl b2WheelJoint_EnableMotor_(jointId: b2JointId, enableMotor: bool) -> ();
+    @c_symbol_name("b2WheelJoint_IsMotorEnabled")
+    private fundecl b2WheelJoint_IsMotorEnabled_(jointId: b2JointId) -> bool;
+    @c_symbol_name("b2WheelJoint_SetMotorSpeed")
+    private fundecl b2WheelJoint_SetMotorSpeed_(jointId: b2JointId, motorSpeed: f32) -> ();
+    @c_symbol_name("b2WheelJoint_GetMotorSpeed")
+    private fundecl b2WheelJoint_GetMotorSpeed_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2WheelJoint_SetMaxMotorTorque")
+    private fundecl b2WheelJoint_SetMaxMotorTorque_(jointId: b2JointId, torque: f32) -> ();
+    @c_symbol_name("b2WheelJoint_GetMaxMotorTorque")
+    private fundecl b2WheelJoint_GetMaxMotorTorque_(jointId: b2JointId) -> f32;
+    @c_symbol_name("b2WheelJoint_GetMotorTorque")
+    private fundecl b2WheelJoint_GetMotorTorque_(jointId: b2JointId) -> f32;
 }
 
 fun b2MakeAABB(points: ref b2Vec2, count: i64, radius: f32) -> b2AABB =
@@ -1559,3 +1857,442 @@ fun b2Body_SetName(bodyId: b2BodyId, name: str | String) -> () = {
     copyChars(builtins.ptr_from_slice[char](chars), dst as manyptr mut char, count);
     b2Body_SetName(bodyId, dst as cptr char);
 }
+
+fun b2GetVersion() -> b2Version = b2GetVersion_();
+fun b2IsValidVec2(v: b2Vec2) -> bool = b2IsValidVec2_(v);
+fun b2IsValidRotation(q: b2Rot) -> bool = b2IsValidRotation_(q);
+fun b2IsValidAABB(aabb: b2AABB) -> bool = b2IsValidAABB_(aabb);
+fun b2IsValidPlane(a: b2Plane) -> bool = b2IsValidPlane_(a);
+fun b2ComputeCosSin(radians: f32) -> b2CosSin = b2ComputeCosSin_(radians);
+fun b2Dot(a: b2Vec2, b: b2Vec2) -> f32 = b2Dot_(a, b);
+fun b2Cross(a: b2Vec2, b: b2Vec2) -> f32 = b2Cross_(a, b);
+fun b2CrossVS(v: b2Vec2, s: f32) -> b2Vec2 = b2CrossVS_(v, s);
+fun b2CrossSV(s: f32, v: b2Vec2) -> b2Vec2 = b2CrossSV_(s, v);
+fun b2LeftPerp(v: b2Vec2) -> b2Vec2 = b2LeftPerp_(v);
+fun b2RightPerp(v: b2Vec2) -> b2Vec2 = b2RightPerp_(v);
+fun b2Add(a: b2Vec2, b: b2Vec2) -> b2Vec2 = b2Add_(a, b);
+fun b2Sub(a: b2Vec2, b: b2Vec2) -> b2Vec2 = b2Sub_(a, b);
+fun b2Neg(a: b2Vec2) -> b2Vec2 = b2Neg_(a);
+fun b2Lerp(a: b2Vec2, b: b2Vec2, t: f32) -> b2Vec2 = b2Lerp_(a, b, t);
+fun b2Mul(a: b2Vec2, b: b2Vec2) -> b2Vec2 = b2Mul_(a, b);
+fun b2MulSV(s: f32, v: b2Vec2) -> b2Vec2 = b2MulSV_(s, v);
+fun b2MulAdd(a: b2Vec2, s: f32, b: b2Vec2) -> b2Vec2 = b2MulAdd_(a, s, b);
+fun b2MulSub(a: b2Vec2, s: f32, b: b2Vec2) -> b2Vec2 = b2MulSub_(a, s, b);
+fun b2Abs(a: b2Vec2) -> b2Vec2 = b2Abs_(a);
+fun b2Min(a: b2Vec2, b: b2Vec2) -> b2Vec2 = b2Min_(a, b);
+fun b2Max(a: b2Vec2, b: b2Vec2) -> b2Vec2 = b2Max_(a, b);
+fun b2Clamp(v: b2Vec2, a: b2Vec2, b: b2Vec2) -> b2Vec2 = b2Clamp_(v, a, b);
+fun b2Length(v: b2Vec2) -> f32 = b2Length_(v);
+fun b2Distance(a: b2Vec2, b: b2Vec2) -> f32 = b2Distance_(a, b);
+fun b2Normalize(v: b2Vec2) -> b2Vec2 = b2Normalize_(v);
+fun b2IsNormalized(a: b2Vec2) -> bool = b2IsNormalized_(a);
+fun b2GetLengthAndNormalize(length: cptr mut f32, v: b2Vec2) -> b2Vec2 = b2GetLengthAndNormalize_(length, v);
+fun b2NormalizeRot(q: b2Rot) -> b2Rot = b2NormalizeRot_(q);
+fun b2IntegrateRotation(q1: b2Rot, deltaAngle: f32) -> b2Rot = b2IntegrateRotation_(q1, deltaAngle);
+fun b2LengthSquared(v: b2Vec2) -> f32 = b2LengthSquared_(v);
+fun b2DistanceSquared(a: b2Vec2, b: b2Vec2) -> f32 = b2DistanceSquared_(a, b);
+fun b2MakeRot(radians: f32) -> b2Rot = b2MakeRot_(radians);
+fun b2ComputeRotationBetweenUnitVectors(v1: b2Vec2, v2: b2Vec2) -> b2Rot = b2ComputeRotationBetweenUnitVectors_(v1, v2);
+fun b2IsNormalizedRot(q: b2Rot) -> bool = b2IsNormalizedRot_(q);
+fun b2NLerp(q1: b2Rot, q2: b2Rot, t: f32) -> b2Rot = b2NLerp_(q1, q2, t);
+fun b2ComputeAngularVelocity(q1: b2Rot, q2: b2Rot, inv_h: f32) -> f32 = b2ComputeAngularVelocity_(q1, q2, inv_h);
+fun b2Rot_GetAngle(q: b2Rot) -> f32 = b2Rot_GetAngle_(q);
+fun b2Rot_GetXAxis(q: b2Rot) -> b2Vec2 = b2Rot_GetXAxis_(q);
+fun b2Rot_GetYAxis(q: b2Rot) -> b2Vec2 = b2Rot_GetYAxis_(q);
+fun b2MulRot(q: b2Rot, r: b2Rot) -> b2Rot = b2MulRot_(q, r);
+fun b2InvMulRot(q: b2Rot, r: b2Rot) -> b2Rot = b2InvMulRot_(q, r);
+fun b2RelativeAngle(b: b2Rot, a: b2Rot) -> f32 = b2RelativeAngle_(b, a);
+fun b2RotateVector(q: b2Rot, v: b2Vec2) -> b2Vec2 = b2RotateVector_(q, v);
+fun b2InvRotateVector(q: b2Rot, v: b2Vec2) -> b2Vec2 = b2InvRotateVector_(q, v);
+fun b2TransformPoint(t: b2Transform, p: b2Vec2) -> b2Vec2 = b2TransformPoint_(t, p);
+fun b2InvTransformPoint(t: b2Transform, p: b2Vec2) -> b2Vec2 = b2InvTransformPoint_(t, p);
+fun b2MulTransforms(A: b2Transform, B: b2Transform) -> b2Transform = b2MulTransforms_(A, B);
+fun b2InvMulTransforms(A: b2Transform, B: b2Transform) -> b2Transform = b2InvMulTransforms_(A, B);
+fun b2MulMV(A: b2Mat22, v: b2Vec2) -> b2Vec2 = b2MulMV_(A, v);
+fun b2GetInverse22(A: b2Mat22) -> b2Mat22 = b2GetInverse22_(A);
+fun b2Solve22(A: b2Mat22, b: b2Vec2) -> b2Vec2 = b2Solve22_(A, b);
+fun b2AABB_Contains(a: b2AABB, b: b2AABB) -> bool = b2AABB_Contains_(a, b);
+fun b2AABB_Center(a: b2AABB) -> b2Vec2 = b2AABB_Center_(a);
+fun b2AABB_Extents(a: b2AABB) -> b2Vec2 = b2AABB_Extents_(a);
+fun b2AABB_Union(a: b2AABB, b: b2AABB) -> b2AABB = b2AABB_Union_(a, b);
+fun b2AABB_Overlaps(a: b2AABB, b: b2AABB) -> bool = b2AABB_Overlaps_(a, b);
+fun b2MakeAABB(points: cptr b2Vec2, count: i32, radius: f32) -> b2AABB = b2MakeAABB_(points, count, radius);
+fun b2PlaneSeparation(plane: b2Plane, point: b2Vec2) -> f32 = b2PlaneSeparation_(plane, point);
+fun b2MakeOffsetPolygon(hull: cptr b2Hull, position: b2Vec2, rotation: b2Rot) -> b2Polygon = b2MakeOffsetPolygon_(hull, position, rotation);
+fun b2MakeOffsetRoundedPolygon(hull: cptr b2Hull, position: b2Vec2, rotation: b2Rot, radius: f32) -> b2Polygon = b2MakeOffsetRoundedPolygon_(hull, position, rotation, radius);
+fun b2MakeOffsetBox(halfWidth: f32, halfHeight: f32, center: b2Vec2, rotation: b2Rot) -> b2Polygon = b2MakeOffsetBox_(halfWidth, halfHeight, center, rotation);
+fun b2MakeOffsetRoundedBox(halfWidth: f32, halfHeight: f32, center: b2Vec2, rotation: b2Rot, radius: f32) -> b2Polygon = b2MakeOffsetRoundedBox_(halfWidth, halfHeight, center, rotation, radius);
+fun b2TransformPolygon(transform: b2Transform, polygon: cptr b2Polygon) -> b2Polygon = b2TransformPolygon_(transform, polygon);
+fun b2ComputeCircleMass(shape: cptr b2Circle, density: f32) -> b2MassData = b2ComputeCircleMass_(shape, density);
+fun b2ComputeCapsuleMass(shape: cptr b2Capsule, density: f32) -> b2MassData = b2ComputeCapsuleMass_(shape, density);
+fun b2ComputePolygonMass(shape: cptr b2Polygon, density: f32) -> b2MassData = b2ComputePolygonMass_(shape, density);
+fun b2ComputeCircleAABB(shape: cptr b2Circle, transform: b2Transform) -> b2AABB = b2ComputeCircleAABB_(shape, transform);
+fun b2ComputeCapsuleAABB(shape: cptr b2Capsule, transform: b2Transform) -> b2AABB = b2ComputeCapsuleAABB_(shape, transform);
+fun b2ComputePolygonAABB(shape: cptr b2Polygon, transform: b2Transform) -> b2AABB = b2ComputePolygonAABB_(shape, transform);
+fun b2ComputeSegmentAABB(shape: cptr b2Segment, transform: b2Transform) -> b2AABB = b2ComputeSegmentAABB_(shape, transform);
+fun b2PointInCircle(point: b2Vec2, shape: cptr b2Circle) -> bool = b2PointInCircle_(point, shape);
+fun b2PointInCapsule(point: b2Vec2, shape: cptr b2Capsule) -> bool = b2PointInCapsule_(point, shape);
+fun b2PointInPolygon(point: b2Vec2, shape: cptr b2Polygon) -> bool = b2PointInPolygon_(point, shape);
+fun b2SegmentDistance(p1: b2Vec2, q1: b2Vec2, p2: b2Vec2, q2: b2Vec2) -> b2SegmentDistanceResult = b2SegmentDistance_(p1, q1, p2, q2);
+fun b2MakeOffsetProxy(points: cptr b2Vec2, count: i32, radius: f32, position: b2Vec2, rotation: b2Rot) -> b2ShapeProxy = b2MakeOffsetProxy_(points, count, radius, position, rotation);
+fun b2GetSweepTransform(sweep: cptr b2Sweep, time: f32) -> b2Transform = b2GetSweepTransform_(sweep, time);
+fun b2TimeOfImpact(input: cptr b2TOIInput) -> b2TOIOutput = b2TimeOfImpact_(input);
+fun b2CollideCircles(circleA: cptr b2Circle, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold = b2CollideCircles_(circleA, xfA, circleB, xfB);
+fun b2CollideCapsuleAndCircle(capsuleA: cptr b2Capsule, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold = b2CollideCapsuleAndCircle_(capsuleA, xfA, circleB, xfB);
+fun b2CollideSegmentAndCircle(segmentA: cptr b2Segment, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold = b2CollideSegmentAndCircle_(segmentA, xfA, circleB, xfB);
+fun b2CollidePolygonAndCircle(polygonA: cptr b2Polygon, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold = b2CollidePolygonAndCircle_(polygonA, xfA, circleB, xfB);
+fun b2CollideCapsules(capsuleA: cptr b2Capsule, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform) -> b2Manifold = b2CollideCapsules_(capsuleA, xfA, capsuleB, xfB);
+fun b2CollideSegmentAndCapsule(segmentA: cptr b2Segment, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform) -> b2Manifold = b2CollideSegmentAndCapsule_(segmentA, xfA, capsuleB, xfB);
+fun b2CollidePolygonAndCapsule(polygonA: cptr b2Polygon, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform) -> b2Manifold = b2CollidePolygonAndCapsule_(polygonA, xfA, capsuleB, xfB);
+fun b2CollidePolygons(polygonA: cptr b2Polygon, xfA: b2Transform, polygonB: cptr b2Polygon, xfB: b2Transform) -> b2Manifold = b2CollidePolygons_(polygonA, xfA, polygonB, xfB);
+fun b2CollideSegmentAndPolygon(segmentA: cptr b2Segment, xfA: b2Transform, polygonB: cptr b2Polygon, xfB: b2Transform) -> b2Manifold = b2CollideSegmentAndPolygon_(segmentA, xfA, polygonB, xfB);
+fun b2CollideChainSegmentAndCircle(segmentA: cptr b2ChainSegment, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold = b2CollideChainSegmentAndCircle_(segmentA, xfA, circleB, xfB);
+fun b2CollideChainSegmentAndCapsule(segmentA: cptr b2ChainSegment, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform, cache: cptr mut b2SimplexCache) -> b2Manifold = b2CollideChainSegmentAndCapsule_(segmentA, xfA, capsuleB, xfB, cache);
+fun b2CollideChainSegmentAndPolygon(segmentA: cptr b2ChainSegment, xfA: b2Transform, polygonB: cptr b2Polygon, xfB: b2Transform, cache: cptr mut b2SimplexCache) -> b2Manifold = b2CollideChainSegmentAndPolygon_(segmentA, xfA, polygonB, xfB, cache);
+fun b2DynamicTree_CreateProxy(tree: cptr mut b2DynamicTree, aabb: b2AABB, categoryBits: u64, userData: u64) -> i32 = b2DynamicTree_CreateProxy_(tree, aabb, categoryBits, userData);
+fun b2DynamicTree_MoveProxy(tree: cptr mut b2DynamicTree, proxyId: i32, aabb: b2AABB) -> () = b2DynamicTree_MoveProxy_(tree, proxyId, aabb);
+fun b2DynamicTree_EnlargeProxy(tree: cptr mut b2DynamicTree, proxyId: i32, aabb: b2AABB) -> () = b2DynamicTree_EnlargeProxy_(tree, proxyId, aabb);
+fun b2DynamicTree_Query(tree: cptr b2DynamicTree, aabb: b2AABB, maskBits: u64, callback: b2TreeQueryCallbackFcn, context: cptr mut u8) -> b2TreeStats = b2DynamicTree_Query_(tree, aabb, maskBits, callback, context);
+fun b2DynamicTree_RayCast(tree: cptr b2DynamicTree, input: cptr b2RayCastInput, maskBits: u64, callback: b2TreeRayCastCallbackFcn, context: cptr mut u8) -> b2TreeStats = b2DynamicTree_RayCast_(tree, input, maskBits, callback, context);
+fun b2DynamicTree_ShapeCast(tree: cptr b2DynamicTree, input: cptr b2ShapeCastInput, maskBits: u64, callback: b2TreeShapeCastCallbackFcn, context: cptr mut u8) -> b2TreeStats = b2DynamicTree_ShapeCast_(tree, input, maskBits, callback, context);
+fun b2DynamicTree_GetRootBounds(tree: cptr b2DynamicTree) -> b2AABB = b2DynamicTree_GetRootBounds_(tree);
+fun b2DynamicTree_GetAABB(tree: cptr b2DynamicTree, proxyId: i32) -> b2AABB = b2DynamicTree_GetAABB_(tree, proxyId);
+fun b2SolvePlanes(targetDelta: b2Vec2, planes: cptr mut b2CollisionPlane, count: i32) -> b2PlaneSolverResult = b2SolvePlanes_(targetDelta, planes, count);
+fun b2ClipVector(vector: b2Vec2, planes: cptr b2CollisionPlane, count: i32) -> b2Vec2 = b2ClipVector_(vector, planes, count);
+fun B2_IS_NULL(id: b2WorldId) -> bool = B2_IS_NULL_(id);
+fun B2_IS_NULL(id: b2BodyId) -> bool = B2_IS_NULL_(id);
+fun B2_IS_NULL(id: b2ShapeId) -> bool = B2_IS_NULL_(id);
+fun B2_IS_NULL(id: b2ChainId) -> bool = B2_IS_NULL_(id);
+fun B2_IS_NULL(id: b2JointId) -> bool = B2_IS_NULL_(id);
+fun B2_IS_NON_NULL(id: b2WorldId) -> bool = B2_IS_NON_NULL_(id);
+fun B2_IS_NON_NULL(id: b2BodyId) -> bool = B2_IS_NON_NULL_(id);
+fun B2_IS_NON_NULL(id: b2ShapeId) -> bool = B2_IS_NON_NULL_(id);
+fun B2_IS_NON_NULL(id: b2ChainId) -> bool = B2_IS_NON_NULL_(id);
+fun B2_IS_NON_NULL(id: b2JointId) -> bool = B2_IS_NON_NULL_(id);
+fun B2_ID_EQUALS(id1: b2BodyId, id2: b2BodyId) -> bool = B2_ID_EQUALS_(id1, id2);
+fun B2_ID_EQUALS(id1: b2ShapeId, id2: b2ShapeId) -> bool = B2_ID_EQUALS_(id1, id2);
+fun B2_ID_EQUALS(id1: b2ChainId, id2: b2ChainId) -> bool = B2_ID_EQUALS_(id1, id2);
+fun B2_ID_EQUALS(id1: b2JointId, id2: b2JointId) -> bool = B2_ID_EQUALS_(id1, id2);
+fun b2StoreWorldId(id: b2WorldId) -> u32 = b2StoreWorldId_(id);
+fun b2LoadWorldId(x: u32) -> b2WorldId = b2LoadWorldId_(x);
+fun b2StoreBodyId(id: b2BodyId) -> u64 = b2StoreBodyId_(id);
+fun b2LoadBodyId(x: u64) -> b2BodyId = b2LoadBodyId_(x);
+fun b2StoreShapeId(id: b2ShapeId) -> u64 = b2StoreShapeId_(id);
+fun b2LoadShapeId(x: u64) -> b2ShapeId = b2LoadShapeId_(x);
+fun b2StoreChainId(id: b2ChainId) -> u64 = b2StoreChainId_(id);
+fun b2LoadChainId(x: u64) -> b2ChainId = b2LoadChainId_(x);
+fun b2StoreJointId(id: b2JointId) -> u64 = b2StoreJointId_(id);
+fun b2LoadJointId(x: u64) -> b2JointId = b2LoadJointId_(x);
+fun b2CreateWorld(def: cptr b2WorldDef) -> b2WorldId = b2CreateWorld_(def);
+fun b2DestroyWorld(worldId: b2WorldId) -> () = b2DestroyWorld_(worldId);
+fun b2World_IsValid(id: b2WorldId) -> bool = b2World_IsValid_(id);
+fun b2World_Step(worldId: b2WorldId, timeStep: f32, subStepCount: i32) -> () = b2World_Step_(worldId, timeStep, subStepCount);
+fun b2World_Draw(worldId: b2WorldId, draw: cptr mut b2DebugDraw) -> () = b2World_Draw_(worldId, draw);
+fun b2World_GetBodyEvents(worldId: b2WorldId) -> b2BodyEvents = b2World_GetBodyEvents_(worldId);
+fun b2World_GetSensorEvents(worldId: b2WorldId) -> b2SensorEvents = b2World_GetSensorEvents_(worldId);
+fun b2World_GetContactEvents(worldId: b2WorldId) -> b2ContactEvents = b2World_GetContactEvents_(worldId);
+fun b2World_OverlapAABB(worldId: b2WorldId, aabb: b2AABB, filter: b2QueryFilter, fcn: b2OverlapResultFcn, context: cptr mut u8) -> b2TreeStats = b2World_OverlapAABB_(worldId, aabb, filter, fcn, context);
+fun b2World_OverlapShape(worldId: b2WorldId, proxy: cptr b2ShapeProxy, filter: b2QueryFilter, fcn: b2OverlapResultFcn, context: cptr mut u8) -> b2TreeStats = b2World_OverlapShape_(worldId, proxy, filter, fcn, context);
+fun b2World_CastRay(worldId: b2WorldId, origin: b2Vec2, translation: b2Vec2, filter: b2QueryFilter, fcn: b2CastResultFcn, context: cptr mut u8) -> b2TreeStats = b2World_CastRay_(worldId, origin, translation, filter, fcn, context);
+fun b2World_CastRayClosest(worldId: b2WorldId, origin: b2Vec2, translation: b2Vec2, filter: b2QueryFilter) -> b2RayResult = b2World_CastRayClosest_(worldId, origin, translation, filter);
+fun b2World_CastShape(worldId: b2WorldId, proxy: cptr b2ShapeProxy, translation: b2Vec2, filter: b2QueryFilter, fcn: b2CastResultFcn, context: cptr mut u8) -> b2TreeStats = b2World_CastShape_(worldId, proxy, translation, filter, fcn, context);
+fun b2World_CastMover(worldId: b2WorldId, mover: cptr b2Capsule, translation: b2Vec2, filter: b2QueryFilter) -> f32 = b2World_CastMover_(worldId, mover, translation, filter);
+fun b2World_CollideMover(worldId: b2WorldId, mover: cptr b2Capsule, filter: b2QueryFilter, fcn: b2PlaneResultFcn, context: cptr mut u8) -> () = b2World_CollideMover_(worldId, mover, filter, fcn, context);
+fun b2World_EnableSleeping(worldId: b2WorldId, flag: bool) -> () = b2World_EnableSleeping_(worldId, flag);
+fun b2World_IsSleepingEnabled(worldId: b2WorldId) -> bool = b2World_IsSleepingEnabled_(worldId);
+fun b2World_EnableContinuous(worldId: b2WorldId, flag: bool) -> () = b2World_EnableContinuous_(worldId, flag);
+fun b2World_IsContinuousEnabled(worldId: b2WorldId) -> bool = b2World_IsContinuousEnabled_(worldId);
+fun b2World_SetRestitutionThreshold(worldId: b2WorldId, value: f32) -> () = b2World_SetRestitutionThreshold_(worldId, value);
+fun b2World_GetRestitutionThreshold(worldId: b2WorldId) -> f32 = b2World_GetRestitutionThreshold_(worldId);
+fun b2World_SetHitEventThreshold(worldId: b2WorldId, value: f32) -> () = b2World_SetHitEventThreshold_(worldId, value);
+fun b2World_GetHitEventThreshold(worldId: b2WorldId) -> f32 = b2World_GetHitEventThreshold_(worldId);
+fun b2World_SetCustomFilterCallback(worldId: b2WorldId, fcn: b2CustomFilterFcn, context: cptr mut u8) -> () = b2World_SetCustomFilterCallback_(worldId, fcn, context);
+fun b2World_SetPreSolveCallback(worldId: b2WorldId, fcn: b2PreSolveFcn, context: cptr mut u8) -> () = b2World_SetPreSolveCallback_(worldId, fcn, context);
+fun b2World_SetGravity(worldId: b2WorldId, gravity: b2Vec2) -> () = b2World_SetGravity_(worldId, gravity);
+fun b2World_GetGravity(worldId: b2WorldId) -> b2Vec2 = b2World_GetGravity_(worldId);
+fun b2World_Explode(worldId: b2WorldId, explosionDef: cptr b2ExplosionDef) -> () = b2World_Explode_(worldId, explosionDef);
+fun b2World_SetContactTuning(worldId: b2WorldId, hertz: f32, dampingRatio: f32, pushSpeed: f32) -> () = b2World_SetContactTuning_(worldId, hertz, dampingRatio, pushSpeed);
+fun b2World_SetMaximumLinearSpeed(worldId: b2WorldId, maximumLinearSpeed: f32) -> () = b2World_SetMaximumLinearSpeed_(worldId, maximumLinearSpeed);
+fun b2World_GetMaximumLinearSpeed(worldId: b2WorldId) -> f32 = b2World_GetMaximumLinearSpeed_(worldId);
+fun b2World_EnableWarmStarting(worldId: b2WorldId, flag: bool) -> () = b2World_EnableWarmStarting_(worldId, flag);
+fun b2World_IsWarmStartingEnabled(worldId: b2WorldId) -> bool = b2World_IsWarmStartingEnabled_(worldId);
+fun b2World_GetAwakeBodyCount(worldId: b2WorldId) -> i32 = b2World_GetAwakeBodyCount_(worldId);
+fun b2World_GetProfile(worldId: b2WorldId) -> b2Profile = b2World_GetProfile_(worldId);
+fun b2World_GetCounters(worldId: b2WorldId) -> b2Counters = b2World_GetCounters_(worldId);
+fun b2World_SetUserData(worldId: b2WorldId, userData: cptr mut u8) -> () = b2World_SetUserData_(worldId, userData);
+fun b2World_GetUserData(worldId: b2WorldId) -> cptr mut u8 = b2World_GetUserData_(worldId);
+fun b2World_SetFrictionCallback(worldId: b2WorldId, callback: b2FrictionCallback) -> () = b2World_SetFrictionCallback_(worldId, callback);
+fun b2World_SetRestitutionCallback(worldId: b2WorldId, callback: b2RestitutionCallback) -> () = b2World_SetRestitutionCallback_(worldId, callback);
+fun b2World_DumpMemoryStats(worldId: b2WorldId) -> () = b2World_DumpMemoryStats_(worldId);
+fun b2World_RebuildStaticTree(worldId: b2WorldId) -> () = b2World_RebuildStaticTree_(worldId);
+fun b2World_EnableSpeculative(worldId: b2WorldId, flag: bool) -> () = b2World_EnableSpeculative_(worldId, flag);
+fun b2CreateBody(worldId: b2WorldId, def: cptr b2BodyDef) -> b2BodyId = b2CreateBody_(worldId, def);
+fun b2DestroyBody(bodyId: b2BodyId) -> () = b2DestroyBody_(bodyId);
+fun b2Body_IsValid(id: b2BodyId) -> bool = b2Body_IsValid_(id);
+fun b2Body_GetType(bodyId: b2BodyId) -> b2BodyType = b2Body_GetType_(bodyId);
+fun b2Body_SetType(bodyId: b2BodyId, type_: b2BodyType) -> () = b2Body_SetType_(bodyId, type_);
+fun b2Body_SetName(bodyId: b2BodyId, name: cptr char) -> () = b2Body_SetName_(bodyId, name);
+fun b2Body_GetName(bodyId: b2BodyId) -> cptr char = b2Body_GetName_(bodyId);
+fun b2Body_SetUserData(bodyId: b2BodyId, userData: cptr mut u8) -> () = b2Body_SetUserData_(bodyId, userData);
+fun b2Body_GetUserData(bodyId: b2BodyId) -> cptr mut u8 = b2Body_GetUserData_(bodyId);
+fun b2Body_GetPosition(bodyId: b2BodyId) -> b2Vec2 = b2Body_GetPosition_(bodyId);
+fun b2Body_GetRotation(bodyId: b2BodyId) -> b2Rot = b2Body_GetRotation_(bodyId);
+fun b2Body_GetTransform(bodyId: b2BodyId) -> b2Transform = b2Body_GetTransform_(bodyId);
+fun b2Body_SetTransform(bodyId: b2BodyId, position: b2Vec2, rotation: b2Rot) -> () = b2Body_SetTransform_(bodyId, position, rotation);
+fun b2Body_GetLocalPoint(bodyId: b2BodyId, worldPoint: b2Vec2) -> b2Vec2 = b2Body_GetLocalPoint_(bodyId, worldPoint);
+fun b2Body_GetWorldPoint(bodyId: b2BodyId, localPoint: b2Vec2) -> b2Vec2 = b2Body_GetWorldPoint_(bodyId, localPoint);
+fun b2Body_GetLocalVector(bodyId: b2BodyId, worldVector: b2Vec2) -> b2Vec2 = b2Body_GetLocalVector_(bodyId, worldVector);
+fun b2Body_GetWorldVector(bodyId: b2BodyId, localVector: b2Vec2) -> b2Vec2 = b2Body_GetWorldVector_(bodyId, localVector);
+fun b2Body_GetLinearVelocity(bodyId: b2BodyId) -> b2Vec2 = b2Body_GetLinearVelocity_(bodyId);
+fun b2Body_GetAngularVelocity(bodyId: b2BodyId) -> f32 = b2Body_GetAngularVelocity_(bodyId);
+fun b2Body_SetLinearVelocity(bodyId: b2BodyId, linearVelocity: b2Vec2) -> () = b2Body_SetLinearVelocity_(bodyId, linearVelocity);
+fun b2Body_SetAngularVelocity(bodyId: b2BodyId, angularVelocity: f32) -> () = b2Body_SetAngularVelocity_(bodyId, angularVelocity);
+fun b2Body_SetTargetTransform(bodyId: b2BodyId, target: b2Transform, timeStep: f32) -> () = b2Body_SetTargetTransform_(bodyId, target, timeStep);
+fun b2Body_GetLocalPointVelocity(bodyId: b2BodyId, localPoint: b2Vec2) -> b2Vec2 = b2Body_GetLocalPointVelocity_(bodyId, localPoint);
+fun b2Body_GetWorldPointVelocity(bodyId: b2BodyId, worldPoint: b2Vec2) -> b2Vec2 = b2Body_GetWorldPointVelocity_(bodyId, worldPoint);
+fun b2Body_ApplyForce(bodyId: b2BodyId, force: b2Vec2, point: b2Vec2, wake: bool) -> () = b2Body_ApplyForce_(bodyId, force, point, wake);
+fun b2Body_ApplyForceToCenter(bodyId: b2BodyId, force: b2Vec2, wake: bool) -> () = b2Body_ApplyForceToCenter_(bodyId, force, wake);
+fun b2Body_ApplyTorque(bodyId: b2BodyId, torque: f32, wake: bool) -> () = b2Body_ApplyTorque_(bodyId, torque, wake);
+fun b2Body_ApplyLinearImpulse(bodyId: b2BodyId, impulse: b2Vec2, point: b2Vec2, wake: bool) -> () = b2Body_ApplyLinearImpulse_(bodyId, impulse, point, wake);
+fun b2Body_ApplyLinearImpulseToCenter(bodyId: b2BodyId, impulse: b2Vec2, wake: bool) -> () = b2Body_ApplyLinearImpulseToCenter_(bodyId, impulse, wake);
+fun b2Body_ApplyAngularImpulse(bodyId: b2BodyId, impulse: f32, wake: bool) -> () = b2Body_ApplyAngularImpulse_(bodyId, impulse, wake);
+fun b2Body_GetMass(bodyId: b2BodyId) -> f32 = b2Body_GetMass_(bodyId);
+fun b2Body_GetRotationalInertia(bodyId: b2BodyId) -> f32 = b2Body_GetRotationalInertia_(bodyId);
+fun b2Body_GetLocalCenterOfMass(bodyId: b2BodyId) -> b2Vec2 = b2Body_GetLocalCenterOfMass_(bodyId);
+fun b2Body_GetWorldCenterOfMass(bodyId: b2BodyId) -> b2Vec2 = b2Body_GetWorldCenterOfMass_(bodyId);
+fun b2Body_SetMassData(bodyId: b2BodyId, massData: b2MassData) -> () = b2Body_SetMassData_(bodyId, massData);
+fun b2Body_GetMassData(bodyId: b2BodyId) -> b2MassData = b2Body_GetMassData_(bodyId);
+fun b2Body_ApplyMassFromShapes(bodyId: b2BodyId) -> () = b2Body_ApplyMassFromShapes_(bodyId);
+fun b2Body_SetLinearDamping(bodyId: b2BodyId, linearDamping: f32) -> () = b2Body_SetLinearDamping_(bodyId, linearDamping);
+fun b2Body_GetLinearDamping(bodyId: b2BodyId) -> f32 = b2Body_GetLinearDamping_(bodyId);
+fun b2Body_SetAngularDamping(bodyId: b2BodyId, angularDamping: f32) -> () = b2Body_SetAngularDamping_(bodyId, angularDamping);
+fun b2Body_GetAngularDamping(bodyId: b2BodyId) -> f32 = b2Body_GetAngularDamping_(bodyId);
+fun b2Body_SetGravityScale(bodyId: b2BodyId, gravityScale: f32) -> () = b2Body_SetGravityScale_(bodyId, gravityScale);
+fun b2Body_GetGravityScale(bodyId: b2BodyId) -> f32 = b2Body_GetGravityScale_(bodyId);
+fun b2Body_IsAwake(bodyId: b2BodyId) -> bool = b2Body_IsAwake_(bodyId);
+fun b2Body_SetAwake(bodyId: b2BodyId, awake: bool) -> () = b2Body_SetAwake_(bodyId, awake);
+fun b2Body_EnableSleep(bodyId: b2BodyId, enableSleep: bool) -> () = b2Body_EnableSleep_(bodyId, enableSleep);
+fun b2Body_IsSleepEnabled(bodyId: b2BodyId) -> bool = b2Body_IsSleepEnabled_(bodyId);
+fun b2Body_SetSleepThreshold(bodyId: b2BodyId, sleepThreshold: f32) -> () = b2Body_SetSleepThreshold_(bodyId, sleepThreshold);
+fun b2Body_GetSleepThreshold(bodyId: b2BodyId) -> f32 = b2Body_GetSleepThreshold_(bodyId);
+fun b2Body_IsEnabled(bodyId: b2BodyId) -> bool = b2Body_IsEnabled_(bodyId);
+fun b2Body_Disable(bodyId: b2BodyId) -> () = b2Body_Disable_(bodyId);
+fun b2Body_Enable(bodyId: b2BodyId) -> () = b2Body_Enable_(bodyId);
+fun b2Body_SetFixedRotation(bodyId: b2BodyId, flag: bool) -> () = b2Body_SetFixedRotation_(bodyId, flag);
+fun b2Body_IsFixedRotation(bodyId: b2BodyId) -> bool = b2Body_IsFixedRotation_(bodyId);
+fun b2Body_SetBullet(bodyId: b2BodyId, flag: bool) -> () = b2Body_SetBullet_(bodyId, flag);
+fun b2Body_IsBullet(bodyId: b2BodyId) -> bool = b2Body_IsBullet_(bodyId);
+fun b2Body_EnableContactEvents(bodyId: b2BodyId, flag: bool) -> () = b2Body_EnableContactEvents_(bodyId, flag);
+fun b2Body_EnableHitEvents(bodyId: b2BodyId, flag: bool) -> () = b2Body_EnableHitEvents_(bodyId, flag);
+fun b2Body_GetWorld(bodyId: b2BodyId) -> b2WorldId = b2Body_GetWorld_(bodyId);
+fun b2Body_GetShapeCount(bodyId: b2BodyId) -> i32 = b2Body_GetShapeCount_(bodyId);
+fun b2Body_GetShapes(bodyId: b2BodyId, shapeArray: cptr mut b2ShapeId, capacity: i32) -> i32 = b2Body_GetShapes_(bodyId, shapeArray, capacity);
+fun b2Body_GetJointCount(bodyId: b2BodyId) -> i32 = b2Body_GetJointCount_(bodyId);
+fun b2Body_GetJoints(bodyId: b2BodyId, jointArray: cptr mut b2JointId, capacity: i32) -> i32 = b2Body_GetJoints_(bodyId, jointArray, capacity);
+fun b2Body_GetContactCapacity(bodyId: b2BodyId) -> i32 = b2Body_GetContactCapacity_(bodyId);
+fun b2Body_GetContactData(bodyId: b2BodyId, contactData: cptr mut b2ContactData, capacity: i32) -> i32 = b2Body_GetContactData_(bodyId, contactData, capacity);
+fun b2Body_ComputeAABB(bodyId: b2BodyId) -> b2AABB = b2Body_ComputeAABB_(bodyId);
+fun b2CreateCircleShape(bodyId: b2BodyId, def: cptr b2ShapeDef, circle: cptr b2Circle) -> b2ShapeId = b2CreateCircleShape_(bodyId, def, circle);
+fun b2CreateSegmentShape(bodyId: b2BodyId, def: cptr b2ShapeDef, segment: cptr b2Segment) -> b2ShapeId = b2CreateSegmentShape_(bodyId, def, segment);
+fun b2CreateCapsuleShape(bodyId: b2BodyId, def: cptr b2ShapeDef, capsule: cptr b2Capsule) -> b2ShapeId = b2CreateCapsuleShape_(bodyId, def, capsule);
+fun b2CreatePolygonShape(bodyId: b2BodyId, def: cptr b2ShapeDef, polygon: cptr b2Polygon) -> b2ShapeId = b2CreatePolygonShape_(bodyId, def, polygon);
+fun b2DestroyShape(shapeId: b2ShapeId, updateBodyMass: bool) -> () = b2DestroyShape_(shapeId, updateBodyMass);
+fun b2Shape_IsValid(id: b2ShapeId) -> bool = b2Shape_IsValid_(id);
+fun b2Shape_GetType(shapeId: b2ShapeId) -> b2ShapeType = b2Shape_GetType_(shapeId);
+fun b2Shape_GetBody(shapeId: b2ShapeId) -> b2BodyId = b2Shape_GetBody_(shapeId);
+fun b2Shape_GetWorld(shapeId: b2ShapeId) -> b2WorldId = b2Shape_GetWorld_(shapeId);
+fun b2Shape_IsSensor(shapeId: b2ShapeId) -> bool = b2Shape_IsSensor_(shapeId);
+fun b2Shape_SetUserData(shapeId: b2ShapeId, userData: cptr mut u8) -> () = b2Shape_SetUserData_(shapeId, userData);
+fun b2Shape_GetUserData(shapeId: b2ShapeId) -> cptr mut u8 = b2Shape_GetUserData_(shapeId);
+fun b2Shape_SetDensity(shapeId: b2ShapeId, density: f32, updateBodyMass: bool) -> () = b2Shape_SetDensity_(shapeId, density, updateBodyMass);
+fun b2Shape_GetDensity(shapeId: b2ShapeId) -> f32 = b2Shape_GetDensity_(shapeId);
+fun b2Shape_SetFriction(shapeId: b2ShapeId, friction: f32) -> () = b2Shape_SetFriction_(shapeId, friction);
+fun b2Shape_GetFriction(shapeId: b2ShapeId) -> f32 = b2Shape_GetFriction_(shapeId);
+fun b2Shape_SetRestitution(shapeId: b2ShapeId, restitution: f32) -> () = b2Shape_SetRestitution_(shapeId, restitution);
+fun b2Shape_GetRestitution(shapeId: b2ShapeId) -> f32 = b2Shape_GetRestitution_(shapeId);
+fun b2Shape_SetMaterial(shapeId: b2ShapeId, material: i32) -> () = b2Shape_SetMaterial_(shapeId, material);
+fun b2Shape_GetMaterial(shapeId: b2ShapeId) -> i32 = b2Shape_GetMaterial_(shapeId);
+fun b2Shape_SetSurfaceMaterial(shapeId: b2ShapeId, surfaceMaterial: b2SurfaceMaterial) -> () = b2Shape_SetSurfaceMaterial_(shapeId, surfaceMaterial);
+fun b2Shape_GetSurfaceMaterial(shapeId: b2ShapeId) -> b2SurfaceMaterial = b2Shape_GetSurfaceMaterial_(shapeId);
+fun b2Shape_GetFilter(shapeId: b2ShapeId) -> b2Filter = b2Shape_GetFilter_(shapeId);
+fun b2Shape_SetFilter(shapeId: b2ShapeId, filter: b2Filter) -> () = b2Shape_SetFilter_(shapeId, filter);
+fun b2Shape_EnableSensorEvents(shapeId: b2ShapeId, flag: bool) -> () = b2Shape_EnableSensorEvents_(shapeId, flag);
+fun b2Shape_AreSensorEventsEnabled(shapeId: b2ShapeId) -> bool = b2Shape_AreSensorEventsEnabled_(shapeId);
+fun b2Shape_EnableContactEvents(shapeId: b2ShapeId, flag: bool) -> () = b2Shape_EnableContactEvents_(shapeId, flag);
+fun b2Shape_AreContactEventsEnabled(shapeId: b2ShapeId) -> bool = b2Shape_AreContactEventsEnabled_(shapeId);
+fun b2Shape_EnablePreSolveEvents(shapeId: b2ShapeId, flag: bool) -> () = b2Shape_EnablePreSolveEvents_(shapeId, flag);
+fun b2Shape_ArePreSolveEventsEnabled(shapeId: b2ShapeId) -> bool = b2Shape_ArePreSolveEventsEnabled_(shapeId);
+fun b2Shape_EnableHitEvents(shapeId: b2ShapeId, flag: bool) -> () = b2Shape_EnableHitEvents_(shapeId, flag);
+fun b2Shape_AreHitEventsEnabled(shapeId: b2ShapeId) -> bool = b2Shape_AreHitEventsEnabled_(shapeId);
+fun b2Shape_TestPoint(shapeId: b2ShapeId, point: b2Vec2) -> bool = b2Shape_TestPoint_(shapeId, point);
+fun b2Shape_RayCast(shapeId: b2ShapeId, input: cptr b2RayCastInput) -> b2CastOutput = b2Shape_RayCast_(shapeId, input);
+fun b2Shape_GetCircle(shapeId: b2ShapeId) -> b2Circle = b2Shape_GetCircle_(shapeId);
+fun b2Shape_GetSegment(shapeId: b2ShapeId) -> b2Segment = b2Shape_GetSegment_(shapeId);
+fun b2Shape_GetChainSegment(shapeId: b2ShapeId) -> b2ChainSegment = b2Shape_GetChainSegment_(shapeId);
+fun b2Shape_GetCapsule(shapeId: b2ShapeId) -> b2Capsule = b2Shape_GetCapsule_(shapeId);
+fun b2Shape_GetPolygon(shapeId: b2ShapeId) -> b2Polygon = b2Shape_GetPolygon_(shapeId);
+fun b2Shape_SetCircle(shapeId: b2ShapeId, circle: cptr b2Circle) -> () = b2Shape_SetCircle_(shapeId, circle);
+fun b2Shape_SetCapsule(shapeId: b2ShapeId, capsule: cptr b2Capsule) -> () = b2Shape_SetCapsule_(shapeId, capsule);
+fun b2Shape_SetSegment(shapeId: b2ShapeId, segment: cptr b2Segment) -> () = b2Shape_SetSegment_(shapeId, segment);
+fun b2Shape_SetPolygon(shapeId: b2ShapeId, polygon: cptr b2Polygon) -> () = b2Shape_SetPolygon_(shapeId, polygon);
+fun b2Shape_GetParentChain(shapeId: b2ShapeId) -> b2ChainId = b2Shape_GetParentChain_(shapeId);
+fun b2Shape_GetContactCapacity(shapeId: b2ShapeId) -> i32 = b2Shape_GetContactCapacity_(shapeId);
+fun b2Shape_GetContactData(shapeId: b2ShapeId, contactData: cptr mut b2ContactData, capacity: i32) -> i32 = b2Shape_GetContactData_(shapeId, contactData, capacity);
+fun b2Shape_GetSensorCapacity(shapeId: b2ShapeId) -> i32 = b2Shape_GetSensorCapacity_(shapeId);
+fun b2Shape_GetSensorOverlaps(shapeId: b2ShapeId, overlaps: cptr mut b2ShapeId, capacity: i32) -> i32 = b2Shape_GetSensorOverlaps_(shapeId, overlaps, capacity);
+fun b2Shape_GetAABB(shapeId: b2ShapeId) -> b2AABB = b2Shape_GetAABB_(shapeId);
+fun b2Shape_GetMassData(shapeId: b2ShapeId) -> b2MassData = b2Shape_GetMassData_(shapeId);
+fun b2Shape_GetClosestPoint(shapeId: b2ShapeId, target: b2Vec2) -> b2Vec2 = b2Shape_GetClosestPoint_(shapeId, target);
+fun b2CreateChain(bodyId: b2BodyId, def: cptr b2ChainDef) -> b2ChainId = b2CreateChain_(bodyId, def);
+fun b2DestroyChain(chainId: b2ChainId) -> () = b2DestroyChain_(chainId);
+fun b2Chain_GetWorld(chainId: b2ChainId) -> b2WorldId = b2Chain_GetWorld_(chainId);
+fun b2Chain_GetSegmentCount(chainId: b2ChainId) -> i32 = b2Chain_GetSegmentCount_(chainId);
+fun b2Chain_GetSegments(chainId: b2ChainId, segmentArray: cptr mut b2ShapeId, capacity: i32) -> i32 = b2Chain_GetSegments_(chainId, segmentArray, capacity);
+fun b2Chain_SetFriction(chainId: b2ChainId, friction: f32) -> () = b2Chain_SetFriction_(chainId, friction);
+fun b2Chain_GetFriction(chainId: b2ChainId) -> f32 = b2Chain_GetFriction_(chainId);
+fun b2Chain_SetRestitution(chainId: b2ChainId, restitution: f32) -> () = b2Chain_SetRestitution_(chainId, restitution);
+fun b2Chain_GetRestitution(chainId: b2ChainId) -> f32 = b2Chain_GetRestitution_(chainId);
+fun b2Chain_SetMaterial(chainId: b2ChainId, material: i32) -> () = b2Chain_SetMaterial_(chainId, material);
+fun b2Chain_GetMaterial(chainId: b2ChainId) -> i32 = b2Chain_GetMaterial_(chainId);
+fun b2Chain_IsValid(id: b2ChainId) -> bool = b2Chain_IsValid_(id);
+fun b2DestroyJoint(jointId: b2JointId) -> () = b2DestroyJoint_(jointId);
+fun b2Joint_IsValid(id: b2JointId) -> bool = b2Joint_IsValid_(id);
+fun b2Joint_GetType(jointId: b2JointId) -> b2JointType = b2Joint_GetType_(jointId);
+fun b2Joint_GetBodyA(jointId: b2JointId) -> b2BodyId = b2Joint_GetBodyA_(jointId);
+fun b2Joint_GetBodyB(jointId: b2JointId) -> b2BodyId = b2Joint_GetBodyB_(jointId);
+fun b2Joint_GetWorld(jointId: b2JointId) -> b2WorldId = b2Joint_GetWorld_(jointId);
+fun b2Joint_SetLocalAnchorA(jointId: b2JointId, localAnchor: b2Vec2) -> () = b2Joint_SetLocalAnchorA_(jointId, localAnchor);
+fun b2Joint_GetLocalAnchorA(jointId: b2JointId) -> b2Vec2 = b2Joint_GetLocalAnchorA_(jointId);
+fun b2Joint_SetLocalAnchorB(jointId: b2JointId, localAnchor: b2Vec2) -> () = b2Joint_SetLocalAnchorB_(jointId, localAnchor);
+fun b2Joint_GetLocalAnchorB(jointId: b2JointId) -> b2Vec2 = b2Joint_GetLocalAnchorB_(jointId);
+fun b2Joint_GetReferenceAngle(jointId: b2JointId) -> f32 = b2Joint_GetReferenceAngle_(jointId);
+fun b2Joint_SetReferenceAngle(jointId: b2JointId, angleInRadians: f32) -> () = b2Joint_SetReferenceAngle_(jointId, angleInRadians);
+fun b2Joint_SetLocalAxisA(jointId: b2JointId, localAxis: b2Vec2) -> () = b2Joint_SetLocalAxisA_(jointId, localAxis);
+fun b2Joint_GetLocalAxisA(jointId: b2JointId) -> b2Vec2 = b2Joint_GetLocalAxisA_(jointId);
+fun b2Joint_SetCollideConnected(jointId: b2JointId, shouldCollide: bool) -> () = b2Joint_SetCollideConnected_(jointId, shouldCollide);
+fun b2Joint_GetCollideConnected(jointId: b2JointId) -> bool = b2Joint_GetCollideConnected_(jointId);
+fun b2Joint_SetUserData(jointId: b2JointId, userData: cptr mut u8) -> () = b2Joint_SetUserData_(jointId, userData);
+fun b2Joint_GetUserData(jointId: b2JointId) -> cptr mut u8 = b2Joint_GetUserData_(jointId);
+fun b2Joint_WakeBodies(jointId: b2JointId) -> () = b2Joint_WakeBodies_(jointId);
+fun b2Joint_GetConstraintForce(jointId: b2JointId) -> b2Vec2 = b2Joint_GetConstraintForce_(jointId);
+fun b2Joint_GetConstraintTorque(jointId: b2JointId) -> f32 = b2Joint_GetConstraintTorque_(jointId);
+fun b2Joint_GetLinearSeparation(jointId: b2JointId) -> f32 = b2Joint_GetLinearSeparation_(jointId);
+fun b2Joint_GetAngularSeparation(jointId: b2JointId) -> f32 = b2Joint_GetAngularSeparation_(jointId);
+fun b2Joint_GetConstraintTuning(jointId: b2JointId, hertz: cptr mut f32, dampingRatio: cptr mut f32) -> () = b2Joint_GetConstraintTuning_(jointId, hertz, dampingRatio);
+fun b2Joint_SetConstraintTuning(jointId: b2JointId, hertz: f32, dampingRatio: f32) -> () = b2Joint_SetConstraintTuning_(jointId, hertz, dampingRatio);
+fun b2CreateDistanceJoint(worldId: b2WorldId, def: cptr b2DistanceJointDef) -> b2JointId = b2CreateDistanceJoint_(worldId, def);
+fun b2DistanceJoint_SetLength(jointId: b2JointId, length: f32) -> () = b2DistanceJoint_SetLength_(jointId, length);
+fun b2DistanceJoint_GetLength(jointId: b2JointId) -> f32 = b2DistanceJoint_GetLength_(jointId);
+fun b2DistanceJoint_EnableSpring(jointId: b2JointId, enableSpring: bool) -> () = b2DistanceJoint_EnableSpring_(jointId, enableSpring);
+fun b2DistanceJoint_IsSpringEnabled(jointId: b2JointId) -> bool = b2DistanceJoint_IsSpringEnabled_(jointId);
+fun b2DistanceJoint_SetSpringHertz(jointId: b2JointId, hertz: f32) -> () = b2DistanceJoint_SetSpringHertz_(jointId, hertz);
+fun b2DistanceJoint_SetSpringDampingRatio(jointId: b2JointId, dampingRatio: f32) -> () = b2DistanceJoint_SetSpringDampingRatio_(jointId, dampingRatio);
+fun b2DistanceJoint_GetSpringHertz(jointId: b2JointId) -> f32 = b2DistanceJoint_GetSpringHertz_(jointId);
+fun b2DistanceJoint_GetSpringDampingRatio(jointId: b2JointId) -> f32 = b2DistanceJoint_GetSpringDampingRatio_(jointId);
+fun b2DistanceJoint_EnableLimit(jointId: b2JointId, enableLimit: bool) -> () = b2DistanceJoint_EnableLimit_(jointId, enableLimit);
+fun b2DistanceJoint_IsLimitEnabled(jointId: b2JointId) -> bool = b2DistanceJoint_IsLimitEnabled_(jointId);
+fun b2DistanceJoint_SetLengthRange(jointId: b2JointId, minLength: f32, maxLength: f32) -> () = b2DistanceJoint_SetLengthRange_(jointId, minLength, maxLength);
+fun b2DistanceJoint_GetMinLength(jointId: b2JointId) -> f32 = b2DistanceJoint_GetMinLength_(jointId);
+fun b2DistanceJoint_GetMaxLength(jointId: b2JointId) -> f32 = b2DistanceJoint_GetMaxLength_(jointId);
+fun b2DistanceJoint_GetCurrentLength(jointId: b2JointId) -> f32 = b2DistanceJoint_GetCurrentLength_(jointId);
+fun b2DistanceJoint_EnableMotor(jointId: b2JointId, enableMotor: bool) -> () = b2DistanceJoint_EnableMotor_(jointId, enableMotor);
+fun b2DistanceJoint_IsMotorEnabled(jointId: b2JointId) -> bool = b2DistanceJoint_IsMotorEnabled_(jointId);
+fun b2DistanceJoint_SetMotorSpeed(jointId: b2JointId, motorSpeed: f32) -> () = b2DistanceJoint_SetMotorSpeed_(jointId, motorSpeed);
+fun b2DistanceJoint_GetMotorSpeed(jointId: b2JointId) -> f32 = b2DistanceJoint_GetMotorSpeed_(jointId);
+fun b2DistanceJoint_SetMaxMotorForce(jointId: b2JointId, force: f32) -> () = b2DistanceJoint_SetMaxMotorForce_(jointId, force);
+fun b2DistanceJoint_GetMaxMotorForce(jointId: b2JointId) -> f32 = b2DistanceJoint_GetMaxMotorForce_(jointId);
+fun b2DistanceJoint_GetMotorForce(jointId: b2JointId) -> f32 = b2DistanceJoint_GetMotorForce_(jointId);
+fun b2CreateMotorJoint(worldId: b2WorldId, def: cptr b2MotorJointDef) -> b2JointId = b2CreateMotorJoint_(worldId, def);
+fun b2MotorJoint_SetLinearOffset(jointId: b2JointId, linearOffset: b2Vec2) -> () = b2MotorJoint_SetLinearOffset_(jointId, linearOffset);
+fun b2MotorJoint_GetLinearOffset(jointId: b2JointId) -> b2Vec2 = b2MotorJoint_GetLinearOffset_(jointId);
+fun b2MotorJoint_SetAngularOffset(jointId: b2JointId, angularOffset: f32) -> () = b2MotorJoint_SetAngularOffset_(jointId, angularOffset);
+fun b2MotorJoint_GetAngularOffset(jointId: b2JointId) -> f32 = b2MotorJoint_GetAngularOffset_(jointId);
+fun b2MotorJoint_SetMaxForce(jointId: b2JointId, maxForce: f32) -> () = b2MotorJoint_SetMaxForce_(jointId, maxForce);
+fun b2MotorJoint_GetMaxForce(jointId: b2JointId) -> f32 = b2MotorJoint_GetMaxForce_(jointId);
+fun b2MotorJoint_SetMaxTorque(jointId: b2JointId, maxTorque: f32) -> () = b2MotorJoint_SetMaxTorque_(jointId, maxTorque);
+fun b2MotorJoint_GetMaxTorque(jointId: b2JointId) -> f32 = b2MotorJoint_GetMaxTorque_(jointId);
+fun b2MotorJoint_SetCorrectionFactor(jointId: b2JointId, correctionFactor: f32) -> () = b2MotorJoint_SetCorrectionFactor_(jointId, correctionFactor);
+fun b2MotorJoint_GetCorrectionFactor(jointId: b2JointId) -> f32 = b2MotorJoint_GetCorrectionFactor_(jointId);
+fun b2CreateMouseJoint(worldId: b2WorldId, def: cptr b2MouseJointDef) -> b2JointId = b2CreateMouseJoint_(worldId, def);
+fun b2MouseJoint_SetTarget(jointId: b2JointId, target: b2Vec2) -> () = b2MouseJoint_SetTarget_(jointId, target);
+fun b2MouseJoint_GetTarget(jointId: b2JointId) -> b2Vec2 = b2MouseJoint_GetTarget_(jointId);
+fun b2MouseJoint_SetSpringHertz(jointId: b2JointId, hertz: f32) -> () = b2MouseJoint_SetSpringHertz_(jointId, hertz);
+fun b2MouseJoint_GetSpringHertz(jointId: b2JointId) -> f32 = b2MouseJoint_GetSpringHertz_(jointId);
+fun b2MouseJoint_SetSpringDampingRatio(jointId: b2JointId, dampingRatio: f32) -> () = b2MouseJoint_SetSpringDampingRatio_(jointId, dampingRatio);
+fun b2MouseJoint_GetSpringDampingRatio(jointId: b2JointId) -> f32 = b2MouseJoint_GetSpringDampingRatio_(jointId);
+fun b2MouseJoint_SetMaxForce(jointId: b2JointId, maxForce: f32) -> () = b2MouseJoint_SetMaxForce_(jointId, maxForce);
+fun b2MouseJoint_GetMaxForce(jointId: b2JointId) -> f32 = b2MouseJoint_GetMaxForce_(jointId);
+fun b2CreateFilterJoint(worldId: b2WorldId, def: cptr b2FilterJointDef) -> b2JointId = b2CreateFilterJoint_(worldId, def);
+fun b2CreatePrismaticJoint(worldId: b2WorldId, def: cptr b2PrismaticJointDef) -> b2JointId = b2CreatePrismaticJoint_(worldId, def);
+fun b2PrismaticJoint_EnableSpring(jointId: b2JointId, enableSpring: bool) -> () = b2PrismaticJoint_EnableSpring_(jointId, enableSpring);
+fun b2PrismaticJoint_IsSpringEnabled(jointId: b2JointId) -> bool = b2PrismaticJoint_IsSpringEnabled_(jointId);
+fun b2PrismaticJoint_SetSpringHertz(jointId: b2JointId, hertz: f32) -> () = b2PrismaticJoint_SetSpringHertz_(jointId, hertz);
+fun b2PrismaticJoint_GetSpringHertz(jointId: b2JointId) -> f32 = b2PrismaticJoint_GetSpringHertz_(jointId);
+fun b2PrismaticJoint_SetSpringDampingRatio(jointId: b2JointId, dampingRatio: f32) -> () = b2PrismaticJoint_SetSpringDampingRatio_(jointId, dampingRatio);
+fun b2PrismaticJoint_GetSpringDampingRatio(jointId: b2JointId) -> f32 = b2PrismaticJoint_GetSpringDampingRatio_(jointId);
+fun b2PrismaticJoint_SetTargetTranslation(jointId: b2JointId, translation: f32) -> () = b2PrismaticJoint_SetTargetTranslation_(jointId, translation);
+fun b2PrismaticJoint_GetTargetTranslation(jointId: b2JointId) -> f32 = b2PrismaticJoint_GetTargetTranslation_(jointId);
+fun b2PrismaticJoint_EnableLimit(jointId: b2JointId, enableLimit: bool) -> () = b2PrismaticJoint_EnableLimit_(jointId, enableLimit);
+fun b2PrismaticJoint_IsLimitEnabled(jointId: b2JointId) -> bool = b2PrismaticJoint_IsLimitEnabled_(jointId);
+fun b2PrismaticJoint_GetLowerLimit(jointId: b2JointId) -> f32 = b2PrismaticJoint_GetLowerLimit_(jointId);
+fun b2PrismaticJoint_GetUpperLimit(jointId: b2JointId) -> f32 = b2PrismaticJoint_GetUpperLimit_(jointId);
+fun b2PrismaticJoint_SetLimits(jointId: b2JointId, lower: f32, upper: f32) -> () = b2PrismaticJoint_SetLimits_(jointId, lower, upper);
+fun b2PrismaticJoint_EnableMotor(jointId: b2JointId, enableMotor: bool) -> () = b2PrismaticJoint_EnableMotor_(jointId, enableMotor);
+fun b2PrismaticJoint_IsMotorEnabled(jointId: b2JointId) -> bool = b2PrismaticJoint_IsMotorEnabled_(jointId);
+fun b2PrismaticJoint_SetMotorSpeed(jointId: b2JointId, motorSpeed: f32) -> () = b2PrismaticJoint_SetMotorSpeed_(jointId, motorSpeed);
+fun b2PrismaticJoint_GetMotorSpeed(jointId: b2JointId) -> f32 = b2PrismaticJoint_GetMotorSpeed_(jointId);
+fun b2PrismaticJoint_SetMaxMotorForce(jointId: b2JointId, force: f32) -> () = b2PrismaticJoint_SetMaxMotorForce_(jointId, force);
+fun b2PrismaticJoint_GetMaxMotorForce(jointId: b2JointId) -> f32 = b2PrismaticJoint_GetMaxMotorForce_(jointId);
+fun b2PrismaticJoint_GetMotorForce(jointId: b2JointId) -> f32 = b2PrismaticJoint_GetMotorForce_(jointId);
+fun b2PrismaticJoint_GetTranslation(jointId: b2JointId) -> f32 = b2PrismaticJoint_GetTranslation_(jointId);
+fun b2PrismaticJoint_GetSpeed(jointId: b2JointId) -> f32 = b2PrismaticJoint_GetSpeed_(jointId);
+fun b2CreateRevoluteJoint(worldId: b2WorldId, def: cptr b2RevoluteJointDef) -> b2JointId = b2CreateRevoluteJoint_(worldId, def);
+fun b2RevoluteJoint_EnableSpring(jointId: b2JointId, enableSpring: bool) -> () = b2RevoluteJoint_EnableSpring_(jointId, enableSpring);
+fun b2RevoluteJoint_IsSpringEnabled(jointId: b2JointId) -> bool = b2RevoluteJoint_IsSpringEnabled_(jointId);
+fun b2RevoluteJoint_SetSpringHertz(jointId: b2JointId, hertz: f32) -> () = b2RevoluteJoint_SetSpringHertz_(jointId, hertz);
+fun b2RevoluteJoint_GetSpringHertz(jointId: b2JointId) -> f32 = b2RevoluteJoint_GetSpringHertz_(jointId);
+fun b2RevoluteJoint_SetSpringDampingRatio(jointId: b2JointId, dampingRatio: f32) -> () = b2RevoluteJoint_SetSpringDampingRatio_(jointId, dampingRatio);
+fun b2RevoluteJoint_GetSpringDampingRatio(jointId: b2JointId) -> f32 = b2RevoluteJoint_GetSpringDampingRatio_(jointId);
+fun b2RevoluteJoint_SetTargetAngle(jointId: b2JointId, angle: f32) -> () = b2RevoluteJoint_SetTargetAngle_(jointId, angle);
+fun b2RevoluteJoint_GetTargetAngle(jointId: b2JointId) -> f32 = b2RevoluteJoint_GetTargetAngle_(jointId);
+fun b2RevoluteJoint_GetAngle(jointId: b2JointId) -> f32 = b2RevoluteJoint_GetAngle_(jointId);
+fun b2RevoluteJoint_EnableLimit(jointId: b2JointId, enableLimit: bool) -> () = b2RevoluteJoint_EnableLimit_(jointId, enableLimit);
+fun b2RevoluteJoint_IsLimitEnabled(jointId: b2JointId) -> bool = b2RevoluteJoint_IsLimitEnabled_(jointId);
+fun b2RevoluteJoint_GetLowerLimit(jointId: b2JointId) -> f32 = b2RevoluteJoint_GetLowerLimit_(jointId);
+fun b2RevoluteJoint_GetUpperLimit(jointId: b2JointId) -> f32 = b2RevoluteJoint_GetUpperLimit_(jointId);
+fun b2RevoluteJoint_SetLimits(jointId: b2JointId, lower: f32, upper: f32) -> () = b2RevoluteJoint_SetLimits_(jointId, lower, upper);
+fun b2RevoluteJoint_EnableMotor(jointId: b2JointId, enableMotor: bool) -> () = b2RevoluteJoint_EnableMotor_(jointId, enableMotor);
+fun b2RevoluteJoint_IsMotorEnabled(jointId: b2JointId) -> bool = b2RevoluteJoint_IsMotorEnabled_(jointId);
+fun b2RevoluteJoint_SetMotorSpeed(jointId: b2JointId, motorSpeed: f32) -> () = b2RevoluteJoint_SetMotorSpeed_(jointId, motorSpeed);
+fun b2RevoluteJoint_GetMotorSpeed(jointId: b2JointId) -> f32 = b2RevoluteJoint_GetMotorSpeed_(jointId);
+fun b2RevoluteJoint_GetMotorTorque(jointId: b2JointId) -> f32 = b2RevoluteJoint_GetMotorTorque_(jointId);
+fun b2RevoluteJoint_SetMaxMotorTorque(jointId: b2JointId, torque: f32) -> () = b2RevoluteJoint_SetMaxMotorTorque_(jointId, torque);
+fun b2RevoluteJoint_GetMaxMotorTorque(jointId: b2JointId) -> f32 = b2RevoluteJoint_GetMaxMotorTorque_(jointId);
+fun b2CreateWeldJoint(worldId: b2WorldId, def: cptr b2WeldJointDef) -> b2JointId = b2CreateWeldJoint_(worldId, def);
+fun b2WeldJoint_SetLinearHertz(jointId: b2JointId, hertz: f32) -> () = b2WeldJoint_SetLinearHertz_(jointId, hertz);
+fun b2WeldJoint_GetLinearHertz(jointId: b2JointId) -> f32 = b2WeldJoint_GetLinearHertz_(jointId);
+fun b2WeldJoint_SetLinearDampingRatio(jointId: b2JointId, dampingRatio: f32) -> () = b2WeldJoint_SetLinearDampingRatio_(jointId, dampingRatio);
+fun b2WeldJoint_GetLinearDampingRatio(jointId: b2JointId) -> f32 = b2WeldJoint_GetLinearDampingRatio_(jointId);
+fun b2WeldJoint_SetAngularHertz(jointId: b2JointId, hertz: f32) -> () = b2WeldJoint_SetAngularHertz_(jointId, hertz);
+fun b2WeldJoint_GetAngularHertz(jointId: b2JointId) -> f32 = b2WeldJoint_GetAngularHertz_(jointId);
+fun b2WeldJoint_SetAngularDampingRatio(jointId: b2JointId, dampingRatio: f32) -> () = b2WeldJoint_SetAngularDampingRatio_(jointId, dampingRatio);
+fun b2WeldJoint_GetAngularDampingRatio(jointId: b2JointId) -> f32 = b2WeldJoint_GetAngularDampingRatio_(jointId);
+fun b2CreateWheelJoint(worldId: b2WorldId, def: cptr b2WheelJointDef) -> b2JointId = b2CreateWheelJoint_(worldId, def);
+fun b2WheelJoint_EnableSpring(jointId: b2JointId, enableSpring: bool) -> () = b2WheelJoint_EnableSpring_(jointId, enableSpring);
+fun b2WheelJoint_IsSpringEnabled(jointId: b2JointId) -> bool = b2WheelJoint_IsSpringEnabled_(jointId);
+fun b2WheelJoint_SetSpringHertz(jointId: b2JointId, hertz: f32) -> () = b2WheelJoint_SetSpringHertz_(jointId, hertz);
+fun b2WheelJoint_GetSpringHertz(jointId: b2JointId) -> f32 = b2WheelJoint_GetSpringHertz_(jointId);
+fun b2WheelJoint_SetSpringDampingRatio(jointId: b2JointId, dampingRatio: f32) -> () = b2WheelJoint_SetSpringDampingRatio_(jointId, dampingRatio);
+fun b2WheelJoint_GetSpringDampingRatio(jointId: b2JointId) -> f32 = b2WheelJoint_GetSpringDampingRatio_(jointId);
+fun b2WheelJoint_EnableLimit(jointId: b2JointId, enableLimit: bool) -> () = b2WheelJoint_EnableLimit_(jointId, enableLimit);
+fun b2WheelJoint_IsLimitEnabled(jointId: b2JointId) -> bool = b2WheelJoint_IsLimitEnabled_(jointId);
+fun b2WheelJoint_GetLowerLimit(jointId: b2JointId) -> f32 = b2WheelJoint_GetLowerLimit_(jointId);
+fun b2WheelJoint_GetUpperLimit(jointId: b2JointId) -> f32 = b2WheelJoint_GetUpperLimit_(jointId);
+fun b2WheelJoint_SetLimits(jointId: b2JointId, lower: f32, upper: f32) -> () = b2WheelJoint_SetLimits_(jointId, lower, upper);
+fun b2WheelJoint_EnableMotor(jointId: b2JointId, enableMotor: bool) -> () = b2WheelJoint_EnableMotor_(jointId, enableMotor);
+fun b2WheelJoint_IsMotorEnabled(jointId: b2JointId) -> bool = b2WheelJoint_IsMotorEnabled_(jointId);
+fun b2WheelJoint_SetMotorSpeed(jointId: b2JointId, motorSpeed: f32) -> () = b2WheelJoint_SetMotorSpeed_(jointId, motorSpeed);
+fun b2WheelJoint_GetMotorSpeed(jointId: b2JointId) -> f32 = b2WheelJoint_GetMotorSpeed_(jointId);
+fun b2WheelJoint_SetMaxMotorTorque(jointId: b2JointId, torque: f32) -> () = b2WheelJoint_SetMaxMotorTorque_(jointId, torque);
+fun b2WheelJoint_GetMaxMotorTorque(jointId: b2JointId) -> f32 = b2WheelJoint_GetMaxMotorTorque_(jointId);
+fun b2WheelJoint_GetMotorTorque(jointId: b2JointId) -> f32 = b2WheelJoint_GetMotorTorque_(jointId);

@@ -727,14 +727,17 @@ extern("C") {
     fundecl GetRenderHeight() -> i32;
     fundecl GetMonitorCount() -> i32;
     fundecl GetCurrentMonitor() -> i32;
-    fundecl GetMonitorPosition(monitor: i32) -> Vector2;
+    @c_symbol_name("GetMonitorPosition")
+    private fundecl GetMonitorPosition_(monitor: i32) -> Vector2;
     fundecl GetMonitorWidth(monitor: i32) -> i32;
     fundecl GetMonitorHeight(monitor: i32) -> i32;
     fundecl GetMonitorPhysicalWidth(monitor: i32) -> i32;
     fundecl GetMonitorPhysicalHeight(monitor: i32) -> i32;
     fundecl GetMonitorRefreshRate(monitor: i32) -> i32;
-    fundecl GetWindowPosition() -> Vector2;
-    fundecl GetWindowScaleDPI() -> Vector2;
+    @c_symbol_name("GetWindowPosition")
+    private fundecl GetWindowPosition_() -> Vector2;
+    @c_symbol_name("GetWindowScaleDPI")
+    private fundecl GetWindowScaleDPI_() -> Vector2;
     fundecl GetMonitorName(monitor: i32) -> cptr char;
     fundecl SetClipboardText(text: cptr char) -> ();
     fundecl GetClipboardText() -> cptr char;
@@ -747,7 +750,8 @@ extern("C") {
     fundecl EnableCursor() -> ();
     fundecl DisableCursor() -> ();
     fundecl IsCursorOnScreen() -> bool;
-    fundecl ClearBackground(color: Color) -> ();
+    @c_symbol_name("ClearBackground")
+    private fundecl ClearBackground_(color: Color) -> ();
     fundecl BeginDrawing() -> ();
     fundecl EndDrawing() -> ();
     fundecl BeginMode2D(camera: Camera2D) -> ();
@@ -756,7 +760,8 @@ extern("C") {
     fundecl EndMode3D() -> ();
     fundecl BeginTextureMode(target: RenderTexture2D) -> ();
     fundecl EndTextureMode() -> ();
-    fundecl BeginShaderMode(shader: Shader) -> ();
+    @c_symbol_name("BeginShaderMode")
+    private fundecl BeginShaderMode_(shader: Shader) -> ();
     fundecl EndShaderMode() -> ();
     fundecl BeginBlendMode(mode: i32) -> ();
     fundecl EndBlendMode() -> ();
@@ -766,22 +771,38 @@ extern("C") {
     fundecl EndVrStereoMode() -> ();
     fundecl LoadVrStereoConfig(device: VrDeviceInfo) -> VrStereoConfig;
     fundecl UnloadVrStereoConfig(config: VrStereoConfig) -> ();
-    fundecl LoadShader(vsFileName: cptr char, fsFileName: cptr char) -> Shader;
-    fundecl LoadShaderFromMemory(vsCode: cptr char, fsCode: cptr char) -> Shader;
-    fundecl IsShaderValid(shader: Shader) -> bool;
-    fundecl GetShaderLocation(shader: Shader, uniformName: cptr char) -> i32;
-    fundecl GetShaderLocationAttrib(shader: Shader, attribName: cptr char) -> i32;
-    fundecl SetShaderValue(shader: Shader, locIndex: i32, value: cptr u8, uniformType: i32) -> ();
-    fundecl SetShaderValueV(shader: Shader, locIndex: i32, value: cptr u8, uniformType: i32, count: i32) -> ();
-    fundecl SetShaderValueMatrix(shader: Shader, locIndex: i32, mat: Matrix) -> ();
-    fundecl SetShaderValueTexture(shader: Shader, locIndex: i32, texture: Texture2D) -> ();
-    fundecl UnloadShader(shader: Shader) -> ();
-    fundecl GetScreenToWorldRay(position: Vector2, camera: Camera) -> Ray;
-    fundecl GetScreenToWorldRayEx(position: Vector2, camera: Camera, width: i32, height: i32) -> Ray;
-    fundecl GetWorldToScreen(position: Vector3, camera: Camera) -> Vector2;
-    fundecl GetWorldToScreenEx(position: Vector3, camera: Camera, width: i32, height: i32) -> Vector2;
-    fundecl GetWorldToScreen2D(position: Vector2, camera: Camera2D) -> Vector2;
-    fundecl GetScreenToWorld2D(position: Vector2, camera: Camera2D) -> Vector2;
+    @c_symbol_name("LoadShader")
+    private fundecl LoadShader_(vsFileName: cptr char, fsFileName: cptr char) -> Shader;
+    @c_symbol_name("LoadShaderFromMemory")
+    private fundecl LoadShaderFromMemory_(vsCode: cptr char, fsCode: cptr char) -> Shader;
+    @c_symbol_name("IsShaderValid")
+    private fundecl IsShaderValid_(shader: Shader) -> bool;
+    @c_symbol_name("GetShaderLocation")
+    private fundecl GetShaderLocation_(shader: Shader, uniformName: cptr char) -> i32;
+    @c_symbol_name("GetShaderLocationAttrib")
+    private fundecl GetShaderLocationAttrib_(shader: Shader, attribName: cptr char) -> i32;
+    @c_symbol_name("SetShaderValue")
+    private fundecl SetShaderValue_(shader: Shader, locIndex: i32, value: cptr u8, uniformType: i32) -> ();
+    @c_symbol_name("SetShaderValueV")
+    private fundecl SetShaderValueV_(shader: Shader, locIndex: i32, value: cptr u8, uniformType: i32, count: i32) -> ();
+    @c_symbol_name("SetShaderValueMatrix")
+    private fundecl SetShaderValueMatrix_(shader: Shader, locIndex: i32, mat: Matrix) -> ();
+    @c_symbol_name("SetShaderValueTexture")
+    private fundecl SetShaderValueTexture_(shader: Shader, locIndex: i32, texture: Texture2D) -> ();
+    @c_symbol_name("UnloadShader")
+    private fundecl UnloadShader_(shader: Shader) -> ();
+    @c_symbol_name("GetScreenToWorldRay")
+    private fundecl GetScreenToWorldRay_(position: Vector2, camera: Camera) -> Ray;
+    @c_symbol_name("GetScreenToWorldRayEx")
+    private fundecl GetScreenToWorldRayEx_(position: Vector2, camera: Camera, width: i32, height: i32) -> Ray;
+    @c_symbol_name("GetWorldToScreen")
+    private fundecl GetWorldToScreen_(position: Vector3, camera: Camera) -> Vector2;
+    @c_symbol_name("GetWorldToScreenEx")
+    private fundecl GetWorldToScreenEx_(position: Vector3, camera: Camera, width: i32, height: i32) -> Vector2;
+    @c_symbol_name("GetWorldToScreen2D")
+    private fundecl GetWorldToScreen2D_(position: Vector2, camera: Camera2D) -> Vector2;
+    @c_symbol_name("GetScreenToWorld2D")
+    private fundecl GetScreenToWorld2D_(position: Vector2, camera: Camera2D) -> Vector2;
     fundecl GetCameraMatrix(camera: Camera) -> Matrix;
     fundecl GetCameraMatrix2D(camera: Camera2D) -> Matrix;
     fundecl SetTargetFPS(fps: i32) -> ();
@@ -841,12 +862,17 @@ extern("C") {
     fundecl IsPathDirectory(path: cptr char) -> bool;
     fundecl IsPathAbsolute(path: cptr char) -> bool;
     fundecl IsFileNameValid(fileName: cptr char) -> bool;
-    fundecl LoadDirectoryFiles(dirPath: cptr char) -> FilePathList;
-    fundecl LoadDirectoryFilesEx(basePath: cptr char, filter: cptr char, scanSubdirs: bool) -> FilePathList;
-    fundecl UnloadDirectoryFiles(files: FilePathList) -> ();
+    @c_symbol_name("LoadDirectoryFiles")
+    private fundecl LoadDirectoryFiles_(dirPath: cptr char) -> FilePathList;
+    @c_symbol_name("LoadDirectoryFilesEx")
+    private fundecl LoadDirectoryFilesEx_(basePath: cptr char, filter: cptr char, scanSubdirs: bool) -> FilePathList;
+    @c_symbol_name("UnloadDirectoryFiles")
+    private fundecl UnloadDirectoryFiles_(files: FilePathList) -> ();
     fundecl IsFileDropped() -> bool;
-    fundecl LoadDroppedFiles() -> FilePathList;
-    fundecl UnloadDroppedFiles(files: FilePathList) -> ();
+    @c_symbol_name("LoadDroppedFiles")
+    private fundecl LoadDroppedFiles_() -> FilePathList;
+    @c_symbol_name("UnloadDroppedFiles")
+    private fundecl UnloadDroppedFiles_(files: FilePathList) -> ();
     fundecl GetDirectoryFileCount(dirPath: cptr char) -> u32;
     fundecl GetDirectoryFileCountEx(basePath: cptr char, filter: cptr char, scanSubdirs: bool) -> u32;
     fundecl CompressData(data: cptr u8, dataSize: i32, compDataSize: cptr mut i32) -> cptr mut u8;
@@ -857,9 +883,12 @@ extern("C") {
     fundecl ComputeMD5(data: cptr u8, dataSize: i32) -> cptr mut u32;
     fundecl ComputeSHA1(data: cptr u8, dataSize: i32) -> cptr mut u32;
     fundecl ComputeSHA256(data: cptr u8, dataSize: i32) -> cptr mut u32;
-    fundecl LoadAutomationEventList(fileName: cptr char) -> AutomationEventList;
-    fundecl UnloadAutomationEventList(list: AutomationEventList) -> ();
-    fundecl ExportAutomationEventList(list: AutomationEventList, fileName: cptr char) -> bool;
+    @c_symbol_name("LoadAutomationEventList")
+    private fundecl LoadAutomationEventList_(fileName: cptr char) -> AutomationEventList;
+    @c_symbol_name("UnloadAutomationEventList")
+    private fundecl UnloadAutomationEventList_(list: AutomationEventList) -> ();
+    @c_symbol_name("ExportAutomationEventList")
+    private fundecl ExportAutomationEventList_(list: AutomationEventList, fileName: cptr char) -> bool;
     fundecl SetAutomationEventList(list: cptr mut AutomationEventList) -> ();
     fundecl SetAutomationEventBaseFrame(frame: i32) -> ();
     fundecl StartAutomationEventRecording() -> ();
@@ -891,104 +920,185 @@ extern("C") {
     fundecl IsMouseButtonUp(button: i32) -> bool;
     fundecl GetMouseX() -> i32;
     fundecl GetMouseY() -> i32;
-    fundecl GetMousePosition() -> Vector2;
-    fundecl GetMouseDelta() -> Vector2;
+    @c_symbol_name("GetMousePosition")
+    private fundecl GetMousePosition_() -> Vector2;
+    @c_symbol_name("GetMouseDelta")
+    private fundecl GetMouseDelta_() -> Vector2;
     fundecl SetMousePosition(x: i32, y: i32) -> ();
     fundecl SetMouseOffset(offsetX: i32, offsetY: i32) -> ();
     fundecl SetMouseScale(scaleX: f32, scaleY: f32) -> ();
     fundecl GetMouseWheelMove() -> f32;
-    fundecl GetMouseWheelMoveV() -> Vector2;
+    @c_symbol_name("GetMouseWheelMoveV")
+    private fundecl GetMouseWheelMoveV_() -> Vector2;
     fundecl SetMouseCursor(cursor: i32) -> ();
     fundecl GetTouchX() -> i32;
     fundecl GetTouchY() -> i32;
-    fundecl GetTouchPosition(index: i32) -> Vector2;
+    @c_symbol_name("GetTouchPosition")
+    private fundecl GetTouchPosition_(index: i32) -> Vector2;
     fundecl GetTouchPointId(index: i32) -> i32;
     fundecl GetTouchPointCount() -> i32;
     fundecl SetGesturesEnabled(flags: u32) -> ();
     fundecl IsGestureDetected(gesture: u32) -> bool;
     fundecl GetGestureDetected() -> i32;
     fundecl GetGestureHoldDuration() -> f32;
-    fundecl GetGestureDragVector() -> Vector2;
+    @c_symbol_name("GetGestureDragVector")
+    private fundecl GetGestureDragVector_() -> Vector2;
     fundecl GetGestureDragAngle() -> f32;
-    fundecl GetGesturePinchVector() -> Vector2;
+    @c_symbol_name("GetGesturePinchVector")
+    private fundecl GetGesturePinchVector_() -> Vector2;
     fundecl GetGesturePinchAngle() -> f32;
     fundecl UpdateCamera(camera: cptr mut Camera, mode: i32) -> ();
-    fundecl UpdateCameraPro(camera: cptr mut Camera, movement: Vector3, rotation: Vector3, zoom: f32) -> ();
-    fundecl SetShapesTexture(texture: Texture2D, rec: Rectangle) -> ();
+    @c_symbol_name("UpdateCameraPro")
+    private fundecl UpdateCameraPro_(camera: cptr mut Camera, movement: Vector3, rotation: Vector3, zoom: f32) -> ();
+    @c_symbol_name("SetShapesTexture")
+    private fundecl SetShapesTexture_(texture: Texture2D, rec: Rectangle) -> ();
     fundecl GetShapesTexture() -> Texture2D;
-    fundecl GetShapesTextureRectangle() -> Rectangle;
-    fundecl DrawPixel(posX: i32, posY: i32, color: Color) -> ();
-    fundecl DrawPixelV(position: Vector2, color: Color) -> ();
-    fundecl DrawLine(startPosX: i32, startPosY: i32, endPosX: i32, endPosY: i32, color: Color) -> ();
-    fundecl DrawLineV(startPos: Vector2, endPos: Vector2, color: Color) -> ();
-    fundecl DrawLineEx(startPos: Vector2, endPos: Vector2, thick: f32, color: Color) -> ();
-    fundecl DrawLineStrip(points: cptr Vector2, pointCount: i32, color: Color) -> ();
-    fundecl DrawLineBezier(startPos: Vector2, endPos: Vector2, thick: f32, color: Color) -> ();
-    fundecl DrawLineDashed(startPos: Vector2, endPos: Vector2, dashSize: i32, spaceSize: i32, color: Color) -> ();
-    fundecl DrawTriangle(v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> ();
-    fundecl DrawTriangleGradient(v1: Vector2, v2: Vector2, v3: Vector2, c1: Color, c2: Color, c3: Color) -> ();
-    fundecl DrawTriangleLines(v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> ();
-    fundecl DrawTriangleLinesEx(v1: Vector2, v2: Vector2, v3: Vector2, thick: f32, color: Color) -> ();
-    fundecl DrawTriangleFan(points: cptr Vector2, pointCount: i32, color: Color) -> ();
-    fundecl DrawTriangleStrip(points: cptr Vector2, pointCount: i32, color: Color) -> ();
-    fundecl DrawRectangle(posX: i32, posY: i32, width: i32, height: i32, color: Color) -> ();
-    fundecl DrawRectangleV(position: Vector2, size: Vector2, color: Color) -> ();
-    fundecl DrawRectangleRec(rec: Rectangle, color: Color) -> ();
-    fundecl DrawRectanglePro(rec: Rectangle, origin: Vector2, rotation: f32, color: Color) -> ();
-    fundecl DrawRectangleGradientV(posX: i32, posY: i32, width: i32, height: i32, top: Color, bottom: Color) -> ();
-    fundecl DrawRectangleGradientH(posX: i32, posY: i32, width: i32, height: i32, left: Color, right: Color) -> ();
-    fundecl DrawRectangleGradientEx(rec: Rectangle, col1: Color, col2: Color, col3: Color, col4: Color) -> ();
-    fundecl DrawRectangleLines(posX: i32, posY: i32, width: i32, height: i32, color: Color) -> ();
-    fundecl DrawRectangleLinesEx(rec: Rectangle, thick: f32, color: Color) -> ();
-    fundecl DrawRectangleRounded(rec: Rectangle, roundness: f32, segments: i32, color: Color) -> ();
-    fundecl DrawRectangleRoundedLines(rec: Rectangle, roundness: f32, segments: i32, color: Color) -> ();
-    fundecl DrawRectangleRoundedLinesEx(rec: Rectangle, roundness: f32, segments: i32, thick: f32, color: Color) -> ();
-    fundecl DrawPoly(center: Vector2, sides: i32, radius: f32, rotation: f32, color: Color) -> ();
-    fundecl DrawPolyLines(center: Vector2, sides: i32, radius: f32, rotation: f32, color: Color) -> ();
-    fundecl DrawPolyLinesEx(center: Vector2, sides: i32, radius: f32, rotation: f32, thick: f32, color: Color) -> ();
-    fundecl DrawCircle(centerX: i32, centerY: i32, radius: f32, color: Color) -> ();
-    fundecl DrawCircleV(center: Vector2, radius: f32, color: Color) -> ();
-    fundecl DrawCircleGradient(center: Vector2, radius: f32, inner: Color, outer: Color) -> ();
-    fundecl DrawCircleSector(center: Vector2, radius: f32, startAngle: f32, endAngle: f32, segments: i32, color: Color) -> ();
-    fundecl DrawCircleSectorLines(center: Vector2, radius: f32, startAngle: f32, endAngle: f32, segments: i32, color: Color) -> ();
-    fundecl DrawCircleSectorLinesEx(center: Vector2, radius: f32, startAngle: f32, endAngle: f32, segments: i32, thick: f32, color: Color) -> ();
-    fundecl DrawCircleLines(centerX: i32, centerY: i32, radius: f32, color: Color) -> ();
-    fundecl DrawCircleLinesV(center: Vector2, radius: f32, color: Color) -> ();
-    fundecl DrawCircleLinesEx(center: Vector2, radius: f32, thick: f32, color: Color) -> ();
-    fundecl DrawEllipse(centerX: i32, centerY: i32, radiusH: f32, radiusV: f32, color: Color) -> ();
-    fundecl DrawEllipseV(center: Vector2, radiusH: f32, radiusV: f32, color: Color) -> ();
-    fundecl DrawEllipseLines(centerX: i32, centerY: i32, radiusH: f32, radiusV: f32, color: Color) -> ();
-    fundecl DrawEllipseLinesV(center: Vector2, radiusH: f32, radiusV: f32, color: Color) -> ();
-    fundecl DrawEllipseLinesEx(center: Vector2, radiusH: f32, radiusV: f32, thick: f32, color: Color) -> ();
-    fundecl DrawRing(center: Vector2, innerRadius: f32, outerRadius: f32, startAngle: f32, endAngle: f32, segments: i32, color: Color) -> ();
-    fundecl DrawRingLines(center: Vector2, innerRadius: f32, outerRadius: f32, startAngle: f32, endAngle: f32, segments: i32, color: Color) -> ();
-    fundecl DrawRingLinesEx(center: Vector2, innerRadius: f32, outerRadius: f32, startAngle: f32, endAngle: f32, segments: i32, thick: f32, color: Color) -> ();
-    fundecl DrawSplineLinear(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> ();
-    fundecl DrawSplineBasis(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> ();
-    fundecl DrawSplineCatmullRom(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> ();
-    fundecl DrawSplineBezierQuadratic(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> ();
-    fundecl DrawSplineBezierCubic(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> ();
-    fundecl DrawSplineSegmentLinear(p1: Vector2, p2: Vector2, thick: f32, color: Color) -> ();
-    fundecl DrawSplineSegmentBasis(p1: Vector2, p2: Vector2, p3: Vector2, p4: Vector2, thick: f32, color: Color) -> ();
-    fundecl DrawSplineSegmentCatmullRom(p1: Vector2, p2: Vector2, p3: Vector2, p4: Vector2, thick: f32, color: Color) -> ();
-    fundecl DrawSplineSegmentBezierQuadratic(p1: Vector2, c2: Vector2, p3: Vector2, thick: f32, color: Color) -> ();
-    fundecl DrawSplineSegmentBezierCubic(p1: Vector2, c2: Vector2, c3: Vector2, p4: Vector2, thick: f32, color: Color) -> ();
-    fundecl GetSplinePointLinear(startPos: Vector2, endPos: Vector2, t: f32) -> Vector2;
-    fundecl GetSplinePointBasis(p1: Vector2, p2: Vector2, p3: Vector2, p4: Vector2, t: f32) -> Vector2;
-    fundecl GetSplinePointCatmullRom(p1: Vector2, p2: Vector2, p3: Vector2, p4: Vector2, t: f32) -> Vector2;
-    fundecl GetSplinePointBezierQuadratic(p1: Vector2, c2: Vector2, p3: Vector2, t: f32) -> Vector2;
-    fundecl GetSplinePointBezierCubic(p1: Vector2, c2: Vector2, c3: Vector2, p4: Vector2, t: f32) -> Vector2;
-    fundecl CheckCollisionRecs(rec1: Rectangle, rec2: Rectangle) -> bool;
-    fundecl CheckCollisionCircles(center1: Vector2, radius1: f32, center2: Vector2, radius2: f32) -> bool;
-    fundecl CheckCollisionCircleRec(center: Vector2, radius: f32, rec: Rectangle) -> bool;
-    fundecl CheckCollisionCircleLine(center: Vector2, radius: f32, p1: Vector2, p2: Vector2) -> bool;
-    fundecl CheckCollisionPointRec(point: Vector2, rec: Rectangle) -> bool;
-    fundecl CheckCollisionPointCircle(point: Vector2, center: Vector2, radius: f32) -> bool;
-    fundecl CheckCollisionPointTriangle(point: Vector2, p1: Vector2, p2: Vector2, p3: Vector2) -> bool;
-    fundecl CheckCollisionPointLine(point: Vector2, p1: Vector2, p2: Vector2, threshold: i32) -> bool;
-    fundecl CheckCollisionPointPoly(point: Vector2, points: cptr Vector2, pointCount: i32) -> bool;
-    fundecl CheckCollisionLines(startPos1: Vector2, endPos1: Vector2, startPos2: Vector2, endPos2: Vector2, collisionPoint: cptr mut Vector2) -> bool;
-    fundecl GetCollisionRec(rec1: Rectangle, rec2: Rectangle) -> Rectangle;
+    @c_symbol_name("GetShapesTextureRectangle")
+    private fundecl GetShapesTextureRectangle_() -> Rectangle;
+    @c_symbol_name("DrawPixel")
+    private fundecl DrawPixel_(posX: i32, posY: i32, color: Color) -> ();
+    @c_symbol_name("DrawPixelV")
+    private fundecl DrawPixelV_(position: Vector2, color: Color) -> ();
+    @c_symbol_name("DrawLine")
+    private fundecl DrawLine_(startPosX: i32, startPosY: i32, endPosX: i32, endPosY: i32, color: Color) -> ();
+    @c_symbol_name("DrawLineV")
+    private fundecl DrawLineV_(startPos: Vector2, endPos: Vector2, color: Color) -> ();
+    @c_symbol_name("DrawLineEx")
+    private fundecl DrawLineEx_(startPos: Vector2, endPos: Vector2, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawLineStrip")
+    private fundecl DrawLineStrip_(points: cptr Vector2, pointCount: i32, color: Color) -> ();
+    @c_symbol_name("DrawLineBezier")
+    private fundecl DrawLineBezier_(startPos: Vector2, endPos: Vector2, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawLineDashed")
+    private fundecl DrawLineDashed_(startPos: Vector2, endPos: Vector2, dashSize: i32, spaceSize: i32, color: Color) -> ();
+    @c_symbol_name("DrawTriangle")
+    private fundecl DrawTriangle_(v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> ();
+    @c_symbol_name("DrawTriangleGradient")
+    private fundecl DrawTriangleGradient_(v1: Vector2, v2: Vector2, v3: Vector2, c1: Color, c2: Color, c3: Color) -> ();
+    @c_symbol_name("DrawTriangleLines")
+    private fundecl DrawTriangleLines_(v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> ();
+    @c_symbol_name("DrawTriangleLinesEx")
+    private fundecl DrawTriangleLinesEx_(v1: Vector2, v2: Vector2, v3: Vector2, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawTriangleFan")
+    private fundecl DrawTriangleFan_(points: cptr Vector2, pointCount: i32, color: Color) -> ();
+    @c_symbol_name("DrawTriangleStrip")
+    private fundecl DrawTriangleStrip_(points: cptr Vector2, pointCount: i32, color: Color) -> ();
+    @c_symbol_name("DrawRectangle")
+    private fundecl DrawRectangle_(posX: i32, posY: i32, width: i32, height: i32, color: Color) -> ();
+    @c_symbol_name("DrawRectangleV")
+    private fundecl DrawRectangleV_(position: Vector2, size: Vector2, color: Color) -> ();
+    @c_symbol_name("DrawRectangleRec")
+    private fundecl DrawRectangleRec_(rec: Rectangle, color: Color) -> ();
+    @c_symbol_name("DrawRectanglePro")
+    private fundecl DrawRectanglePro_(rec: Rectangle, origin: Vector2, rotation: f32, color: Color) -> ();
+    @c_symbol_name("DrawRectangleGradientV")
+    private fundecl DrawRectangleGradientV_(posX: i32, posY: i32, width: i32, height: i32, top: Color, bottom: Color) -> ();
+    @c_symbol_name("DrawRectangleGradientH")
+    private fundecl DrawRectangleGradientH_(posX: i32, posY: i32, width: i32, height: i32, left: Color, right: Color) -> ();
+    @c_symbol_name("DrawRectangleGradientEx")
+    private fundecl DrawRectangleGradientEx_(rec: Rectangle, col1: Color, col2: Color, col3: Color, col4: Color) -> ();
+    @c_symbol_name("DrawRectangleLines")
+    private fundecl DrawRectangleLines_(posX: i32, posY: i32, width: i32, height: i32, color: Color) -> ();
+    @c_symbol_name("DrawRectangleLinesEx")
+    private fundecl DrawRectangleLinesEx_(rec: Rectangle, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawRectangleRounded")
+    private fundecl DrawRectangleRounded_(rec: Rectangle, roundness: f32, segments: i32, color: Color) -> ();
+    @c_symbol_name("DrawRectangleRoundedLines")
+    private fundecl DrawRectangleRoundedLines_(rec: Rectangle, roundness: f32, segments: i32, color: Color) -> ();
+    @c_symbol_name("DrawRectangleRoundedLinesEx")
+    private fundecl DrawRectangleRoundedLinesEx_(rec: Rectangle, roundness: f32, segments: i32, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawPoly")
+    private fundecl DrawPoly_(center: Vector2, sides: i32, radius: f32, rotation: f32, color: Color) -> ();
+    @c_symbol_name("DrawPolyLines")
+    private fundecl DrawPolyLines_(center: Vector2, sides: i32, radius: f32, rotation: f32, color: Color) -> ();
+    @c_symbol_name("DrawPolyLinesEx")
+    private fundecl DrawPolyLinesEx_(center: Vector2, sides: i32, radius: f32, rotation: f32, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawCircle")
+    private fundecl DrawCircle_(centerX: i32, centerY: i32, radius: f32, color: Color) -> ();
+    @c_symbol_name("DrawCircleV")
+    private fundecl DrawCircleV_(center: Vector2, radius: f32, color: Color) -> ();
+    @c_symbol_name("DrawCircleGradient")
+    private fundecl DrawCircleGradient_(center: Vector2, radius: f32, inner: Color, outer: Color) -> ();
+    @c_symbol_name("DrawCircleSector")
+    private fundecl DrawCircleSector_(center: Vector2, radius: f32, startAngle: f32, endAngle: f32, segments: i32, color: Color) -> ();
+    @c_symbol_name("DrawCircleSectorLines")
+    private fundecl DrawCircleSectorLines_(center: Vector2, radius: f32, startAngle: f32, endAngle: f32, segments: i32, color: Color) -> ();
+    @c_symbol_name("DrawCircleSectorLinesEx")
+    private fundecl DrawCircleSectorLinesEx_(center: Vector2, radius: f32, startAngle: f32, endAngle: f32, segments: i32, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawCircleLines")
+    private fundecl DrawCircleLines_(centerX: i32, centerY: i32, radius: f32, color: Color) -> ();
+    @c_symbol_name("DrawCircleLinesV")
+    private fundecl DrawCircleLinesV_(center: Vector2, radius: f32, color: Color) -> ();
+    @c_symbol_name("DrawCircleLinesEx")
+    private fundecl DrawCircleLinesEx_(center: Vector2, radius: f32, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawEllipse")
+    private fundecl DrawEllipse_(centerX: i32, centerY: i32, radiusH: f32, radiusV: f32, color: Color) -> ();
+    @c_symbol_name("DrawEllipseV")
+    private fundecl DrawEllipseV_(center: Vector2, radiusH: f32, radiusV: f32, color: Color) -> ();
+    @c_symbol_name("DrawEllipseLines")
+    private fundecl DrawEllipseLines_(centerX: i32, centerY: i32, radiusH: f32, radiusV: f32, color: Color) -> ();
+    @c_symbol_name("DrawEllipseLinesV")
+    private fundecl DrawEllipseLinesV_(center: Vector2, radiusH: f32, radiusV: f32, color: Color) -> ();
+    @c_symbol_name("DrawEllipseLinesEx")
+    private fundecl DrawEllipseLinesEx_(center: Vector2, radiusH: f32, radiusV: f32, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawRing")
+    private fundecl DrawRing_(center: Vector2, innerRadius: f32, outerRadius: f32, startAngle: f32, endAngle: f32, segments: i32, color: Color) -> ();
+    @c_symbol_name("DrawRingLines")
+    private fundecl DrawRingLines_(center: Vector2, innerRadius: f32, outerRadius: f32, startAngle: f32, endAngle: f32, segments: i32, color: Color) -> ();
+    @c_symbol_name("DrawRingLinesEx")
+    private fundecl DrawRingLinesEx_(center: Vector2, innerRadius: f32, outerRadius: f32, startAngle: f32, endAngle: f32, segments: i32, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawSplineLinear")
+    private fundecl DrawSplineLinear_(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawSplineBasis")
+    private fundecl DrawSplineBasis_(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawSplineCatmullRom")
+    private fundecl DrawSplineCatmullRom_(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawSplineBezierQuadratic")
+    private fundecl DrawSplineBezierQuadratic_(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawSplineBezierCubic")
+    private fundecl DrawSplineBezierCubic_(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawSplineSegmentLinear")
+    private fundecl DrawSplineSegmentLinear_(p1: Vector2, p2: Vector2, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawSplineSegmentBasis")
+    private fundecl DrawSplineSegmentBasis_(p1: Vector2, p2: Vector2, p3: Vector2, p4: Vector2, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawSplineSegmentCatmullRom")
+    private fundecl DrawSplineSegmentCatmullRom_(p1: Vector2, p2: Vector2, p3: Vector2, p4: Vector2, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawSplineSegmentBezierQuadratic")
+    private fundecl DrawSplineSegmentBezierQuadratic_(p1: Vector2, c2: Vector2, p3: Vector2, thick: f32, color: Color) -> ();
+    @c_symbol_name("DrawSplineSegmentBezierCubic")
+    private fundecl DrawSplineSegmentBezierCubic_(p1: Vector2, c2: Vector2, c3: Vector2, p4: Vector2, thick: f32, color: Color) -> ();
+    @c_symbol_name("GetSplinePointLinear")
+    private fundecl GetSplinePointLinear_(startPos: Vector2, endPos: Vector2, t: f32) -> Vector2;
+    @c_symbol_name("GetSplinePointBasis")
+    private fundecl GetSplinePointBasis_(p1: Vector2, p2: Vector2, p3: Vector2, p4: Vector2, t: f32) -> Vector2;
+    @c_symbol_name("GetSplinePointCatmullRom")
+    private fundecl GetSplinePointCatmullRom_(p1: Vector2, p2: Vector2, p3: Vector2, p4: Vector2, t: f32) -> Vector2;
+    @c_symbol_name("GetSplinePointBezierQuadratic")
+    private fundecl GetSplinePointBezierQuadratic_(p1: Vector2, c2: Vector2, p3: Vector2, t: f32) -> Vector2;
+    @c_symbol_name("GetSplinePointBezierCubic")
+    private fundecl GetSplinePointBezierCubic_(p1: Vector2, c2: Vector2, c3: Vector2, p4: Vector2, t: f32) -> Vector2;
+    @c_symbol_name("CheckCollisionRecs")
+    private fundecl CheckCollisionRecs_(rec1: Rectangle, rec2: Rectangle) -> bool;
+    @c_symbol_name("CheckCollisionCircles")
+    private fundecl CheckCollisionCircles_(center1: Vector2, radius1: f32, center2: Vector2, radius2: f32) -> bool;
+    @c_symbol_name("CheckCollisionCircleRec")
+    private fundecl CheckCollisionCircleRec_(center: Vector2, radius: f32, rec: Rectangle) -> bool;
+    @c_symbol_name("CheckCollisionCircleLine")
+    private fundecl CheckCollisionCircleLine_(center: Vector2, radius: f32, p1: Vector2, p2: Vector2) -> bool;
+    @c_symbol_name("CheckCollisionPointRec")
+    private fundecl CheckCollisionPointRec_(point: Vector2, rec: Rectangle) -> bool;
+    @c_symbol_name("CheckCollisionPointCircle")
+    private fundecl CheckCollisionPointCircle_(point: Vector2, center: Vector2, radius: f32) -> bool;
+    @c_symbol_name("CheckCollisionPointTriangle")
+    private fundecl CheckCollisionPointTriangle_(point: Vector2, p1: Vector2, p2: Vector2, p3: Vector2) -> bool;
+    @c_symbol_name("CheckCollisionPointLine")
+    private fundecl CheckCollisionPointLine_(point: Vector2, p1: Vector2, p2: Vector2, threshold: i32) -> bool;
+    @c_symbol_name("CheckCollisionPointPoly")
+    private fundecl CheckCollisionPointPoly_(point: Vector2, points: cptr Vector2, pointCount: i32) -> bool;
+    @c_symbol_name("CheckCollisionLines")
+    private fundecl CheckCollisionLines_(startPos1: Vector2, endPos1: Vector2, startPos2: Vector2, endPos2: Vector2, collisionPoint: cptr mut Vector2) -> bool;
+    @c_symbol_name("GetCollisionRec")
+    private fundecl GetCollisionRec_(rec1: Rectangle, rec2: Rectangle) -> Rectangle;
     fundecl LoadImage(fileName: cptr char) -> Image;
     fundecl LoadImageRaw(fileName: cptr char, width: i32, height: i32, format: i32, headerSize: i32) -> Image;
     fundecl LoadImageAnim(fileName: cptr char, frames: cptr mut i32) -> Image;
@@ -1001,32 +1111,44 @@ extern("C") {
     fundecl ExportImage(image: Image, fileName: cptr char) -> bool;
     fundecl ExportImageToMemory(image: Image, fileType: cptr char, fileSize: cptr mut i32) -> cptr mut u8;
     fundecl ExportImageAsCode(image: Image, fileName: cptr char) -> bool;
-    fundecl GenImageColor(width: i32, height: i32, color: Color) -> Image;
-    fundecl GenImageGradientLinear(width: i32, height: i32, direction: i32, start: Color, end: Color) -> Image;
-    fundecl GenImageGradientRadial(width: i32, height: i32, density: f32, inner: Color, outer: Color) -> Image;
-    fundecl GenImageGradientSquare(width: i32, height: i32, density: f32, inner: Color, outer: Color) -> Image;
-    fundecl GenImageChecked(width: i32, height: i32, checksX: i32, checksY: i32, col1: Color, col2: Color) -> Image;
+    @c_symbol_name("GenImageColor")
+    private fundecl GenImageColor_(width: i32, height: i32, color: Color) -> Image;
+    @c_symbol_name("GenImageGradientLinear")
+    private fundecl GenImageGradientLinear_(width: i32, height: i32, direction: i32, start: Color, end: Color) -> Image;
+    @c_symbol_name("GenImageGradientRadial")
+    private fundecl GenImageGradientRadial_(width: i32, height: i32, density: f32, inner: Color, outer: Color) -> Image;
+    @c_symbol_name("GenImageGradientSquare")
+    private fundecl GenImageGradientSquare_(width: i32, height: i32, density: f32, inner: Color, outer: Color) -> Image;
+    @c_symbol_name("GenImageChecked")
+    private fundecl GenImageChecked_(width: i32, height: i32, checksX: i32, checksY: i32, col1: Color, col2: Color) -> Image;
     fundecl GenImageWhiteNoise(width: i32, height: i32, factor: f32) -> Image;
     fundecl GenImagePerlinNoise(width: i32, height: i32, offsetX: i32, offsetY: i32, scale: f32) -> Image;
     fundecl GenImageCellular(width: i32, height: i32, tileSize: i32) -> Image;
     fundecl GenImageText(width: i32, height: i32, text: cptr char) -> Image;
     fundecl ImageCopy(image: Image) -> Image;
-    fundecl ImageFromImage(image: Image, rec: Rectangle) -> Image;
+    @c_symbol_name("ImageFromImage")
+    private fundecl ImageFromImage_(image: Image, rec: Rectangle) -> Image;
     fundecl ImageFromChannel(image: Image, selectedChannel: i32) -> Image;
-    fundecl ImageText(text: cptr char, fontSize: i32, color: Color) -> Image;
-    fundecl ImageTextEx(font: Font, text: cptr char, fontSize: f32, spacing: f32, tint: Color) -> Image;
+    @c_symbol_name("ImageText")
+    private fundecl ImageText_(text: cptr char, fontSize: i32, color: Color) -> Image;
+    @c_symbol_name("ImageTextEx")
+    private fundecl ImageTextEx_(font: Font, text: cptr char, fontSize: f32, spacing: f32, tint: Color) -> Image;
     fundecl ImageFormat(image: cptr mut Image, newFormat: i32) -> ();
-    fundecl ImageToPOT(image: cptr mut Image, fill: Color) -> ();
-    fundecl ImageCrop(image: cptr mut Image, crop: Rectangle) -> ();
+    @c_symbol_name("ImageToPOT")
+    private fundecl ImageToPOT_(image: cptr mut Image, fill: Color) -> ();
+    @c_symbol_name("ImageCrop")
+    private fundecl ImageCrop_(image: cptr mut Image, crop: Rectangle) -> ();
     fundecl ImageAlphaCrop(image: cptr mut Image, threshold: f32) -> ();
-    fundecl ImageAlphaClear(image: cptr mut Image, color: Color, threshold: f32) -> ();
+    @c_symbol_name("ImageAlphaClear")
+    private fundecl ImageAlphaClear_(image: cptr mut Image, color: Color, threshold: f32) -> ();
     fundecl ImageAlphaMask(image: cptr mut Image, alphaMask: Image) -> ();
     fundecl ImageAlphaPremultiply(image: cptr mut Image) -> ();
     fundecl ImageBlurGaussian(image: cptr mut Image, blurSize: i32) -> ();
     fundecl ImageKernelConvolution(image: cptr mut Image, kernel: cptr f32, kernelSize: i32) -> ();
     fundecl ImageResize(image: cptr mut Image, newWidth: i32, newHeight: i32) -> ();
     fundecl ImageResizeNN(image: cptr mut Image, newWidth: i32, newHeight: i32) -> ();
-    fundecl ImageResizeCanvas(image: cptr mut Image, newWidth: i32, newHeight: i32, offsetX: i32, offsetY: i32, fill: Color) -> ();
+    @c_symbol_name("ImageResizeCanvas")
+    private fundecl ImageResizeCanvas_(image: cptr mut Image, newWidth: i32, newHeight: i32, offsetX: i32, offsetY: i32, fill: Color) -> ();
     fundecl ImageMipmaps(image: cptr mut Image) -> ();
     fundecl ImageDither(image: cptr mut Image, rBpp: i32, gBpp: i32, bBpp: i32, aBpp: i32) -> ();
     fundecl ImageFlipVertical(image: cptr mut Image) -> ();
@@ -1034,49 +1156,84 @@ extern("C") {
     fundecl ImageRotate(image: cptr mut Image, degrees: i32) -> ();
     fundecl ImageRotateCW(image: cptr mut Image) -> ();
     fundecl ImageRotateCCW(image: cptr mut Image) -> ();
-    fundecl ImageColorTint(image: cptr mut Image, color: Color) -> ();
+    @c_symbol_name("ImageColorTint")
+    private fundecl ImageColorTint_(image: cptr mut Image, color: Color) -> ();
     fundecl ImageColorInvert(image: cptr mut Image) -> ();
     fundecl ImageColorGrayscale(image: cptr mut Image) -> ();
     fundecl ImageColorContrast(image: cptr mut Image, contrast: i32) -> ();
     fundecl ImageColorBrightness(image: cptr mut Image, brightness: i32) -> ();
-    fundecl ImageColorReplace(image: cptr mut Image, color: Color, replace: Color) -> ();
+    @c_symbol_name("ImageColorReplace")
+    private fundecl ImageColorReplace_(image: cptr mut Image, color: Color, replace: Color) -> ();
     fundecl LoadImageColors(image: Image) -> cptr mut Color;
     fundecl LoadImagePalette(image: Image, maxPaletteSize: i32, colorCount: cptr mut i32) -> cptr mut Color;
     fundecl UnloadImageColors(colors: cptr mut Color) -> ();
     fundecl UnloadImagePalette(colors: cptr mut Color) -> ();
-    fundecl GetImageAlphaBorder(image: Image, threshold: f32) -> Rectangle;
-    fundecl GetImageColor(image: Image, x: i32, y: i32) -> Color;
-    fundecl ImageClearBackground(dst: cptr mut Image, color: Color) -> ();
-    fundecl ImageDrawPixel(dst: cptr mut Image, posX: i32, posY: i32, color: Color) -> ();
-    fundecl ImageDrawPixelV(dst: cptr mut Image, position: Vector2, color: Color) -> ();
-    fundecl ImageDrawLine(dst: cptr mut Image, startPosX: i32, startPosY: i32, endPosX: i32, endPosY: i32, color: Color) -> ();
-    fundecl ImageDrawLineV(dst: cptr mut Image, start: Vector2, end: Vector2, color: Color) -> ();
-    fundecl ImageDrawLineEx(dst: cptr mut Image, start: Vector2, end: Vector2, thick: i32, color: Color) -> ();
-    fundecl ImageDrawLineStrip(dst: cptr mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> ();
-    fundecl ImageDrawTriangle(dst: cptr mut Image, v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> ();
-    fundecl ImageDrawTriangleGradient(dst: cptr mut Image, v1: Vector2, v2: Vector2, v3: Vector2, c1: Color, c2: Color, c3: Color) -> ();
-    fundecl ImageDrawTriangleLines(dst: cptr mut Image, v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> ();
-    fundecl ImageDrawTriangleFan(dst: cptr mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> ();
-    fundecl ImageDrawTriangleStrip(dst: cptr mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> ();
-    fundecl ImageDrawRectangle(dst: cptr mut Image, posX: i32, posY: i32, width: i32, height: i32, color: Color) -> ();
-    fundecl ImageDrawRectangleV(dst: cptr mut Image, position: Vector2, size: Vector2, color: Color) -> ();
-    fundecl ImageDrawRectangleRec(dst: cptr mut Image, rec: Rectangle, color: Color) -> ();
-    fundecl ImageDrawRectanglePro(dst: cptr mut Image, rec: Rectangle, origin: Vector2, rotation: f32, color: Color) -> ();
-    fundecl ImageDrawRectangleLines(dst: cptr mut Image, posX: i32, posY: i32, width: i32, height: i32, color: Color) -> ();
-    fundecl ImageDrawRectangleLinesEx(dst: cptr mut Image, rec: Rectangle, thick: i32, color: Color) -> ();
-    fundecl ImageDrawRectangleGradientEx(dst: cptr mut Image, rec: Rectangle, col1: Color, col2: Color, col3: Color, col4: Color) -> ();
-    fundecl ImageDrawCircle(dst: cptr mut Image, centerX: i32, centerY: i32, radius: i32, color: Color) -> ();
-    fundecl ImageDrawCircleV(dst: cptr mut Image, center: Vector2, radius: i32, color: Color) -> ();
-    fundecl ImageDrawCircleLines(dst: cptr mut Image, centerX: i32, centerY: i32, radius: i32, color: Color) -> ();
-    fundecl ImageDrawCircleLinesV(dst: cptr mut Image, center: Vector2, radius: i32, color: Color) -> ();
-    fundecl ImageDrawCircleGradient(dst: cptr mut Image, center: Vector2, radius: f32, inner: Color, outer: Color) -> ();
-    fundecl ImageDrawImage(dst: cptr mut Image, src: Image, posX: i32, posY: i32, tint: Color) -> ();
-    fundecl ImageDrawImageEx(dst: cptr mut Image, src: Image, position: Vector2, rotation: f32, scale: f32, tint: Color) -> ();
-    fundecl ImageDrawImageRec(dst: cptr mut Image, src: Image, srcRec: Rectangle, position: Vector2, tint: Color) -> ();
-    fundecl ImageDrawImagePro(dst: cptr mut Image, src: Image, srcRec: Rectangle, dstRec: Rectangle, origin: Vector2, rotation: f32, tint: Color) -> ();
-    fundecl ImageDrawText(dst: cptr mut Image, text: cptr char, posX: i32, posY: i32, fontSize: i32, color: Color) -> ();
-    fundecl ImageDrawTextEx(dst: cptr mut Image, font: Font, text: cptr char, position: Vector2, fontSize: f32, spacing: f32, tint: Color) -> ();
-    fundecl ImageDrawTextPro(dst: cptr mut Image, font: Font, text: cptr char, position: Vector2, origin: Vector2, rotation: f32, fontSize: f32, spacing: f32, tint: Color) -> ();
+    @c_symbol_name("GetImageAlphaBorder")
+    private fundecl GetImageAlphaBorder_(image: Image, threshold: f32) -> Rectangle;
+    @c_symbol_name("GetImageColor")
+    private fundecl GetImageColor_(image: Image, x: i32, y: i32) -> Color;
+    @c_symbol_name("ImageClearBackground")
+    private fundecl ImageClearBackground_(dst: cptr mut Image, color: Color) -> ();
+    @c_symbol_name("ImageDrawPixel")
+    private fundecl ImageDrawPixel_(dst: cptr mut Image, posX: i32, posY: i32, color: Color) -> ();
+    @c_symbol_name("ImageDrawPixelV")
+    private fundecl ImageDrawPixelV_(dst: cptr mut Image, position: Vector2, color: Color) -> ();
+    @c_symbol_name("ImageDrawLine")
+    private fundecl ImageDrawLine_(dst: cptr mut Image, startPosX: i32, startPosY: i32, endPosX: i32, endPosY: i32, color: Color) -> ();
+    @c_symbol_name("ImageDrawLineV")
+    private fundecl ImageDrawLineV_(dst: cptr mut Image, start: Vector2, end: Vector2, color: Color) -> ();
+    @c_symbol_name("ImageDrawLineEx")
+    private fundecl ImageDrawLineEx_(dst: cptr mut Image, start: Vector2, end: Vector2, thick: i32, color: Color) -> ();
+    @c_symbol_name("ImageDrawLineStrip")
+    private fundecl ImageDrawLineStrip_(dst: cptr mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> ();
+    @c_symbol_name("ImageDrawTriangle")
+    private fundecl ImageDrawTriangle_(dst: cptr mut Image, v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> ();
+    @c_symbol_name("ImageDrawTriangleGradient")
+    private fundecl ImageDrawTriangleGradient_(dst: cptr mut Image, v1: Vector2, v2: Vector2, v3: Vector2, c1: Color, c2: Color, c3: Color) -> ();
+    @c_symbol_name("ImageDrawTriangleLines")
+    private fundecl ImageDrawTriangleLines_(dst: cptr mut Image, v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> ();
+    @c_symbol_name("ImageDrawTriangleFan")
+    private fundecl ImageDrawTriangleFan_(dst: cptr mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> ();
+    @c_symbol_name("ImageDrawTriangleStrip")
+    private fundecl ImageDrawTriangleStrip_(dst: cptr mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> ();
+    @c_symbol_name("ImageDrawRectangle")
+    private fundecl ImageDrawRectangle_(dst: cptr mut Image, posX: i32, posY: i32, width: i32, height: i32, color: Color) -> ();
+    @c_symbol_name("ImageDrawRectangleV")
+    private fundecl ImageDrawRectangleV_(dst: cptr mut Image, position: Vector2, size: Vector2, color: Color) -> ();
+    @c_symbol_name("ImageDrawRectangleRec")
+    private fundecl ImageDrawRectangleRec_(dst: cptr mut Image, rec: Rectangle, color: Color) -> ();
+    @c_symbol_name("ImageDrawRectanglePro")
+    private fundecl ImageDrawRectanglePro_(dst: cptr mut Image, rec: Rectangle, origin: Vector2, rotation: f32, color: Color) -> ();
+    @c_symbol_name("ImageDrawRectangleLines")
+    private fundecl ImageDrawRectangleLines_(dst: cptr mut Image, posX: i32, posY: i32, width: i32, height: i32, color: Color) -> ();
+    @c_symbol_name("ImageDrawRectangleLinesEx")
+    private fundecl ImageDrawRectangleLinesEx_(dst: cptr mut Image, rec: Rectangle, thick: i32, color: Color) -> ();
+    @c_symbol_name("ImageDrawRectangleGradientEx")
+    private fundecl ImageDrawRectangleGradientEx_(dst: cptr mut Image, rec: Rectangle, col1: Color, col2: Color, col3: Color, col4: Color) -> ();
+    @c_symbol_name("ImageDrawCircle")
+    private fundecl ImageDrawCircle_(dst: cptr mut Image, centerX: i32, centerY: i32, radius: i32, color: Color) -> ();
+    @c_symbol_name("ImageDrawCircleV")
+    private fundecl ImageDrawCircleV_(dst: cptr mut Image, center: Vector2, radius: i32, color: Color) -> ();
+    @c_symbol_name("ImageDrawCircleLines")
+    private fundecl ImageDrawCircleLines_(dst: cptr mut Image, centerX: i32, centerY: i32, radius: i32, color: Color) -> ();
+    @c_symbol_name("ImageDrawCircleLinesV")
+    private fundecl ImageDrawCircleLinesV_(dst: cptr mut Image, center: Vector2, radius: i32, color: Color) -> ();
+    @c_symbol_name("ImageDrawCircleGradient")
+    private fundecl ImageDrawCircleGradient_(dst: cptr mut Image, center: Vector2, radius: f32, inner: Color, outer: Color) -> ();
+    @c_symbol_name("ImageDrawImage")
+    private fundecl ImageDrawImage_(dst: cptr mut Image, src: Image, posX: i32, posY: i32, tint: Color) -> ();
+    @c_symbol_name("ImageDrawImageEx")
+    private fundecl ImageDrawImageEx_(dst: cptr mut Image, src: Image, position: Vector2, rotation: f32, scale: f32, tint: Color) -> ();
+    @c_symbol_name("ImageDrawImageRec")
+    private fundecl ImageDrawImageRec_(dst: cptr mut Image, src: Image, srcRec: Rectangle, position: Vector2, tint: Color) -> ();
+    @c_symbol_name("ImageDrawImagePro")
+    private fundecl ImageDrawImagePro_(dst: cptr mut Image, src: Image, srcRec: Rectangle, dstRec: Rectangle, origin: Vector2, rotation: f32, tint: Color) -> ();
+    @c_symbol_name("ImageDrawText")
+    private fundecl ImageDrawText_(dst: cptr mut Image, text: cptr char, posX: i32, posY: i32, fontSize: i32, color: Color) -> ();
+    @c_symbol_name("ImageDrawTextEx")
+    private fundecl ImageDrawTextEx_(dst: cptr mut Image, font: Font, text: cptr char, position: Vector2, fontSize: f32, spacing: f32, tint: Color) -> ();
+    @c_symbol_name("ImageDrawTextPro")
+    private fundecl ImageDrawTextPro_(dst: cptr mut Image, font: Font, text: cptr char, position: Vector2, origin: Vector2, rotation: f32, fontSize: f32, spacing: f32, tint: Color) -> ();
     fundecl LoadTexture(fileName: cptr char) -> Texture2D;
     fundecl LoadTextureFromImage(image: Image) -> Texture2D;
     fundecl LoadTextureCubemap(image: Image, layout: i32) -> TextureCubemap;
@@ -1087,37 +1244,61 @@ extern("C") {
     fundecl IsRenderTextureValid(target: RenderTexture2D) -> bool;
     fundecl UnloadRenderTexture(target: RenderTexture2D) -> ();
     fundecl UpdateTexture(texture: Texture2D, pixels: cptr u8) -> ();
-    fundecl UpdateTextureRec(texture: Texture2D, rec: Rectangle, pixels: cptr u8) -> ();
+    @c_symbol_name("UpdateTextureRec")
+    private fundecl UpdateTextureRec_(texture: Texture2D, rec: Rectangle, pixels: cptr u8) -> ();
     fundecl GenTextureMipmaps(texture: cptr mut Texture2D) -> ();
     fundecl SetTextureFilter(texture: Texture2D, filter: i32) -> ();
     fundecl SetTextureWrap(texture: Texture2D, wrap: i32) -> ();
-    fundecl DrawTexture(texture: Texture2D, posX: i32, posY: i32, tint: Color) -> ();
-    fundecl DrawTextureV(texture: Texture2D, position: Vector2, tint: Color) -> ();
-    fundecl DrawTextureEx(texture: Texture2D, position: Vector2, rotation: f32, scale: f32, tint: Color) -> ();
-    fundecl DrawTextureRec(texture: Texture2D, rec: Rectangle, position: Vector2, tint: Color) -> ();
-    fundecl DrawTexturePro(texture: Texture2D, srcrec: Rectangle, dstrec: Rectangle, origin: Vector2, rotation: f32, tint: Color) -> ();
-    fundecl DrawTextureNPatch(texture: Texture2D, nPatchInfo: NPatchInfo, dstrec: Rectangle, origin: Vector2, rotation: f32, tint: Color) -> ();
-    fundecl ColorIsEqual(col1: Color, col2: Color) -> bool;
-    fundecl Fade(color: Color, alpha: f32) -> Color;
-    fundecl ColorToInt(color: Color) -> i32;
-    fundecl ColorNormalize(color: Color) -> Vector4;
-    fundecl ColorFromNormalized(normalized: Vector4) -> Color;
-    fundecl ColorToHSV(color: Color) -> Vector3;
-    fundecl ColorFromHSV(hue: f32, saturation: f32, value: f32) -> Color;
-    fundecl ColorTint(color: Color, tint: Color) -> Color;
-    fundecl ColorBrightness(color: Color, factor: f32) -> Color;
-    fundecl ColorContrast(color: Color, contrast: f32) -> Color;
-    fundecl ColorAlpha(color: Color, alpha: f32) -> Color;
-    fundecl ColorAlphaBlend(dst: Color, src: Color, tint: Color) -> Color;
-    fundecl ColorLerp(color1: Color, color2: Color, factor: f32) -> Color;
-    fundecl GetColor(hexValue: u32) -> Color;
-    fundecl GetPixelColor(srcPtr: cptr u8, format: i32) -> Color;
-    fundecl SetPixelColor(dstPtr: cptr mut u8, color: Color, format: i32) -> ();
+    @c_symbol_name("DrawTexture")
+    private fundecl DrawTexture_(texture: Texture2D, posX: i32, posY: i32, tint: Color) -> ();
+    @c_symbol_name("DrawTextureV")
+    private fundecl DrawTextureV_(texture: Texture2D, position: Vector2, tint: Color) -> ();
+    @c_symbol_name("DrawTextureEx")
+    private fundecl DrawTextureEx_(texture: Texture2D, position: Vector2, rotation: f32, scale: f32, tint: Color) -> ();
+    @c_symbol_name("DrawTextureRec")
+    private fundecl DrawTextureRec_(texture: Texture2D, rec: Rectangle, position: Vector2, tint: Color) -> ();
+    @c_symbol_name("DrawTexturePro")
+    private fundecl DrawTexturePro_(texture: Texture2D, srcrec: Rectangle, dstrec: Rectangle, origin: Vector2, rotation: f32, tint: Color) -> ();
+    @c_symbol_name("DrawTextureNPatch")
+    private fundecl DrawTextureNPatch_(texture: Texture2D, nPatchInfo: NPatchInfo, dstrec: Rectangle, origin: Vector2, rotation: f32, tint: Color) -> ();
+    @c_symbol_name("ColorIsEqual")
+    private fundecl ColorIsEqual_(col1: Color, col2: Color) -> bool;
+    @c_symbol_name("Fade")
+    private fundecl Fade_(color: Color, alpha: f32) -> Color;
+    @c_symbol_name("ColorToInt")
+    private fundecl ColorToInt_(color: Color) -> i32;
+    @c_symbol_name("ColorNormalize")
+    private fundecl ColorNormalize_(color: Color) -> Vector4;
+    @c_symbol_name("ColorFromNormalized")
+    private fundecl ColorFromNormalized_(normalized: Vector4) -> Color;
+    @c_symbol_name("ColorToHSV")
+    private fundecl ColorToHSV_(color: Color) -> Vector3;
+    @c_symbol_name("ColorFromHSV")
+    private fundecl ColorFromHSV_(hue: f32, saturation: f32, value: f32) -> Color;
+    @c_symbol_name("ColorTint")
+    private fundecl ColorTint_(color: Color, tint: Color) -> Color;
+    @c_symbol_name("ColorBrightness")
+    private fundecl ColorBrightness_(color: Color, factor: f32) -> Color;
+    @c_symbol_name("ColorContrast")
+    private fundecl ColorContrast_(color: Color, contrast: f32) -> Color;
+    @c_symbol_name("ColorAlpha")
+    private fundecl ColorAlpha_(color: Color, alpha: f32) -> Color;
+    @c_symbol_name("ColorAlphaBlend")
+    private fundecl ColorAlphaBlend_(dst: Color, src: Color, tint: Color) -> Color;
+    @c_symbol_name("ColorLerp")
+    private fundecl ColorLerp_(color1: Color, color2: Color, factor: f32) -> Color;
+    @c_symbol_name("GetColor")
+    private fundecl GetColor_(hexValue: u32) -> Color;
+    @c_symbol_name("GetPixelColor")
+    private fundecl GetPixelColor_(srcPtr: cptr u8, format: i32) -> Color;
+    @c_symbol_name("SetPixelColor")
+    private fundecl SetPixelColor_(dstPtr: cptr mut u8, color: Color, format: i32) -> ();
     fundecl GetPixelDataSize(width: i32, height: i32, format: i32) -> i32;
     fundecl GetFontDefault() -> Font;
     fundecl LoadFont(fileName: cptr char) -> Font;
     fundecl LoadFontEx(fileName: cptr char, fontSize: i32, codepoints: cptr i32, codepointCount: i32) -> Font;
-    fundecl LoadFontFromImage(image: Image, key: Color, firstChar: i32) -> Font;
+    @c_symbol_name("LoadFontFromImage")
+    private fundecl LoadFontFromImage_(image: Image, key: Color, firstChar: i32) -> Font;
     fundecl LoadFontFromMemory(fileType: cptr char, fileData: cptr u8, dataSize: i32, fontSize: i32, codepoints: cptr i32, codepointCount: i32) -> Font;
     fundecl IsFontValid(font: Font) -> bool;
     fundecl LoadFontData(fileData: cptr u8, dataSize: i32, fontSize: i32, codepoints: cptr i32, codepointCount: i32, type_: i32, glyphCount: cptr mut i32) -> cptr mut GlyphInfo;
@@ -1126,18 +1307,26 @@ extern("C") {
     fundecl UnloadFont(font: Font) -> ();
     fundecl ExportFontAsCode(font: Font, fileName: cptr char) -> bool;
     fundecl DrawFPS(posX: i32, posY: i32) -> ();
-    fundecl DrawText(text: cptr char, posX: i32, posY: i32, fontSize: i32, color: Color) -> ();
-    fundecl DrawTextEx(font: Font, text: cptr char, position: Vector2, fontSize: f32, spacing: f32, tint: Color) -> ();
-    fundecl DrawTextPro(font: Font, text: cptr char, position: Vector2, origin: Vector2, rotation: f32, fontSize: f32, spacing: f32, tint: Color) -> ();
-    fundecl DrawTextCodepoint(font: Font, codepoint: i32, position: Vector2, fontSize: f32, tint: Color) -> ();
-    fundecl DrawTextCodepoints(font: Font, codepoints: cptr i32, codepointCount: i32, position: Vector2, fontSize: f32, spacing: f32, tint: Color) -> ();
+    @c_symbol_name("DrawText")
+    private fundecl DrawText_(text: cptr char, posX: i32, posY: i32, fontSize: i32, color: Color) -> ();
+    @c_symbol_name("DrawTextEx")
+    private fundecl DrawTextEx_(font: Font, text: cptr char, position: Vector2, fontSize: f32, spacing: f32, tint: Color) -> ();
+    @c_symbol_name("DrawTextPro")
+    private fundecl DrawTextPro_(font: Font, text: cptr char, position: Vector2, origin: Vector2, rotation: f32, fontSize: f32, spacing: f32, tint: Color) -> ();
+    @c_symbol_name("DrawTextCodepoint")
+    private fundecl DrawTextCodepoint_(font: Font, codepoint: i32, position: Vector2, fontSize: f32, tint: Color) -> ();
+    @c_symbol_name("DrawTextCodepoints")
+    private fundecl DrawTextCodepoints_(font: Font, codepoints: cptr i32, codepointCount: i32, position: Vector2, fontSize: f32, spacing: f32, tint: Color) -> ();
     fundecl SetTextLineSpacing(spacing: i32) -> ();
     fundecl MeasureText(text: cptr char, fontSize: i32) -> i32;
-    fundecl MeasureTextEx(font: Font, text: cptr char, fontSize: f32, spacing: f32) -> Vector2;
-    fundecl MeasureTextCodepoints(font: Font, codepoints: cptr i32, length: i32, fontSize: f32, spacing: f32) -> Vector2;
+    @c_symbol_name("MeasureTextEx")
+    private fundecl MeasureTextEx_(font: Font, text: cptr char, fontSize: f32, spacing: f32) -> Vector2;
+    @c_symbol_name("MeasureTextCodepoints")
+    private fundecl MeasureTextCodepoints_(font: Font, codepoints: cptr i32, length: i32, fontSize: f32, spacing: f32) -> Vector2;
     fundecl GetGlyphIndex(font: Font, codepoint: i32) -> i32;
     fundecl GetGlyphInfo(font: Font, codepoint: i32) -> GlyphInfo;
-    fundecl GetGlyphAtlasRec(font: Font, codepoint: i32) -> Rectangle;
+    @c_symbol_name("GetGlyphAtlasRec")
+    private fundecl GetGlyphAtlasRec_(font: Font, codepoint: i32) -> Rectangle;
     fundecl LoadUTF8(codepoints: cptr i32, length: i32) -> cptr mut char;
     fundecl UnloadUTF8(text: cptr mut char) -> ();
     fundecl LoadCodepoints(text: cptr char, count: cptr mut i32) -> cptr mut i32;
@@ -1174,40 +1363,68 @@ extern("C") {
     fundecl TextToCamel(text: cptr char) -> cptr mut char;
     fundecl TextToInteger(text: cptr char) -> i32;
     fundecl TextToFloat(text: cptr char) -> f32;
-    fundecl DrawLine3D(startPos: Vector3, endPos: Vector3, color: Color) -> ();
-    fundecl DrawPoint3D(position: Vector3, color: Color) -> ();
-    fundecl DrawCircle3D(center: Vector3, radius: f32, rotationAxis: Vector3, rotationAngle: f32, color: Color) -> ();
-    fundecl DrawTriangle3D(v1: Vector3, v2: Vector3, v3: Vector3, color: Color) -> ();
-    fundecl DrawTriangleStrip3D(points: cptr Vector3, pointCount: i32, color: Color) -> ();
-    fundecl DrawCube(position: Vector3, width: f32, height: f32, length: f32, color: Color) -> ();
-    fundecl DrawCubeV(position: Vector3, size: Vector3, color: Color) -> ();
-    fundecl DrawCubeWires(position: Vector3, width: f32, height: f32, length: f32, color: Color) -> ();
-    fundecl DrawCubeWiresV(position: Vector3, size: Vector3, color: Color) -> ();
-    fundecl DrawSphere(centerPos: Vector3, radius: f32, color: Color) -> ();
-    fundecl DrawSphereEx(centerPos: Vector3, radius: f32, rings: i32, slices: i32, color: Color) -> ();
-    fundecl DrawSphereWires(centerPos: Vector3, radius: f32, rings: i32, slices: i32, color: Color) -> ();
-    fundecl DrawCylinder(position: Vector3, radiusTop: f32, radiusBottom: f32, height: f32, sides: i32, color: Color) -> ();
-    fundecl DrawCylinderEx(startPos: Vector3, endPos: Vector3, startRadius: f32, endRadius: f32, sides: i32, color: Color) -> ();
-    fundecl DrawCylinderWires(position: Vector3, radiusTop: f32, radiusBottom: f32, height: f32, sides: i32, color: Color) -> ();
-    fundecl DrawCylinderWiresEx(startPos: Vector3, endPos: Vector3, startRadius: f32, endRadius: f32, sides: i32, color: Color) -> ();
-    fundecl DrawCapsule(startPos: Vector3, endPos: Vector3, radius: f32, rings: i32, slices: i32, color: Color) -> ();
-    fundecl DrawCapsuleWires(startPos: Vector3, endPos: Vector3, radius: f32, rings: i32, slices: i32, color: Color) -> ();
-    fundecl DrawPlane(centerPos: Vector3, size: Vector2, color: Color) -> ();
-    fundecl DrawRay(ray: Ray, color: Color) -> ();
+    @c_symbol_name("DrawLine3D")
+    private fundecl DrawLine3D_(startPos: Vector3, endPos: Vector3, color: Color) -> ();
+    @c_symbol_name("DrawPoint3D")
+    private fundecl DrawPoint3D_(position: Vector3, color: Color) -> ();
+    @c_symbol_name("DrawCircle3D")
+    private fundecl DrawCircle3D_(center: Vector3, radius: f32, rotationAxis: Vector3, rotationAngle: f32, color: Color) -> ();
+    @c_symbol_name("DrawTriangle3D")
+    private fundecl DrawTriangle3D_(v1: Vector3, v2: Vector3, v3: Vector3, color: Color) -> ();
+    @c_symbol_name("DrawTriangleStrip3D")
+    private fundecl DrawTriangleStrip3D_(points: cptr Vector3, pointCount: i32, color: Color) -> ();
+    @c_symbol_name("DrawCube")
+    private fundecl DrawCube_(position: Vector3, width: f32, height: f32, length: f32, color: Color) -> ();
+    @c_symbol_name("DrawCubeV")
+    private fundecl DrawCubeV_(position: Vector3, size: Vector3, color: Color) -> ();
+    @c_symbol_name("DrawCubeWires")
+    private fundecl DrawCubeWires_(position: Vector3, width: f32, height: f32, length: f32, color: Color) -> ();
+    @c_symbol_name("DrawCubeWiresV")
+    private fundecl DrawCubeWiresV_(position: Vector3, size: Vector3, color: Color) -> ();
+    @c_symbol_name("DrawSphere")
+    private fundecl DrawSphere_(centerPos: Vector3, radius: f32, color: Color) -> ();
+    @c_symbol_name("DrawSphereEx")
+    private fundecl DrawSphereEx_(centerPos: Vector3, radius: f32, rings: i32, slices: i32, color: Color) -> ();
+    @c_symbol_name("DrawSphereWires")
+    private fundecl DrawSphereWires_(centerPos: Vector3, radius: f32, rings: i32, slices: i32, color: Color) -> ();
+    @c_symbol_name("DrawCylinder")
+    private fundecl DrawCylinder_(position: Vector3, radiusTop: f32, radiusBottom: f32, height: f32, sides: i32, color: Color) -> ();
+    @c_symbol_name("DrawCylinderEx")
+    private fundecl DrawCylinderEx_(startPos: Vector3, endPos: Vector3, startRadius: f32, endRadius: f32, sides: i32, color: Color) -> ();
+    @c_symbol_name("DrawCylinderWires")
+    private fundecl DrawCylinderWires_(position: Vector3, radiusTop: f32, radiusBottom: f32, height: f32, sides: i32, color: Color) -> ();
+    @c_symbol_name("DrawCylinderWiresEx")
+    private fundecl DrawCylinderWiresEx_(startPos: Vector3, endPos: Vector3, startRadius: f32, endRadius: f32, sides: i32, color: Color) -> ();
+    @c_symbol_name("DrawCapsule")
+    private fundecl DrawCapsule_(startPos: Vector3, endPos: Vector3, radius: f32, rings: i32, slices: i32, color: Color) -> ();
+    @c_symbol_name("DrawCapsuleWires")
+    private fundecl DrawCapsuleWires_(startPos: Vector3, endPos: Vector3, radius: f32, rings: i32, slices: i32, color: Color) -> ();
+    @c_symbol_name("DrawPlane")
+    private fundecl DrawPlane_(centerPos: Vector3, size: Vector2, color: Color) -> ();
+    @c_symbol_name("DrawRay")
+    private fundecl DrawRay_(ray: Ray, color: Color) -> ();
     fundecl DrawGrid(slices: i32, spacing: f32) -> ();
     fundecl LoadModel(fileName: cptr char) -> Model;
     fundecl LoadModelFromMesh(mesh: Mesh) -> Model;
     fundecl IsModelValid(model: Model) -> bool;
     fundecl UnloadModel(model: Model) -> ();
     fundecl GetModelBoundingBox(model: Model) -> BoundingBox;
-    fundecl DrawModel(model: Model, position: Vector3, scale: f32, tint: Color) -> ();
-    fundecl DrawModelEx(model: Model, position: Vector3, rotationAxis: Vector3, rotationAngle: f32, scale: Vector3, tint: Color) -> ();
-    fundecl DrawModelWires(model: Model, position: Vector3, scale: f32, tint: Color) -> ();
-    fundecl DrawModelWiresEx(model: Model, position: Vector3, rotationAxis: Vector3, rotationAngle: f32, scale: Vector3, tint: Color) -> ();
-    fundecl DrawBoundingBox(box_: BoundingBox, color: Color) -> ();
-    fundecl DrawBillboard(camera: Camera, texture: Texture2D, position: Vector3, scale: f32, tint: Color) -> ();
-    fundecl DrawBillboardRec(camera: Camera, texture: Texture2D, rec: Rectangle, position: Vector3, size: Vector2, tint: Color) -> ();
-    fundecl DrawBillboardPro(camera: Camera, texture: Texture2D, rec: Rectangle, position: Vector3, up: Vector3, size: Vector2, origin: Vector2, rotation: f32, tint: Color) -> ();
+    @c_symbol_name("DrawModel")
+    private fundecl DrawModel_(model: Model, position: Vector3, scale: f32, tint: Color) -> ();
+    @c_symbol_name("DrawModelEx")
+    private fundecl DrawModelEx_(model: Model, position: Vector3, rotationAxis: Vector3, rotationAngle: f32, scale: Vector3, tint: Color) -> ();
+    @c_symbol_name("DrawModelWires")
+    private fundecl DrawModelWires_(model: Model, position: Vector3, scale: f32, tint: Color) -> ();
+    @c_symbol_name("DrawModelWiresEx")
+    private fundecl DrawModelWiresEx_(model: Model, position: Vector3, rotationAxis: Vector3, rotationAngle: f32, scale: Vector3, tint: Color) -> ();
+    @c_symbol_name("DrawBoundingBox")
+    private fundecl DrawBoundingBox_(box_: BoundingBox, color: Color) -> ();
+    @c_symbol_name("DrawBillboard")
+    private fundecl DrawBillboard_(camera: Camera, texture: Texture2D, position: Vector3, scale: f32, tint: Color) -> ();
+    @c_symbol_name("DrawBillboardRec")
+    private fundecl DrawBillboardRec_(camera: Camera, texture: Texture2D, rec: Rectangle, position: Vector3, size: Vector2, tint: Color) -> ();
+    @c_symbol_name("DrawBillboardPro")
+    private fundecl DrawBillboardPro_(camera: Camera, texture: Texture2D, rec: Rectangle, position: Vector3, up: Vector3, size: Vector2, origin: Vector2, rotation: f32, tint: Color) -> ();
     fundecl UploadMesh(mesh: cptr mut Mesh, dynamic: bool) -> ();
     fundecl UpdateMeshBuffer(mesh: Mesh, index: i32, data: cptr u8, dataSize: i32, offset: i32) -> ();
     fundecl UnloadMesh(mesh: Mesh) -> ();
@@ -1226,8 +1443,10 @@ extern("C") {
     fundecl GenMeshCone(radius: f32, height: f32, slices: i32) -> Mesh;
     fundecl GenMeshTorus(radius: f32, size: f32, radSeg: i32, sides: i32) -> Mesh;
     fundecl GenMeshKnot(radius: f32, size: f32, radSeg: i32, sides: i32) -> Mesh;
-    fundecl GenMeshHeightmap(heightmap: Image, size: Vector3) -> Mesh;
-    fundecl GenMeshCubicmap(cubicmap: Image, cubeSize: Vector3) -> Mesh;
+    @c_symbol_name("GenMeshHeightmap")
+    private fundecl GenMeshHeightmap_(heightmap: Image, size: Vector3) -> Mesh;
+    @c_symbol_name("GenMeshCubicmap")
+    private fundecl GenMeshCubicmap_(cubicmap: Image, cubeSize: Vector3) -> Mesh;
     fundecl LoadMaterials(fileName: cptr char, materialCount: cptr mut i32) -> cptr mut Material;
     fundecl LoadMaterialDefault() -> Material;
     fundecl IsMaterialValid(material: Material) -> bool;
@@ -1239,14 +1458,19 @@ extern("C") {
     fundecl UpdateModelAnimationEx(model: Model, animA: ModelAnimation, frameA: f32, animB: ModelAnimation, frameB: f32, blend: f32) -> ();
     fundecl UnloadModelAnimations(animations: cptr mut ModelAnimation, animCount: i32) -> ();
     fundecl IsModelAnimationValid(model: Model, anim: ModelAnimation) -> bool;
-    fundecl CheckCollisionSpheres(center1: Vector3, radius1: f32, center2: Vector3, radius2: f32) -> bool;
+    @c_symbol_name("CheckCollisionSpheres")
+    private fundecl CheckCollisionSpheres_(center1: Vector3, radius1: f32, center2: Vector3, radius2: f32) -> bool;
     fundecl CheckCollisionBoxes(box1: BoundingBox, box2: BoundingBox) -> bool;
-    fundecl CheckCollisionBoxSphere(box_: BoundingBox, center: Vector3, radius: f32) -> bool;
-    fundecl GetRayCollisionSphere(ray: Ray, center: Vector3, radius: f32) -> RayCollision;
+    @c_symbol_name("CheckCollisionBoxSphere")
+    private fundecl CheckCollisionBoxSphere_(box_: BoundingBox, center: Vector3, radius: f32) -> bool;
+    @c_symbol_name("GetRayCollisionSphere")
+    private fundecl GetRayCollisionSphere_(ray: Ray, center: Vector3, radius: f32) -> RayCollision;
     fundecl GetRayCollisionBox(ray: Ray, box_: BoundingBox) -> RayCollision;
     fundecl GetRayCollisionMesh(ray: Ray, mesh: Mesh, transform: Matrix) -> RayCollision;
-    fundecl GetRayCollisionTriangle(ray: Ray, p1: Vector3, p2: Vector3, p3: Vector3) -> RayCollision;
-    fundecl GetRayCollisionQuad(ray: Ray, p1: Vector3, p2: Vector3, p3: Vector3, p4: Vector3) -> RayCollision;
+    @c_symbol_name("GetRayCollisionTriangle")
+    private fundecl GetRayCollisionTriangle_(ray: Ray, p1: Vector3, p2: Vector3, p3: Vector3) -> RayCollision;
+    @c_symbol_name("GetRayCollisionQuad")
+    private fundecl GetRayCollisionQuad_(ray: Ray, p1: Vector3, p2: Vector3, p3: Vector3, p4: Vector3) -> RayCollision;
 }
 
 const AudioCallback = cptr u8;
@@ -1803,6 +2027,231 @@ fun LoadMusicStream(fileName: Text) -> Music = {
     let buffer = toC_(move fileName);
     return LoadMusicStream(buffer.pointer as cptr char);
 }
+
+fun GetMonitorPosition(monitor: i32) -> Vector2 = GetMonitorPosition_(monitor);
+fun GetWindowPosition() -> Vector2 = GetWindowPosition_();
+fun GetWindowScaleDPI() -> Vector2 = GetWindowScaleDPI_();
+fun ClearBackground(color: Color) -> () = ClearBackground_(color);
+fun BeginShaderMode(shader: Shader) -> () = BeginShaderMode_(shader);
+fun LoadShader(vsFileName: cptr char, fsFileName: cptr char) -> Shader = LoadShader_(vsFileName, fsFileName);
+fun LoadShaderFromMemory(vsCode: cptr char, fsCode: cptr char) -> Shader = LoadShaderFromMemory_(vsCode, fsCode);
+fun IsShaderValid(shader: Shader) -> bool = IsShaderValid_(shader);
+fun GetShaderLocation(shader: Shader, uniformName: cptr char) -> i32 = GetShaderLocation_(shader, uniformName);
+fun GetShaderLocationAttrib(shader: Shader, attribName: cptr char) -> i32 = GetShaderLocationAttrib_(shader, attribName);
+fun SetShaderValue(shader: Shader, locIndex: i32, value: cptr u8, uniformType: i32) -> () = SetShaderValue_(shader, locIndex, value, uniformType);
+fun SetShaderValueV(shader: Shader, locIndex: i32, value: cptr u8, uniformType: i32, count: i32) -> () = SetShaderValueV_(shader, locIndex, value, uniformType, count);
+fun SetShaderValueMatrix(shader: Shader, locIndex: i32, mat: Matrix) -> () = SetShaderValueMatrix_(shader, locIndex, mat);
+fun SetShaderValueTexture(shader: Shader, locIndex: i32, texture: Texture2D) -> () = SetShaderValueTexture_(shader, locIndex, texture);
+fun UnloadShader(shader: Shader) -> () = UnloadShader_(shader);
+fun GetScreenToWorldRay(position: Vector2, camera: Camera) -> Ray = GetScreenToWorldRay_(position, camera);
+fun GetScreenToWorldRayEx(position: Vector2, camera: Camera, width: i32, height: i32) -> Ray = GetScreenToWorldRayEx_(position, camera, width, height);
+fun GetWorldToScreen(position: Vector3, camera: Camera) -> Vector2 = GetWorldToScreen_(position, camera);
+fun GetWorldToScreenEx(position: Vector3, camera: Camera, width: i32, height: i32) -> Vector2 = GetWorldToScreenEx_(position, camera, width, height);
+fun GetWorldToScreen2D(position: Vector2, camera: Camera2D) -> Vector2 = GetWorldToScreen2D_(position, camera);
+fun GetScreenToWorld2D(position: Vector2, camera: Camera2D) -> Vector2 = GetScreenToWorld2D_(position, camera);
+fun LoadDirectoryFiles(dirPath: cptr char) -> FilePathList = LoadDirectoryFiles_(dirPath);
+fun LoadDirectoryFilesEx(basePath: cptr char, filter: cptr char, scanSubdirs: bool) -> FilePathList = LoadDirectoryFilesEx_(basePath, filter, scanSubdirs);
+fun UnloadDirectoryFiles(files: FilePathList) -> () = UnloadDirectoryFiles_(files);
+fun LoadDroppedFiles() -> FilePathList = LoadDroppedFiles_();
+fun UnloadDroppedFiles(files: FilePathList) -> () = UnloadDroppedFiles_(files);
+fun LoadAutomationEventList(fileName: cptr char) -> AutomationEventList = LoadAutomationEventList_(fileName);
+fun UnloadAutomationEventList(list: AutomationEventList) -> () = UnloadAutomationEventList_(list);
+fun ExportAutomationEventList(list: AutomationEventList, fileName: cptr char) -> bool = ExportAutomationEventList_(list, fileName);
+fun GetMousePosition() -> Vector2 = GetMousePosition_();
+fun GetMouseDelta() -> Vector2 = GetMouseDelta_();
+fun GetMouseWheelMoveV() -> Vector2 = GetMouseWheelMoveV_();
+fun GetTouchPosition(index: i32) -> Vector2 = GetTouchPosition_(index);
+fun GetGestureDragVector() -> Vector2 = GetGestureDragVector_();
+fun GetGesturePinchVector() -> Vector2 = GetGesturePinchVector_();
+fun UpdateCameraPro(camera: cptr mut Camera, movement: Vector3, rotation: Vector3, zoom: f32) -> () = UpdateCameraPro_(camera, movement, rotation, zoom);
+fun SetShapesTexture(texture: Texture2D, rec: Rectangle) -> () = SetShapesTexture_(texture, rec);
+fun GetShapesTextureRectangle() -> Rectangle = GetShapesTextureRectangle_();
+fun DrawPixel(posX: i32, posY: i32, color: Color) -> () = DrawPixel_(posX, posY, color);
+fun DrawPixelV(position: Vector2, color: Color) -> () = DrawPixelV_(position, color);
+fun DrawLine(startPosX: i32, startPosY: i32, endPosX: i32, endPosY: i32, color: Color) -> () = DrawLine_(startPosX, startPosY, endPosX, endPosY, color);
+fun DrawLineV(startPos: Vector2, endPos: Vector2, color: Color) -> () = DrawLineV_(startPos, endPos, color);
+fun DrawLineEx(startPos: Vector2, endPos: Vector2, thick: f32, color: Color) -> () = DrawLineEx_(startPos, endPos, thick, color);
+fun DrawLineStrip(points: cptr Vector2, pointCount: i32, color: Color) -> () = DrawLineStrip_(points, pointCount, color);
+fun DrawLineBezier(startPos: Vector2, endPos: Vector2, thick: f32, color: Color) -> () = DrawLineBezier_(startPos, endPos, thick, color);
+fun DrawLineDashed(startPos: Vector2, endPos: Vector2, dashSize: i32, spaceSize: i32, color: Color) -> () = DrawLineDashed_(startPos, endPos, dashSize, spaceSize, color);
+fun DrawTriangle(v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> () = DrawTriangle_(v1, v2, v3, color);
+fun DrawTriangleGradient(v1: Vector2, v2: Vector2, v3: Vector2, c1: Color, c2: Color, c3: Color) -> () = DrawTriangleGradient_(v1, v2, v3, c1, c2, c3);
+fun DrawTriangleLines(v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> () = DrawTriangleLines_(v1, v2, v3, color);
+fun DrawTriangleLinesEx(v1: Vector2, v2: Vector2, v3: Vector2, thick: f32, color: Color) -> () = DrawTriangleLinesEx_(v1, v2, v3, thick, color);
+fun DrawTriangleFan(points: cptr Vector2, pointCount: i32, color: Color) -> () = DrawTriangleFan_(points, pointCount, color);
+fun DrawTriangleStrip(points: cptr Vector2, pointCount: i32, color: Color) -> () = DrawTriangleStrip_(points, pointCount, color);
+fun DrawRectangle(posX: i32, posY: i32, width: i32, height: i32, color: Color) -> () = DrawRectangle_(posX, posY, width, height, color);
+fun DrawRectangleV(position: Vector2, size: Vector2, color: Color) -> () = DrawRectangleV_(position, size, color);
+fun DrawRectangleRec(rec: Rectangle, color: Color) -> () = DrawRectangleRec_(rec, color);
+fun DrawRectanglePro(rec: Rectangle, origin: Vector2, rotation: f32, color: Color) -> () = DrawRectanglePro_(rec, origin, rotation, color);
+fun DrawRectangleGradientV(posX: i32, posY: i32, width: i32, height: i32, top: Color, bottom: Color) -> () = DrawRectangleGradientV_(posX, posY, width, height, top, bottom);
+fun DrawRectangleGradientH(posX: i32, posY: i32, width: i32, height: i32, left: Color, right: Color) -> () = DrawRectangleGradientH_(posX, posY, width, height, left, right);
+fun DrawRectangleGradientEx(rec: Rectangle, col1: Color, col2: Color, col3: Color, col4: Color) -> () = DrawRectangleGradientEx_(rec, col1, col2, col3, col4);
+fun DrawRectangleLines(posX: i32, posY: i32, width: i32, height: i32, color: Color) -> () = DrawRectangleLines_(posX, posY, width, height, color);
+fun DrawRectangleLinesEx(rec: Rectangle, thick: f32, color: Color) -> () = DrawRectangleLinesEx_(rec, thick, color);
+fun DrawRectangleRounded(rec: Rectangle, roundness: f32, segments: i32, color: Color) -> () = DrawRectangleRounded_(rec, roundness, segments, color);
+fun DrawRectangleRoundedLines(rec: Rectangle, roundness: f32, segments: i32, color: Color) -> () = DrawRectangleRoundedLines_(rec, roundness, segments, color);
+fun DrawRectangleRoundedLinesEx(rec: Rectangle, roundness: f32, segments: i32, thick: f32, color: Color) -> () = DrawRectangleRoundedLinesEx_(rec, roundness, segments, thick, color);
+fun DrawPoly(center: Vector2, sides: i32, radius: f32, rotation: f32, color: Color) -> () = DrawPoly_(center, sides, radius, rotation, color);
+fun DrawPolyLines(center: Vector2, sides: i32, radius: f32, rotation: f32, color: Color) -> () = DrawPolyLines_(center, sides, radius, rotation, color);
+fun DrawPolyLinesEx(center: Vector2, sides: i32, radius: f32, rotation: f32, thick: f32, color: Color) -> () = DrawPolyLinesEx_(center, sides, radius, rotation, thick, color);
+fun DrawCircle(centerX: i32, centerY: i32, radius: f32, color: Color) -> () = DrawCircle_(centerX, centerY, radius, color);
+fun DrawCircleV(center: Vector2, radius: f32, color: Color) -> () = DrawCircleV_(center, radius, color);
+fun DrawCircleGradient(center: Vector2, radius: f32, inner: Color, outer: Color) -> () = DrawCircleGradient_(center, radius, inner, outer);
+fun DrawCircleSector(center: Vector2, radius: f32, startAngle: f32, endAngle: f32, segments: i32, color: Color) -> () = DrawCircleSector_(center, radius, startAngle, endAngle, segments, color);
+fun DrawCircleSectorLines(center: Vector2, radius: f32, startAngle: f32, endAngle: f32, segments: i32, color: Color) -> () = DrawCircleSectorLines_(center, radius, startAngle, endAngle, segments, color);
+fun DrawCircleSectorLinesEx(center: Vector2, radius: f32, startAngle: f32, endAngle: f32, segments: i32, thick: f32, color: Color) -> () = DrawCircleSectorLinesEx_(center, radius, startAngle, endAngle, segments, thick, color);
+fun DrawCircleLines(centerX: i32, centerY: i32, radius: f32, color: Color) -> () = DrawCircleLines_(centerX, centerY, radius, color);
+fun DrawCircleLinesV(center: Vector2, radius: f32, color: Color) -> () = DrawCircleLinesV_(center, radius, color);
+fun DrawCircleLinesEx(center: Vector2, radius: f32, thick: f32, color: Color) -> () = DrawCircleLinesEx_(center, radius, thick, color);
+fun DrawEllipse(centerX: i32, centerY: i32, radiusH: f32, radiusV: f32, color: Color) -> () = DrawEllipse_(centerX, centerY, radiusH, radiusV, color);
+fun DrawEllipseV(center: Vector2, radiusH: f32, radiusV: f32, color: Color) -> () = DrawEllipseV_(center, radiusH, radiusV, color);
+fun DrawEllipseLines(centerX: i32, centerY: i32, radiusH: f32, radiusV: f32, color: Color) -> () = DrawEllipseLines_(centerX, centerY, radiusH, radiusV, color);
+fun DrawEllipseLinesV(center: Vector2, radiusH: f32, radiusV: f32, color: Color) -> () = DrawEllipseLinesV_(center, radiusH, radiusV, color);
+fun DrawEllipseLinesEx(center: Vector2, radiusH: f32, radiusV: f32, thick: f32, color: Color) -> () = DrawEllipseLinesEx_(center, radiusH, radiusV, thick, color);
+fun DrawRing(center: Vector2, innerRadius: f32, outerRadius: f32, startAngle: f32, endAngle: f32, segments: i32, color: Color) -> () = DrawRing_(center, innerRadius, outerRadius, startAngle, endAngle, segments, color);
+fun DrawRingLines(center: Vector2, innerRadius: f32, outerRadius: f32, startAngle: f32, endAngle: f32, segments: i32, color: Color) -> () = DrawRingLines_(center, innerRadius, outerRadius, startAngle, endAngle, segments, color);
+fun DrawRingLinesEx(center: Vector2, innerRadius: f32, outerRadius: f32, startAngle: f32, endAngle: f32, segments: i32, thick: f32, color: Color) -> () = DrawRingLinesEx_(center, innerRadius, outerRadius, startAngle, endAngle, segments, thick, color);
+fun DrawSplineLinear(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> () = DrawSplineLinear_(points, pointCount, thick, color);
+fun DrawSplineBasis(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> () = DrawSplineBasis_(points, pointCount, thick, color);
+fun DrawSplineCatmullRom(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> () = DrawSplineCatmullRom_(points, pointCount, thick, color);
+fun DrawSplineBezierQuadratic(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> () = DrawSplineBezierQuadratic_(points, pointCount, thick, color);
+fun DrawSplineBezierCubic(points: cptr Vector2, pointCount: i32, thick: f32, color: Color) -> () = DrawSplineBezierCubic_(points, pointCount, thick, color);
+fun DrawSplineSegmentLinear(p1: Vector2, p2: Vector2, thick: f32, color: Color) -> () = DrawSplineSegmentLinear_(p1, p2, thick, color);
+fun DrawSplineSegmentBasis(p1: Vector2, p2: Vector2, p3: Vector2, p4: Vector2, thick: f32, color: Color) -> () = DrawSplineSegmentBasis_(p1, p2, p3, p4, thick, color);
+fun DrawSplineSegmentCatmullRom(p1: Vector2, p2: Vector2, p3: Vector2, p4: Vector2, thick: f32, color: Color) -> () = DrawSplineSegmentCatmullRom_(p1, p2, p3, p4, thick, color);
+fun DrawSplineSegmentBezierQuadratic(p1: Vector2, c2: Vector2, p3: Vector2, thick: f32, color: Color) -> () = DrawSplineSegmentBezierQuadratic_(p1, c2, p3, thick, color);
+fun DrawSplineSegmentBezierCubic(p1: Vector2, c2: Vector2, c3: Vector2, p4: Vector2, thick: f32, color: Color) -> () = DrawSplineSegmentBezierCubic_(p1, c2, c3, p4, thick, color);
+fun GetSplinePointLinear(startPos: Vector2, endPos: Vector2, t: f32) -> Vector2 = GetSplinePointLinear_(startPos, endPos, t);
+fun GetSplinePointBasis(p1: Vector2, p2: Vector2, p3: Vector2, p4: Vector2, t: f32) -> Vector2 = GetSplinePointBasis_(p1, p2, p3, p4, t);
+fun GetSplinePointCatmullRom(p1: Vector2, p2: Vector2, p3: Vector2, p4: Vector2, t: f32) -> Vector2 = GetSplinePointCatmullRom_(p1, p2, p3, p4, t);
+fun GetSplinePointBezierQuadratic(p1: Vector2, c2: Vector2, p3: Vector2, t: f32) -> Vector2 = GetSplinePointBezierQuadratic_(p1, c2, p3, t);
+fun GetSplinePointBezierCubic(p1: Vector2, c2: Vector2, c3: Vector2, p4: Vector2, t: f32) -> Vector2 = GetSplinePointBezierCubic_(p1, c2, c3, p4, t);
+fun CheckCollisionRecs(rec1: Rectangle, rec2: Rectangle) -> bool = CheckCollisionRecs_(rec1, rec2);
+fun CheckCollisionCircles(center1: Vector2, radius1: f32, center2: Vector2, radius2: f32) -> bool = CheckCollisionCircles_(center1, radius1, center2, radius2);
+fun CheckCollisionCircleRec(center: Vector2, radius: f32, rec: Rectangle) -> bool = CheckCollisionCircleRec_(center, radius, rec);
+fun CheckCollisionCircleLine(center: Vector2, radius: f32, p1: Vector2, p2: Vector2) -> bool = CheckCollisionCircleLine_(center, radius, p1, p2);
+fun CheckCollisionPointRec(point: Vector2, rec: Rectangle) -> bool = CheckCollisionPointRec_(point, rec);
+fun CheckCollisionPointCircle(point: Vector2, center: Vector2, radius: f32) -> bool = CheckCollisionPointCircle_(point, center, radius);
+fun CheckCollisionPointTriangle(point: Vector2, p1: Vector2, p2: Vector2, p3: Vector2) -> bool = CheckCollisionPointTriangle_(point, p1, p2, p3);
+fun CheckCollisionPointLine(point: Vector2, p1: Vector2, p2: Vector2, threshold: i32) -> bool = CheckCollisionPointLine_(point, p1, p2, threshold);
+fun CheckCollisionPointPoly(point: Vector2, points: cptr Vector2, pointCount: i32) -> bool = CheckCollisionPointPoly_(point, points, pointCount);
+fun CheckCollisionLines(startPos1: Vector2, endPos1: Vector2, startPos2: Vector2, endPos2: Vector2, collisionPoint: cptr mut Vector2) -> bool = CheckCollisionLines_(startPos1, endPos1, startPos2, endPos2, collisionPoint);
+fun GetCollisionRec(rec1: Rectangle, rec2: Rectangle) -> Rectangle = GetCollisionRec_(rec1, rec2);
+fun GenImageColor(width: i32, height: i32, color: Color) -> Image = GenImageColor_(width, height, color);
+fun GenImageGradientLinear(width: i32, height: i32, direction: i32, start: Color, end: Color) -> Image = GenImageGradientLinear_(width, height, direction, start, end);
+fun GenImageGradientRadial(width: i32, height: i32, density: f32, inner: Color, outer: Color) -> Image = GenImageGradientRadial_(width, height, density, inner, outer);
+fun GenImageGradientSquare(width: i32, height: i32, density: f32, inner: Color, outer: Color) -> Image = GenImageGradientSquare_(width, height, density, inner, outer);
+fun GenImageChecked(width: i32, height: i32, checksX: i32, checksY: i32, col1: Color, col2: Color) -> Image = GenImageChecked_(width, height, checksX, checksY, col1, col2);
+fun ImageFromImage(image: Image, rec: Rectangle) -> Image = ImageFromImage_(image, rec);
+fun ImageText(text: cptr char, fontSize: i32, color: Color) -> Image = ImageText_(text, fontSize, color);
+fun ImageTextEx(font: Font, text: cptr char, fontSize: f32, spacing: f32, tint: Color) -> Image = ImageTextEx_(font, text, fontSize, spacing, tint);
+fun ImageToPOT(image: cptr mut Image, fill: Color) -> () = ImageToPOT_(image, fill);
+fun ImageCrop(image: cptr mut Image, crop: Rectangle) -> () = ImageCrop_(image, crop);
+fun ImageAlphaClear(image: cptr mut Image, color: Color, threshold: f32) -> () = ImageAlphaClear_(image, color, threshold);
+fun ImageResizeCanvas(image: cptr mut Image, newWidth: i32, newHeight: i32, offsetX: i32, offsetY: i32, fill: Color) -> () = ImageResizeCanvas_(image, newWidth, newHeight, offsetX, offsetY, fill);
+fun ImageColorTint(image: cptr mut Image, color: Color) -> () = ImageColorTint_(image, color);
+fun ImageColorReplace(image: cptr mut Image, color: Color, replace: Color) -> () = ImageColorReplace_(image, color, replace);
+fun GetImageAlphaBorder(image: Image, threshold: f32) -> Rectangle = GetImageAlphaBorder_(image, threshold);
+fun GetImageColor(image: Image, x: i32, y: i32) -> Color = GetImageColor_(image, x, y);
+fun ImageClearBackground(dst: cptr mut Image, color: Color) -> () = ImageClearBackground_(dst, color);
+fun ImageDrawPixel(dst: cptr mut Image, posX: i32, posY: i32, color: Color) -> () = ImageDrawPixel_(dst, posX, posY, color);
+fun ImageDrawPixelV(dst: cptr mut Image, position: Vector2, color: Color) -> () = ImageDrawPixelV_(dst, position, color);
+fun ImageDrawLine(dst: cptr mut Image, startPosX: i32, startPosY: i32, endPosX: i32, endPosY: i32, color: Color) -> () = ImageDrawLine_(dst, startPosX, startPosY, endPosX, endPosY, color);
+fun ImageDrawLineV(dst: cptr mut Image, start: Vector2, end: Vector2, color: Color) -> () = ImageDrawLineV_(dst, start, end, color);
+fun ImageDrawLineEx(dst: cptr mut Image, start: Vector2, end: Vector2, thick: i32, color: Color) -> () = ImageDrawLineEx_(dst, start, end, thick, color);
+fun ImageDrawLineStrip(dst: cptr mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> () = ImageDrawLineStrip_(dst, points, pointCount, color);
+fun ImageDrawTriangle(dst: cptr mut Image, v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> () = ImageDrawTriangle_(dst, v1, v2, v3, color);
+fun ImageDrawTriangleGradient(dst: cptr mut Image, v1: Vector2, v2: Vector2, v3: Vector2, c1: Color, c2: Color, c3: Color) -> () = ImageDrawTriangleGradient_(dst, v1, v2, v3, c1, c2, c3);
+fun ImageDrawTriangleLines(dst: cptr mut Image, v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> () = ImageDrawTriangleLines_(dst, v1, v2, v3, color);
+fun ImageDrawTriangleFan(dst: cptr mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> () = ImageDrawTriangleFan_(dst, points, pointCount, color);
+fun ImageDrawTriangleStrip(dst: cptr mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> () = ImageDrawTriangleStrip_(dst, points, pointCount, color);
+fun ImageDrawRectangle(dst: cptr mut Image, posX: i32, posY: i32, width: i32, height: i32, color: Color) -> () = ImageDrawRectangle_(dst, posX, posY, width, height, color);
+fun ImageDrawRectangleV(dst: cptr mut Image, position: Vector2, size: Vector2, color: Color) -> () = ImageDrawRectangleV_(dst, position, size, color);
+fun ImageDrawRectangleRec(dst: cptr mut Image, rec: Rectangle, color: Color) -> () = ImageDrawRectangleRec_(dst, rec, color);
+fun ImageDrawRectanglePro(dst: cptr mut Image, rec: Rectangle, origin: Vector2, rotation: f32, color: Color) -> () = ImageDrawRectanglePro_(dst, rec, origin, rotation, color);
+fun ImageDrawRectangleLines(dst: cptr mut Image, posX: i32, posY: i32, width: i32, height: i32, color: Color) -> () = ImageDrawRectangleLines_(dst, posX, posY, width, height, color);
+fun ImageDrawRectangleLinesEx(dst: cptr mut Image, rec: Rectangle, thick: i32, color: Color) -> () = ImageDrawRectangleLinesEx_(dst, rec, thick, color);
+fun ImageDrawRectangleGradientEx(dst: cptr mut Image, rec: Rectangle, col1: Color, col2: Color, col3: Color, col4: Color) -> () = ImageDrawRectangleGradientEx_(dst, rec, col1, col2, col3, col4);
+fun ImageDrawCircle(dst: cptr mut Image, centerX: i32, centerY: i32, radius: i32, color: Color) -> () = ImageDrawCircle_(dst, centerX, centerY, radius, color);
+fun ImageDrawCircleV(dst: cptr mut Image, center: Vector2, radius: i32, color: Color) -> () = ImageDrawCircleV_(dst, center, radius, color);
+fun ImageDrawCircleLines(dst: cptr mut Image, centerX: i32, centerY: i32, radius: i32, color: Color) -> () = ImageDrawCircleLines_(dst, centerX, centerY, radius, color);
+fun ImageDrawCircleLinesV(dst: cptr mut Image, center: Vector2, radius: i32, color: Color) -> () = ImageDrawCircleLinesV_(dst, center, radius, color);
+fun ImageDrawCircleGradient(dst: cptr mut Image, center: Vector2, radius: f32, inner: Color, outer: Color) -> () = ImageDrawCircleGradient_(dst, center, radius, inner, outer);
+fun ImageDrawImage(dst: cptr mut Image, src: Image, posX: i32, posY: i32, tint: Color) -> () = ImageDrawImage_(dst, src, posX, posY, tint);
+fun ImageDrawImageEx(dst: cptr mut Image, src: Image, position: Vector2, rotation: f32, scale: f32, tint: Color) -> () = ImageDrawImageEx_(dst, src, position, rotation, scale, tint);
+fun ImageDrawImageRec(dst: cptr mut Image, src: Image, srcRec: Rectangle, position: Vector2, tint: Color) -> () = ImageDrawImageRec_(dst, src, srcRec, position, tint);
+fun ImageDrawImagePro(dst: cptr mut Image, src: Image, srcRec: Rectangle, dstRec: Rectangle, origin: Vector2, rotation: f32, tint: Color) -> () = ImageDrawImagePro_(dst, src, srcRec, dstRec, origin, rotation, tint);
+fun ImageDrawText(dst: cptr mut Image, text: cptr char, posX: i32, posY: i32, fontSize: i32, color: Color) -> () = ImageDrawText_(dst, text, posX, posY, fontSize, color);
+fun ImageDrawTextEx(dst: cptr mut Image, font: Font, text: cptr char, position: Vector2, fontSize: f32, spacing: f32, tint: Color) -> () = ImageDrawTextEx_(dst, font, text, position, fontSize, spacing, tint);
+fun ImageDrawTextPro(dst: cptr mut Image, font: Font, text: cptr char, position: Vector2, origin: Vector2, rotation: f32, fontSize: f32, spacing: f32, tint: Color) -> () = ImageDrawTextPro_(dst, font, text, position, origin, rotation, fontSize, spacing, tint);
+fun UpdateTextureRec(texture: Texture2D, rec: Rectangle, pixels: cptr u8) -> () = UpdateTextureRec_(texture, rec, pixels);
+fun DrawTexture(texture: Texture2D, posX: i32, posY: i32, tint: Color) -> () = DrawTexture_(texture, posX, posY, tint);
+fun DrawTextureV(texture: Texture2D, position: Vector2, tint: Color) -> () = DrawTextureV_(texture, position, tint);
+fun DrawTextureEx(texture: Texture2D, position: Vector2, rotation: f32, scale: f32, tint: Color) -> () = DrawTextureEx_(texture, position, rotation, scale, tint);
+fun DrawTextureRec(texture: Texture2D, rec: Rectangle, position: Vector2, tint: Color) -> () = DrawTextureRec_(texture, rec, position, tint);
+fun DrawTexturePro(texture: Texture2D, srcrec: Rectangle, dstrec: Rectangle, origin: Vector2, rotation: f32, tint: Color) -> () = DrawTexturePro_(texture, srcrec, dstrec, origin, rotation, tint);
+fun DrawTextureNPatch(texture: Texture2D, nPatchInfo: NPatchInfo, dstrec: Rectangle, origin: Vector2, rotation: f32, tint: Color) -> () = DrawTextureNPatch_(texture, nPatchInfo, dstrec, origin, rotation, tint);
+fun ColorIsEqual(col1: Color, col2: Color) -> bool = ColorIsEqual_(col1, col2);
+fun Fade(color: Color, alpha: f32) -> Color = Fade_(color, alpha);
+fun ColorToInt(color: Color) -> i32 = ColorToInt_(color);
+fun ColorNormalize(color: Color) -> Vector4 = ColorNormalize_(color);
+fun ColorFromNormalized(normalized: Vector4) -> Color = ColorFromNormalized_(normalized);
+fun ColorToHSV(color: Color) -> Vector3 = ColorToHSV_(color);
+fun ColorFromHSV(hue: f32, saturation: f32, value: f32) -> Color = ColorFromHSV_(hue, saturation, value);
+fun ColorTint(color: Color, tint: Color) -> Color = ColorTint_(color, tint);
+fun ColorBrightness(color: Color, factor: f32) -> Color = ColorBrightness_(color, factor);
+fun ColorContrast(color: Color, contrast: f32) -> Color = ColorContrast_(color, contrast);
+fun ColorAlpha(color: Color, alpha: f32) -> Color = ColorAlpha_(color, alpha);
+fun ColorAlphaBlend(dst: Color, src: Color, tint: Color) -> Color = ColorAlphaBlend_(dst, src, tint);
+fun ColorLerp(color1: Color, color2: Color, factor: f32) -> Color = ColorLerp_(color1, color2, factor);
+fun GetColor(hexValue: u32) -> Color = GetColor_(hexValue);
+fun GetPixelColor(srcPtr: cptr u8, format: i32) -> Color = GetPixelColor_(srcPtr, format);
+fun SetPixelColor(dstPtr: cptr mut u8, color: Color, format: i32) -> () = SetPixelColor_(dstPtr, color, format);
+fun LoadFontFromImage(image: Image, key: Color, firstChar: i32) -> Font = LoadFontFromImage_(image, key, firstChar);
+fun DrawText(text: cptr char, posX: i32, posY: i32, fontSize: i32, color: Color) -> () = DrawText_(text, posX, posY, fontSize, color);
+fun DrawTextEx(font: Font, text: cptr char, position: Vector2, fontSize: f32, spacing: f32, tint: Color) -> () = DrawTextEx_(font, text, position, fontSize, spacing, tint);
+fun DrawTextPro(font: Font, text: cptr char, position: Vector2, origin: Vector2, rotation: f32, fontSize: f32, spacing: f32, tint: Color) -> () = DrawTextPro_(font, text, position, origin, rotation, fontSize, spacing, tint);
+fun DrawTextCodepoint(font: Font, codepoint: i32, position: Vector2, fontSize: f32, tint: Color) -> () = DrawTextCodepoint_(font, codepoint, position, fontSize, tint);
+fun DrawTextCodepoints(font: Font, codepoints: cptr i32, codepointCount: i32, position: Vector2, fontSize: f32, spacing: f32, tint: Color) -> () = DrawTextCodepoints_(font, codepoints, codepointCount, position, fontSize, spacing, tint);
+fun MeasureTextEx(font: Font, text: cptr char, fontSize: f32, spacing: f32) -> Vector2 = MeasureTextEx_(font, text, fontSize, spacing);
+fun MeasureTextCodepoints(font: Font, codepoints: cptr i32, length: i32, fontSize: f32, spacing: f32) -> Vector2 = MeasureTextCodepoints_(font, codepoints, length, fontSize, spacing);
+fun GetGlyphAtlasRec(font: Font, codepoint: i32) -> Rectangle = GetGlyphAtlasRec_(font, codepoint);
+fun DrawLine3D(startPos: Vector3, endPos: Vector3, color: Color) -> () = DrawLine3D_(startPos, endPos, color);
+fun DrawPoint3D(position: Vector3, color: Color) -> () = DrawPoint3D_(position, color);
+fun DrawCircle3D(center: Vector3, radius: f32, rotationAxis: Vector3, rotationAngle: f32, color: Color) -> () = DrawCircle3D_(center, radius, rotationAxis, rotationAngle, color);
+fun DrawTriangle3D(v1: Vector3, v2: Vector3, v3: Vector3, color: Color) -> () = DrawTriangle3D_(v1, v2, v3, color);
+fun DrawTriangleStrip3D(points: cptr Vector3, pointCount: i32, color: Color) -> () = DrawTriangleStrip3D_(points, pointCount, color);
+fun DrawCube(position: Vector3, width: f32, height: f32, length: f32, color: Color) -> () = DrawCube_(position, width, height, length, color);
+fun DrawCubeV(position: Vector3, size: Vector3, color: Color) -> () = DrawCubeV_(position, size, color);
+fun DrawCubeWires(position: Vector3, width: f32, height: f32, length: f32, color: Color) -> () = DrawCubeWires_(position, width, height, length, color);
+fun DrawCubeWiresV(position: Vector3, size: Vector3, color: Color) -> () = DrawCubeWiresV_(position, size, color);
+fun DrawSphere(centerPos: Vector3, radius: f32, color: Color) -> () = DrawSphere_(centerPos, radius, color);
+fun DrawSphereEx(centerPos: Vector3, radius: f32, rings: i32, slices: i32, color: Color) -> () = DrawSphereEx_(centerPos, radius, rings, slices, color);
+fun DrawSphereWires(centerPos: Vector3, radius: f32, rings: i32, slices: i32, color: Color) -> () = DrawSphereWires_(centerPos, radius, rings, slices, color);
+fun DrawCylinder(position: Vector3, radiusTop: f32, radiusBottom: f32, height: f32, sides: i32, color: Color) -> () = DrawCylinder_(position, radiusTop, radiusBottom, height, sides, color);
+fun DrawCylinderEx(startPos: Vector3, endPos: Vector3, startRadius: f32, endRadius: f32, sides: i32, color: Color) -> () = DrawCylinderEx_(startPos, endPos, startRadius, endRadius, sides, color);
+fun DrawCylinderWires(position: Vector3, radiusTop: f32, radiusBottom: f32, height: f32, sides: i32, color: Color) -> () = DrawCylinderWires_(position, radiusTop, radiusBottom, height, sides, color);
+fun DrawCylinderWiresEx(startPos: Vector3, endPos: Vector3, startRadius: f32, endRadius: f32, sides: i32, color: Color) -> () = DrawCylinderWiresEx_(startPos, endPos, startRadius, endRadius, sides, color);
+fun DrawCapsule(startPos: Vector3, endPos: Vector3, radius: f32, rings: i32, slices: i32, color: Color) -> () = DrawCapsule_(startPos, endPos, radius, rings, slices, color);
+fun DrawCapsuleWires(startPos: Vector3, endPos: Vector3, radius: f32, rings: i32, slices: i32, color: Color) -> () = DrawCapsuleWires_(startPos, endPos, radius, rings, slices, color);
+fun DrawPlane(centerPos: Vector3, size: Vector2, color: Color) -> () = DrawPlane_(centerPos, size, color);
+fun DrawRay(ray: Ray, color: Color) -> () = DrawRay_(ray, color);
+fun DrawModel(model: Model, position: Vector3, scale: f32, tint: Color) -> () = DrawModel_(model, position, scale, tint);
+fun DrawModelEx(model: Model, position: Vector3, rotationAxis: Vector3, rotationAngle: f32, scale: Vector3, tint: Color) -> () = DrawModelEx_(model, position, rotationAxis, rotationAngle, scale, tint);
+fun DrawModelWires(model: Model, position: Vector3, scale: f32, tint: Color) -> () = DrawModelWires_(model, position, scale, tint);
+fun DrawModelWiresEx(model: Model, position: Vector3, rotationAxis: Vector3, rotationAngle: f32, scale: Vector3, tint: Color) -> () = DrawModelWiresEx_(model, position, rotationAxis, rotationAngle, scale, tint);
+fun DrawBoundingBox(box_: BoundingBox, color: Color) -> () = DrawBoundingBox_(box_, color);
+fun DrawBillboard(camera: Camera, texture: Texture2D, position: Vector3, scale: f32, tint: Color) -> () = DrawBillboard_(camera, texture, position, scale, tint);
+fun DrawBillboardRec(camera: Camera, texture: Texture2D, rec: Rectangle, position: Vector3, size: Vector2, tint: Color) -> () = DrawBillboardRec_(camera, texture, rec, position, size, tint);
+fun DrawBillboardPro(camera: Camera, texture: Texture2D, rec: Rectangle, position: Vector3, up: Vector3, size: Vector2, origin: Vector2, rotation: f32, tint: Color) -> () = DrawBillboardPro_(camera, texture, rec, position, up, size, origin, rotation, tint);
+fun GenMeshHeightmap(heightmap: Image, size: Vector3) -> Mesh = GenMeshHeightmap_(heightmap, size);
+fun GenMeshCubicmap(cubicmap: Image, cubeSize: Vector3) -> Mesh = GenMeshCubicmap_(cubicmap, cubeSize);
+fun CheckCollisionSpheres(center1: Vector3, radius1: f32, center2: Vector3, radius2: f32) -> bool = CheckCollisionSpheres_(center1, radius1, center2, radius2);
+fun CheckCollisionBoxSphere(box_: BoundingBox, center: Vector3, radius: f32) -> bool = CheckCollisionBoxSphere_(box_, center, radius);
+fun GetRayCollisionSphere(ray: Ray, center: Vector3, radius: f32) -> RayCollision = GetRayCollisionSphere_(ray, center, radius);
+fun GetRayCollisionTriangle(ray: Ray, p1: Vector3, p2: Vector3, p3: Vector3) -> RayCollision = GetRayCollisionTriangle_(ray, p1, p2, p3);
+fun GetRayCollisionQuad(ray: Ray, p1: Vector3, p2: Vector3, p3: Vector3, p4: Vector3) -> RayCollision = GetRayCollisionQuad_(ray, p1, p2, p3, p4);
 
 private fun toC_(text: str) -> String = {
     var buffer = stringReserve(text.length() + 1);
