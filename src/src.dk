@@ -47,6 +47,19 @@ fun drawGrid(camera: ref rl.Camera2D) = {
     }
 }
 
+fun drawCursor(connection: rl.Vector2) = {
+    let point = rl.Vector2(connection.x, -connection.y);
+    rl.DrawCircleV(point, gridStep / 5.0, rl.WHITE);
+}
+
+fun drawFps() = {
+    rl.DrawText(f"{rl.GetFPS()}", posX=4, posY=4, fontSize=12, color=rl.GREEN);
+}
+
+fun drawCoords(col: i32, row: i32) = {
+    rl.DrawText(f"{col}, {row}", 4, rl.GetScreenHeight() - 16, 12, rl.WHITE);
+}
+
 fun main() = {
     rl.InitWindow(800, 600, "QuackPlank");
     check(rl.IsWindowReady());
@@ -62,19 +75,23 @@ fun main() = {
     while (not rl.WindowShouldClose()) {
         updateCamera(&camera);
 
-        rl.BeginDrawing();
-        rl.ClearBackground(rl.BLACK);
-        rl.BeginMode2D(camera);
-        drawGrid(&camera);
-        rl.EndMode2D();
-        rl.DrawText(f"{rl.GetFPS()}",
-                    posX=4, posY=4, fontSize=12, color=rl.GREEN);
         let mouse = rl.GetScreenToWorld2D(rl.GetMousePosition(), camera);
         let x = mouse.x / gridStep;
         let y = -mouse.y / gridStep;
         let col = (if x >= 0.0 then x + 0.5 else x - 0.5) as i32;
         let row = (if y >= 0.0 then y + 0.5 else y - 0.5) as i32;
-        rl.DrawText(f"{col}, {row}", 4, rl.GetScreenHeight() - 16, 12, rl.WHITE);
+        let connection = rl.Vector2((col as f32) * gridStep, (row as f32) * gridStep);
+
+        rl.BeginDrawing();
+        rl.ClearBackground(rl.BLACK);
+
+        rl.BeginMode2D(camera);
+        drawGrid(&camera);
+        drawCursor(connection);
+        rl.EndMode2D();
+
+        drawFps();
+        drawCoords(col, row);
         rl.EndDrawing();
     }
 
