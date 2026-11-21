@@ -93,8 +93,8 @@ fun level1() -> Level = {
     var anchors: List[Vec2];
     anchors.push(road.pointer[0]);
     anchors.push(road.pointer[road.length() - 1]);
-    anchors.push(Vec2(-1.75, -3.75));
-    anchors.push(Vec2(1.75, -3.75));
+    anchors.push(Vec2(-2.0, -3.0));
+    anchors.push(Vec2(2.0, -3.0));
     return Level(move terrain, move road, move anchors);
 }
 
