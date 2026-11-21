@@ -200,9 +200,25 @@ fun createRoad(world: b2.b2WorldId, road: ref List[Vec2],
     }
 }
 
+fun duckHeight(mass: f32) -> f32 = mass / 100.0;
+
+fun drawDuck(texture: rl.Texture2D, feet: Vec2, mass: f32) = {
+    let w = texture.width as f32;
+    let h = texture.height as f32;
+    let height = duckHeight(mass);
+    let width = height * w / h;
+    rl.DrawTexturePro(texture, rl.Rectangle(0.0, 0.0, w, h),
+                      rl.Rectangle(feet.x - width / 2.0, -feet.y - height, width, height),
+                      Vec2(0.0, 0.0), 0.0, rl.WHITE);
+}
+
 fun main() = {
     rl.InitWindow(800, 600, "QuackPlank");
     check(rl.IsWindowReady());
+
+    let duck = rl.LoadTexture("src/duck.png");
+    check(rl.IsTextureValid(duck));
+    rl.SetTextureFilter(duck, rl.TEXTURE_FILTER_BILINEAR);
 
     var camera = rl.Camera2D(
         offset=rl.Vector2(rl.GetScreenWidth() as f32 / 2.0,
@@ -269,6 +285,7 @@ fun main() = {
         drawJoints(&level.anchors, rl.WHITE);
         if (edit)
             drawCursor(connection);
+        drawDuck(duck, Vec2(-4.5, 0.0), 35.0);
         rl.EndMode2D();
 
         drawFps();
@@ -279,6 +296,7 @@ fun main() = {
 
     if (not edit)
         b2.b2DestroyWorld(world);
+    rl.UnloadTexture(duck);
     rl.CloseWindow();
     return 0;
 }
