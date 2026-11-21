@@ -1,3 +1,22 @@
+import rl;
+
+fun check(ok: bool) = {
+    if (not ok)
+        panicking.panic();
+}
+
 fun main() = {
+    rl.InitWindow(800, 600, "QuackPlank");
+    check(rl.IsWindowReady());
+
+    while (not rl.WindowShouldClose()) {
+        rl.BeginDrawing();
+        rl.ClearBackground(rl.BLACK);
+        rl.DrawText(f"{rl.GetFPS()}",
+                    posX=4, posY=4, fontSize=20, color=rl.GREEN);
+        rl.EndDrawing();
+    }
+
+    rl.CloseWindow();
     return 0;
 }
