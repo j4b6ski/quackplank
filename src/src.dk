@@ -260,13 +260,15 @@ fun main() = {
         rl.ClearBackground(rl.BLACK);
 
         rl.BeginMode2D(camera);
-        drawGrid(&camera);
+        if (edit)
+            drawGrid(&camera);
         drawTerrain(&level.terrain);
         let points = if edit then &level.road else &road;
         drawRoad(points);
         drawJoints(points, rl.GRAY);
         drawJoints(&level.anchors, rl.WHITE);
-        drawCursor(connection);
+        if (edit)
+            drawCursor(connection);
         rl.EndMode2D();
 
         drawFps();
