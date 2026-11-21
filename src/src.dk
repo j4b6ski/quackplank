@@ -183,6 +183,21 @@ fun createRoad(world: b2.b2WorldId, road: ref List[Vec2],
     let right = road.pointer[road.length() - 1];
     anchor.position = b2.b2Vec2(right.x, right.y);
     bodies.push(b2.b2CreateBody(world, &anchor));
+
+    var spring = b2.b2DefaultDistanceJointDef();
+    spring.enableSpring = true;
+    spring.hertz = 5.0;
+    spring.dampingRatio = 0.75;
+    i = 1;
+    while (i < bodies.length()) {
+        spring.bodyIdA = bodies.pointer[i - 1];
+        spring.bodyIdB = bodies.pointer[i];
+        let a = b2.b2Body_GetPosition(spring.bodyIdA);
+        let b = b2.b2Body_GetPosition(spring.bodyIdB);
+        spring.length = b2.b2Distance(a, b);
+        b2.b2CreateDistanceJoint(world, &spring);
+        i += 1;
+    }
 }
 
 fun main() = {
