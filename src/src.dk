@@ -1,3 +1,4 @@
+import b2;
 import rl;
 import rl.Vector2 as Vec2;
 import std.math as math;
@@ -167,7 +168,19 @@ fun main() = {
     );
 
     let level = level1();
+    var edit = true;
+    var world = b2.b2_nullWorldId;
     while (not rl.WindowShouldClose()) {
+        if (rl.IsKeyPressed(rl.KEY_SPACE)) {
+            if (edit) {
+                let def = b2.b2DefaultWorldDef();
+                world = b2.b2CreateWorld(&def);
+            } else {
+                b2.b2DestroyWorld(world);
+            }
+            edit = not edit;
+        }
+
         updateCamera(&camera);
 
         let mouse = rl.GetScreenToWorld2D(rl.GetMousePosition(), camera);
@@ -194,6 +207,8 @@ fun main() = {
         rl.EndDrawing();
     }
 
+    if (not edit)
+        b2.b2DestroyWorld(world);
     rl.CloseWindow();
     return 0;
 }
