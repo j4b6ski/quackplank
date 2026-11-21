@@ -1,5 +1,6 @@
 import rl;
 import std.math as math;
+const gridStep = 0.25;
 
 fun check(ok: bool) = {
     if (not ok)
@@ -26,22 +27,21 @@ fun updateCamera(camera: ref mut rl.Camera2D) = {
 }
 
 fun drawGrid(camera: ref rl.Camera2D) = {
-    let step = 0.25;
     let viewport = rl.Vector2(rl.GetRenderWidth() as f32,
                               rl.GetRenderHeight() as f32);
     let lo = rl.GetScreenToWorld2D(rl.Vector2(0.0, 0.0), camera);
     let hi = rl.GetScreenToWorld2D(viewport, camera);
 
-    var col = (lo.x / step) as i32;
-    while (col <= (hi.x / step) as i32) {
-        let x = (col as f32) * step;
+    var col = (lo.x / gridStep) as i32;
+    while (col <= (hi.x / gridStep) as i32) {
+        let x = (col as f32) * gridStep;
         rl.DrawLineV(rl.Vector2(x, lo.y), rl.Vector2(x, hi.y), rl.DARKGRAY);
         col += 1;
     }
 
-    var row = (lo.y / step) as i32;
-    while (row <= (hi.y / step) as i32) {
-        let y = (row as f32) * step;
+    var row = (lo.y / gridStep) as i32;
+    while (row <= (hi.y / gridStep) as i32) {
+        let y = (row as f32) * gridStep;
         rl.DrawLineV(rl.Vector2(lo.x, y), rl.Vector2(hi.x, y), rl.DARKGRAY);
         row += 1;
     }
@@ -68,7 +68,13 @@ fun main() = {
         drawGrid(&camera);
         rl.EndMode2D();
         rl.DrawText(f"{rl.GetFPS()}",
-                    posX=4, posY=4, fontSize=20, color=rl.GREEN);
+                    posX=4, posY=4, fontSize=12, color=rl.GREEN);
+        let mouse = rl.GetScreenToWorld2D(rl.GetMousePosition(), camera);
+        let x = mouse.x / gridStep;
+        let y = -mouse.y / gridStep;
+        let col = (if x >= 0.0 then x + 0.5 else x - 0.5) as i32;
+        let row = (if y >= 0.0 then y + 0.5 else y - 0.5) as i32;
+        rl.DrawText(f"{col}, {row}", 4, rl.GetScreenHeight() - 16, 12, rl.WHITE);
         rl.EndDrawing();
     }
 
