@@ -49,7 +49,7 @@ fun drawGrid(camera: ref rl.Camera2D) = {
 
 fun drawCursor(connection: rl.Vector2) = {
     let point = rl.Vector2(connection.x, -connection.y);
-    rl.DrawCircleV(point, gridStep / 5.0, rl.WHITE);
+    rl.DrawCircleV(point, gridStep / 10.0, rl.WHITE);
 }
 
 fun drawFps() = {
