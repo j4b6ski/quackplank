@@ -28,6 +28,7 @@ fun updateCamera(camera: ref mut rl.Camera2D) = {
 }
 
 fun drawGrid(camera: ref rl.Camera2D) = {
+    let color = rl.Color(40u8, 40u8, 40u8, 255u8);
     let viewport = rl.Vector2(rl.GetRenderWidth() as f32,
                               rl.GetRenderHeight() as f32);
     let lo = rl.GetScreenToWorld2D(rl.Vector2(0.0, 0.0), camera);
@@ -36,14 +37,14 @@ fun drawGrid(camera: ref rl.Camera2D) = {
     var col = (lo.x / gridStep) as i32;
     while (col <= (hi.x / gridStep) as i32) {
         let x = (col as f32) * gridStep;
-        rl.DrawLineV(rl.Vector2(x, lo.y), rl.Vector2(x, hi.y), rl.DARKGRAY);
+        rl.DrawLineV(rl.Vector2(x, lo.y), rl.Vector2(x, hi.y), color);
         col += 1;
     }
 
     var row = (lo.y / gridStep) as i32;
     while (row <= (hi.y / gridStep) as i32) {
         let y = (row as f32) * gridStep;
-        rl.DrawLineV(rl.Vector2(lo.x, y), rl.Vector2(hi.x, y), rl.DARKGRAY);
+        rl.DrawLineV(rl.Vector2(lo.x, y), rl.Vector2(hi.x, y), color);
         row += 1;
     }
 }
