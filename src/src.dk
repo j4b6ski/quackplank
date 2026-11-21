@@ -1,4 +1,5 @@
 import rl;
+import std.math as math;
 
 fun check(ok: bool) = {
     if (not ok)
@@ -9,9 +10,43 @@ fun main() = {
     rl.InitWindow(800, 600, "QuackPlank");
     check(rl.IsWindowReady());
 
+    var camera = rl.Camera2D(
+        offset=rl.Vector2(rl.GetRenderWidth() as f32 / 2.0,
+                          rl.GetRenderHeight() as f32 / 2.0),
+        target=rl.Vector2(0.0, 0.0),
+        rotation=0.0,
+        zoom=40.0,
+    );
+
     while (not rl.WindowShouldClose()) {
+        if (rl.IsMouseButtonDown(rl.MOUSE_BUTTON_RIGHT)) {
+            let delta = rl.GetMouseDelta();
+            let scaleX = rl.GetRenderWidth() as f32 / (rl.GetScreenWidth() as f32);
+            let scaleY = rl.GetRenderHeight() as f32 / (rl.GetScreenHeight() as f32);
+            camera.target.x -= delta.x * scaleX / camera.zoom;
+            camera.target.y -= delta.y * scaleY / camera.zoom;
+        }
+
+        let wheel = rl.GetMouseWheelMove();
+        if (wheel != 0.0) {
+            let mouse = rl.GetMousePosition();
+            camera.target = rl.GetScreenToWorld2D(mouse, camera);
+            camera.offset = mouse;
+            let zoom = camera.zoom * math.exp(wheel * 0.2f32);
+            camera.zoom = math.min(320.0, math.max(10.0, zoom));
+        }
+
         rl.BeginDrawing();
         rl.ClearBackground(rl.BLACK);
+        rl.BeginMode2D(camera);
+        let extent = 4.0;
+        var pos = -extent;
+        while (pos <= extent) {
+            rl.DrawLineV(rl.Vector2(pos, -extent), rl.Vector2(pos, extent), rl.DARKGRAY);
+            rl.DrawLineV(rl.Vector2(-extent, pos), rl.Vector2(extent, pos), rl.DARKGRAY);
+            pos += 0.25;
+        }
+        rl.EndMode2D();
         rl.DrawText(f"{rl.GetFPS()}",
                     posX=4, posY=4, fontSize=20, color=rl.GREEN);
         rl.EndDrawing();
