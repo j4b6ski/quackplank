@@ -1,3 +1,5 @@
 metadata:
   name: quackplank
   version: '1.0.0'
+  external-libs: [b2, box2d, rl, raylib]
+  external-lib-paths: ['build/lib']
