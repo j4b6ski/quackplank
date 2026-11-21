@@ -119,9 +119,16 @@ fun drawJoints(points: ref List[Vec2], color: rl.Color) = {
     }
 }
 
-fun drawCursor(connection: rl.Vector2) = {
-    let point = rl.Vector2(connection.x, -connection.y);
-    rl.DrawCircleV(point, gridStep / 10.0, rl.WHITE);
+fun drawCursor(connection: Vec2) = {
+    let x = connection.x;
+    let y = -connection.y;
+    let gap = gridStep * 0.25;
+    let arm = gridStep * 0.5;
+
+    rl.DrawLineV(Vec2(x - arm, y), Vec2(x - gap, y), rl.RED);
+    rl.DrawLineV(Vec2(x + gap, y), Vec2(x + arm, y), rl.RED);
+    rl.DrawLineV(Vec2(x, y - arm), Vec2(x, y - gap), rl.RED);
+    rl.DrawLineV(Vec2(x, y + gap), Vec2(x, y + arm), rl.RED);
 }
 
 fun drawFps() = {
