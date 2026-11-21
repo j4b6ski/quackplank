@@ -1,4 +1,5 @@
 import rl;
+import rl.Vector2 as Vec2;
 import std.math as math;
 const gridStep = 0.25;
 
@@ -47,6 +48,77 @@ fun drawGrid(camera: ref rl.Camera2D) = {
     }
 }
 
+class Level {
+    terrain: List[List[Vec2]];
+    road: List[Vec2];
+    anchors: List[Vec2];
+}
+
+fun level1() -> Level = {
+    var terrain: List[List[Vec2]];
+    var road: List[Vec2];
+    for (p in [Vec2(-3.0, 0.0), Vec2(-1.5, 0.0), Vec2(0.0, 0.0),
+               Vec2(1.5, 0.0), Vec2(3.0, 0.0)]) {
+        road.push(p);
+    }
+
+    var left: List[Vec2];
+    for (p in [Vec2(-10.0, 0.0), Vec2(-10.0, -7.5), Vec2(-1.0, -7.5),
+               Vec2(-1.75, -3.75), road.pointer[0]]) {
+        left.push(p);
+    }
+    terrain.push(move left);
+
+    var right: List[Vec2];
+    for (p in [road.pointer[road.length() - 1], Vec2(1.75, -3.75), Vec2(1.0, -7.5),
+               Vec2(10.0, -7.5), Vec2(10.0, 0.0)]) {
+        right.push(p);
+    }
+    terrain.push(move right);
+    var anchors: List[Vec2];
+    anchors.push(road.pointer[0]);
+    anchors.push(road.pointer[road.length() - 1]);
+    anchors.push(Vec2(-1.75, -3.75));
+    anchors.push(Vec2(1.75, -3.75));
+    return Level(move terrain, move road, move anchors);
+}
+
+fun drawTerrain(terrain: ref List[List[Vec2]]) = {
+    var i = 0;
+    while (i < terrain.length()) {
+        let bank = &terrain.pointer[i];
+        let a = bank.pointer[0];
+        var j = 1;
+        while (j + 1 < bank.length()) {
+            let b = bank.pointer[j];
+            let c = bank.pointer[j + 1];
+            rl.DrawTriangle(Vec2(a.x, -a.y), Vec2(b.x, -b.y), Vec2(c.x, -c.y),
+                            rl.DARKGREEN);
+            j += 1;
+        }
+        i += 1;
+    }
+}
+
+fun drawRoad(road: ref List[Vec2]) = {
+    var i = 1;
+    while (i < road.length()) {
+        let a = road.pointer[i - 1];
+        let b = road.pointer[i];
+        rl.DrawLineV(Vec2(a.x, -a.y), Vec2(b.x, -b.y), rl.WHITE);
+        i += 1;
+    }
+}
+
+fun drawJoints(points: ref List[Vec2], color: rl.Color) = {
+    var i = 0;
+    while (i < points.length()) {
+        let p = points.pointer[i];
+        rl.DrawCircleV(Vec2(p.x, -p.y), gridStep / 5.0, color);
+        i += 1;
+    }
+}
+
 fun drawCursor(connection: rl.Vector2) = {
     let point = rl.Vector2(connection.x, -connection.y);
     rl.DrawCircleV(point, gridStep / 10.0, rl.WHITE);
@@ -72,6 +144,7 @@ fun main() = {
         zoom=40.0,
     );
 
+    let level = level1();
     while (not rl.WindowShouldClose()) {
         updateCamera(&camera);
 
@@ -87,6 +160,10 @@ fun main() = {
 
         rl.BeginMode2D(camera);
         drawGrid(&camera);
+        drawTerrain(&level.terrain);
+        drawRoad(&level.road);
+        drawJoints(&level.road, rl.GRAY);
+        drawJoints(&level.anchors, rl.WHITE);
         drawCursor(connection);
         rl.EndMode2D();
 
