@@ -826,7 +826,8 @@ extern("C") {
     fundecl MemAlloc(size: u32) -> cptr mut u8;
     fundecl MemRealloc(ptr_: cptr mut u8, size: u32) -> cptr mut u8;
     fundecl MemFree(ptr_: cptr mut u8) -> ();
-    fundecl LoadFileData(fileName: cptr char, dataSize: cptr mut i32) -> cptr mut u8;
+    @c_symbol_name("LoadFileData")
+    private fundecl LoadFileData_(fileName: cptr char, dataSize: cptr mut i32) -> cptr mut u8;
     fundecl UnloadFileData(data: cptr mut u8) -> ();
     fundecl SaveFileData(fileName: cptr char, data: cptr u8, dataSize: i32) -> bool;
     fundecl ExportDataAsCode(data: cptr u8, dataSize: i32, fileName: cptr char) -> bool;
@@ -875,10 +876,14 @@ extern("C") {
     private fundecl UnloadDroppedFiles_(files: FilePathList) -> ();
     fundecl GetDirectoryFileCount(dirPath: cptr char) -> u32;
     fundecl GetDirectoryFileCountEx(basePath: cptr char, filter: cptr char, scanSubdirs: bool) -> u32;
-    fundecl CompressData(data: cptr u8, dataSize: i32, compDataSize: cptr mut i32) -> cptr mut u8;
-    fundecl DecompressData(compData: cptr u8, compDataSize: i32, dataSize: cptr mut i32) -> cptr mut u8;
-    fundecl EncodeDataBase64(data: cptr u8, dataSize: i32, outputSize: cptr mut i32) -> cptr mut char;
-    fundecl DecodeDataBase64(text: cptr char, outputSize: cptr mut i32) -> cptr mut u8;
+    @c_symbol_name("CompressData")
+    private fundecl CompressData_(data: cptr u8, dataSize: i32, compDataSize: cptr mut i32) -> cptr mut u8;
+    @c_symbol_name("DecompressData")
+    private fundecl DecompressData_(compData: cptr u8, compDataSize: i32, dataSize: cptr mut i32) -> cptr mut u8;
+    @c_symbol_name("EncodeDataBase64")
+    private fundecl EncodeDataBase64_(data: cptr u8, dataSize: i32, outputSize: cptr mut i32) -> cptr mut char;
+    @c_symbol_name("DecodeDataBase64")
+    private fundecl DecodeDataBase64_(text: cptr char, outputSize: cptr mut i32) -> cptr mut u8;
     fundecl ComputeCRC32(data: cptr u8, dataSize: i32) -> u32;
     fundecl ComputeMD5(data: cptr u8, dataSize: i32) -> cptr mut u32;
     fundecl ComputeSHA1(data: cptr u8, dataSize: i32) -> cptr mut u32;
@@ -947,7 +952,8 @@ extern("C") {
     @c_symbol_name("GetGesturePinchVector")
     private fundecl GetGesturePinchVector_() -> Vector2;
     fundecl GetGesturePinchAngle() -> f32;
-    fundecl UpdateCamera(camera: cptr mut Camera, mode: i32) -> ();
+    @c_symbol_name("UpdateCamera")
+    private fundecl UpdateCamera_(camera: cptr mut Camera, mode: i32) -> ();
     @c_symbol_name("UpdateCameraPro")
     private fundecl UpdateCameraPro_(camera: cptr mut Camera, movement: Vector3, rotation: Vector3, zoom: f32) -> ();
     @c_symbol_name("SetShapesTexture")
@@ -1101,15 +1107,18 @@ extern("C") {
     private fundecl GetCollisionRec_(rec1: Rectangle, rec2: Rectangle) -> Rectangle;
     fundecl LoadImage(fileName: cptr char) -> Image;
     fundecl LoadImageRaw(fileName: cptr char, width: i32, height: i32, format: i32, headerSize: i32) -> Image;
-    fundecl LoadImageAnim(fileName: cptr char, frames: cptr mut i32) -> Image;
-    fundecl LoadImageAnimFromMemory(fileType: cptr char, fileData: cptr u8, dataSize: i32, frames: cptr mut i32) -> Image;
+    @c_symbol_name("LoadImageAnim")
+    private fundecl LoadImageAnim_(fileName: cptr char, frames: cptr mut i32) -> Image;
+    @c_symbol_name("LoadImageAnimFromMemory")
+    private fundecl LoadImageAnimFromMemory_(fileType: cptr char, fileData: cptr u8, dataSize: i32, frames: cptr mut i32) -> Image;
     fundecl LoadImageFromMemory(fileType: cptr char, fileData: cptr u8, dataSize: i32) -> Image;
     fundecl LoadImageFromTexture(texture: Texture2D) -> Image;
     fundecl LoadImageFromScreen() -> Image;
     fundecl IsImageValid(image: Image) -> bool;
     fundecl UnloadImage(image: Image) -> ();
     fundecl ExportImage(image: Image, fileName: cptr char) -> bool;
-    fundecl ExportImageToMemory(image: Image, fileType: cptr char, fileSize: cptr mut i32) -> cptr mut u8;
+    @c_symbol_name("ExportImageToMemory")
+    private fundecl ExportImageToMemory_(image: Image, fileType: cptr char, fileSize: cptr mut i32) -> cptr mut u8;
     fundecl ExportImageAsCode(image: Image, fileName: cptr char) -> bool;
     @c_symbol_name("GenImageColor")
     private fundecl GenImageColor_(width: i32, height: i32, color: Color) -> Image;
@@ -1133,39 +1142,59 @@ extern("C") {
     private fundecl ImageText_(text: cptr char, fontSize: i32, color: Color) -> Image;
     @c_symbol_name("ImageTextEx")
     private fundecl ImageTextEx_(font: Font, text: cptr char, fontSize: f32, spacing: f32, tint: Color) -> Image;
-    fundecl ImageFormat(image: cptr mut Image, newFormat: i32) -> ();
+    @c_symbol_name("ImageFormat")
+    private fundecl ImageFormat_(image: cptr mut Image, newFormat: i32) -> ();
     @c_symbol_name("ImageToPOT")
     private fundecl ImageToPOT_(image: cptr mut Image, fill: Color) -> ();
     @c_symbol_name("ImageCrop")
     private fundecl ImageCrop_(image: cptr mut Image, crop: Rectangle) -> ();
-    fundecl ImageAlphaCrop(image: cptr mut Image, threshold: f32) -> ();
+    @c_symbol_name("ImageAlphaCrop")
+    private fundecl ImageAlphaCrop_(image: cptr mut Image, threshold: f32) -> ();
     @c_symbol_name("ImageAlphaClear")
     private fundecl ImageAlphaClear_(image: cptr mut Image, color: Color, threshold: f32) -> ();
-    fundecl ImageAlphaMask(image: cptr mut Image, alphaMask: Image) -> ();
-    fundecl ImageAlphaPremultiply(image: cptr mut Image) -> ();
-    fundecl ImageBlurGaussian(image: cptr mut Image, blurSize: i32) -> ();
-    fundecl ImageKernelConvolution(image: cptr mut Image, kernel: cptr f32, kernelSize: i32) -> ();
-    fundecl ImageResize(image: cptr mut Image, newWidth: i32, newHeight: i32) -> ();
-    fundecl ImageResizeNN(image: cptr mut Image, newWidth: i32, newHeight: i32) -> ();
+    @c_symbol_name("ImageAlphaMask")
+    private fundecl ImageAlphaMask_(image: cptr mut Image, alphaMask: Image) -> ();
+    @c_symbol_name("ImageAlphaPremultiply")
+    private fundecl ImageAlphaPremultiply_(image: cptr mut Image) -> ();
+    @c_symbol_name("ImageBlurGaussian")
+    private fundecl ImageBlurGaussian_(image: cptr mut Image, blurSize: i32) -> ();
+    @c_symbol_name("ImageKernelConvolution")
+    private fundecl ImageKernelConvolution_(image: cptr mut Image, kernel: cptr f32, kernelSize: i32) -> ();
+    @c_symbol_name("ImageResize")
+    private fundecl ImageResize_(image: cptr mut Image, newWidth: i32, newHeight: i32) -> ();
+    @c_symbol_name("ImageResizeNN")
+    private fundecl ImageResizeNN_(image: cptr mut Image, newWidth: i32, newHeight: i32) -> ();
     @c_symbol_name("ImageResizeCanvas")
     private fundecl ImageResizeCanvas_(image: cptr mut Image, newWidth: i32, newHeight: i32, offsetX: i32, offsetY: i32, fill: Color) -> ();
-    fundecl ImageMipmaps(image: cptr mut Image) -> ();
-    fundecl ImageDither(image: cptr mut Image, rBpp: i32, gBpp: i32, bBpp: i32, aBpp: i32) -> ();
-    fundecl ImageFlipVertical(image: cptr mut Image) -> ();
-    fundecl ImageFlipHorizontal(image: cptr mut Image) -> ();
-    fundecl ImageRotate(image: cptr mut Image, degrees: i32) -> ();
-    fundecl ImageRotateCW(image: cptr mut Image) -> ();
-    fundecl ImageRotateCCW(image: cptr mut Image) -> ();
+    @c_symbol_name("ImageMipmaps")
+    private fundecl ImageMipmaps_(image: cptr mut Image) -> ();
+    @c_symbol_name("ImageDither")
+    private fundecl ImageDither_(image: cptr mut Image, rBpp: i32, gBpp: i32, bBpp: i32, aBpp: i32) -> ();
+    @c_symbol_name("ImageFlipVertical")
+    private fundecl ImageFlipVertical_(image: cptr mut Image) -> ();
+    @c_symbol_name("ImageFlipHorizontal")
+    private fundecl ImageFlipHorizontal_(image: cptr mut Image) -> ();
+    @c_symbol_name("ImageRotate")
+    private fundecl ImageRotate_(image: cptr mut Image, degrees: i32) -> ();
+    @c_symbol_name("ImageRotateCW")
+    private fundecl ImageRotateCW_(image: cptr mut Image) -> ();
+    @c_symbol_name("ImageRotateCCW")
+    private fundecl ImageRotateCCW_(image: cptr mut Image) -> ();
     @c_symbol_name("ImageColorTint")
     private fundecl ImageColorTint_(image: cptr mut Image, color: Color) -> ();
-    fundecl ImageColorInvert(image: cptr mut Image) -> ();
-    fundecl ImageColorGrayscale(image: cptr mut Image) -> ();
-    fundecl ImageColorContrast(image: cptr mut Image, contrast: i32) -> ();
-    fundecl ImageColorBrightness(image: cptr mut Image, brightness: i32) -> ();
+    @c_symbol_name("ImageColorInvert")
+    private fundecl ImageColorInvert_(image: cptr mut Image) -> ();
+    @c_symbol_name("ImageColorGrayscale")
+    private fundecl ImageColorGrayscale_(image: cptr mut Image) -> ();
+    @c_symbol_name("ImageColorContrast")
+    private fundecl ImageColorContrast_(image: cptr mut Image, contrast: i32) -> ();
+    @c_symbol_name("ImageColorBrightness")
+    private fundecl ImageColorBrightness_(image: cptr mut Image, brightness: i32) -> ();
     @c_symbol_name("ImageColorReplace")
     private fundecl ImageColorReplace_(image: cptr mut Image, color: Color, replace: Color) -> ();
     fundecl LoadImageColors(image: Image) -> cptr mut Color;
-    fundecl LoadImagePalette(image: Image, maxPaletteSize: i32, colorCount: cptr mut i32) -> cptr mut Color;
+    @c_symbol_name("LoadImagePalette")
+    private fundecl LoadImagePalette_(image: Image, maxPaletteSize: i32, colorCount: cptr mut i32) -> cptr mut Color;
     fundecl UnloadImageColors(colors: cptr mut Color) -> ();
     fundecl UnloadImagePalette(colors: cptr mut Color) -> ();
     @c_symbol_name("GetImageAlphaBorder")
@@ -1246,7 +1275,8 @@ extern("C") {
     fundecl UpdateTexture(texture: Texture2D, pixels: cptr u8) -> ();
     @c_symbol_name("UpdateTextureRec")
     private fundecl UpdateTextureRec_(texture: Texture2D, rec: Rectangle, pixels: cptr u8) -> ();
-    fundecl GenTextureMipmaps(texture: cptr mut Texture2D) -> ();
+    @c_symbol_name("GenTextureMipmaps")
+    private fundecl GenTextureMipmaps_(texture: cptr mut Texture2D) -> ();
     fundecl SetTextureFilter(texture: Texture2D, filter: i32) -> ();
     fundecl SetTextureWrap(texture: Texture2D, wrap: i32) -> ();
     @c_symbol_name("DrawTexture")
@@ -1301,7 +1331,8 @@ extern("C") {
     private fundecl LoadFontFromImage_(image: Image, key: Color, firstChar: i32) -> Font;
     fundecl LoadFontFromMemory(fileType: cptr char, fileData: cptr u8, dataSize: i32, fontSize: i32, codepoints: cptr i32, codepointCount: i32) -> Font;
     fundecl IsFontValid(font: Font) -> bool;
-    fundecl LoadFontData(fileData: cptr u8, dataSize: i32, fontSize: i32, codepoints: cptr i32, codepointCount: i32, type_: i32, glyphCount: cptr mut i32) -> cptr mut GlyphInfo;
+    @c_symbol_name("LoadFontData")
+    private fundecl LoadFontData_(fileData: cptr u8, dataSize: i32, fontSize: i32, codepoints: cptr i32, codepointCount: i32, type_: i32, glyphCount: cptr mut i32) -> cptr mut GlyphInfo;
     fundecl GenImageFontAtlas(glyphs: cptr GlyphInfo, glyphRecs: cptr mut (cptr mut Rectangle), glyphCount: i32, fontSize: i32, padding: i32, packMethod: i32) -> Image;
     fundecl UnloadFontData(glyphs: cptr mut GlyphInfo, glyphCount: i32) -> ();
     fundecl UnloadFont(font: Font) -> ();
@@ -1329,14 +1360,20 @@ extern("C") {
     private fundecl GetGlyphAtlasRec_(font: Font, codepoint: i32) -> Rectangle;
     fundecl LoadUTF8(codepoints: cptr i32, length: i32) -> cptr mut char;
     fundecl UnloadUTF8(text: cptr mut char) -> ();
-    fundecl LoadCodepoints(text: cptr char, count: cptr mut i32) -> cptr mut i32;
+    @c_symbol_name("LoadCodepoints")
+    private fundecl LoadCodepoints_(text: cptr char, count: cptr mut i32) -> cptr mut i32;
     fundecl UnloadCodepoints(codepoints: cptr mut i32) -> ();
     fundecl GetCodepointCount(text: cptr char) -> i32;
-    fundecl GetCodepoint(text: cptr char, codepointSize: cptr mut i32) -> i32;
-    fundecl GetCodepointNext(text: cptr char, codepointSize: cptr mut i32) -> i32;
-    fundecl GetCodepointPrevious(text: cptr char, codepointSize: cptr mut i32) -> i32;
-    fundecl CodepointToUTF8(codepoint: i32, utf8Size: cptr mut i32) -> cptr char;
-    fundecl LoadTextLines(text: cptr char, count: cptr mut i32) -> cptr mut (cptr mut char);
+    @c_symbol_name("GetCodepoint")
+    private fundecl GetCodepoint_(text: cptr char, codepointSize: cptr mut i32) -> i32;
+    @c_symbol_name("GetCodepointNext")
+    private fundecl GetCodepointNext_(text: cptr char, codepointSize: cptr mut i32) -> i32;
+    @c_symbol_name("GetCodepointPrevious")
+    private fundecl GetCodepointPrevious_(text: cptr char, codepointSize: cptr mut i32) -> i32;
+    @c_symbol_name("CodepointToUTF8")
+    private fundecl CodepointToUTF8_(codepoint: i32, utf8Size: cptr mut i32) -> cptr char;
+    @c_symbol_name("LoadTextLines")
+    private fundecl LoadTextLines_(text: cptr char, count: cptr mut i32) -> cptr mut (cptr mut char);
     fundecl UnloadTextLines(text: cptr mut (cptr mut char), lineCount: i32) -> ();
     fundecl TextCopy(dst: cptr mut char, src: cptr char) -> i32;
     fundecl TextIsEqual(text1: cptr char, text2: cptr char) -> bool;
@@ -1353,8 +1390,10 @@ extern("C") {
     fundecl TextInsert(text: cptr char, insert: cptr char, position: i32) -> cptr mut char;
     fundecl TextInsertAlloc(text: cptr char, insert: cptr char, position: i32) -> cptr mut char;
     fundecl TextJoin(textList: cptr mut (cptr mut char), count: i32, delimiter: cptr char) -> cptr mut char;
-    fundecl TextSplit(text: cptr char, delimiter: char, count: cptr mut i32) -> cptr mut (cptr mut char);
-    fundecl TextAppend(text: cptr mut char, append: cptr char, position: cptr mut i32) -> ();
+    @c_symbol_name("TextSplit")
+    private fundecl TextSplit_(text: cptr char, delimiter: char, count: cptr mut i32) -> cptr mut (cptr mut char);
+    @c_symbol_name("TextAppend")
+    private fundecl TextAppend_(text: cptr mut char, append: cptr char, position: cptr mut i32) -> ();
     fundecl TextFindIndex(text: cptr char, search: cptr char) -> i32;
     fundecl TextToUpper(text: cptr char) -> cptr mut char;
     fundecl TextToLower(text: cptr char) -> cptr mut char;
@@ -1425,13 +1464,15 @@ extern("C") {
     private fundecl DrawBillboardRec_(camera: Camera, texture: Texture2D, rec: Rectangle, position: Vector3, size: Vector2, tint: Color) -> ();
     @c_symbol_name("DrawBillboardPro")
     private fundecl DrawBillboardPro_(camera: Camera, texture: Texture2D, rec: Rectangle, position: Vector3, up: Vector3, size: Vector2, origin: Vector2, rotation: f32, tint: Color) -> ();
-    fundecl UploadMesh(mesh: cptr mut Mesh, dynamic: bool) -> ();
+    @c_symbol_name("UploadMesh")
+    private fundecl UploadMesh_(mesh: cptr mut Mesh, dynamic: bool) -> ();
     fundecl UpdateMeshBuffer(mesh: Mesh, index: i32, data: cptr u8, dataSize: i32, offset: i32) -> ();
     fundecl UnloadMesh(mesh: Mesh) -> ();
     fundecl DrawMesh(mesh: Mesh, material: Material, transform: Matrix) -> ();
     fundecl DrawMeshInstanced(mesh: Mesh, material: Material, transforms: cptr Matrix, instances: i32) -> ();
     fundecl GetMeshBoundingBox(mesh: Mesh) -> BoundingBox;
-    fundecl GenMeshTangents(mesh: cptr mut Mesh) -> ();
+    @c_symbol_name("GenMeshTangents")
+    private fundecl GenMeshTangents_(mesh: cptr mut Mesh) -> ();
     fundecl ExportMesh(mesh: Mesh, fileName: cptr char) -> bool;
     fundecl ExportMeshAsCode(mesh: Mesh, fileName: cptr char) -> bool;
     fundecl GenMeshPoly(sides: i32, radius: f32) -> Mesh;
@@ -1447,13 +1488,17 @@ extern("C") {
     private fundecl GenMeshHeightmap_(heightmap: Image, size: Vector3) -> Mesh;
     @c_symbol_name("GenMeshCubicmap")
     private fundecl GenMeshCubicmap_(cubicmap: Image, cubeSize: Vector3) -> Mesh;
-    fundecl LoadMaterials(fileName: cptr char, materialCount: cptr mut i32) -> cptr mut Material;
+    @c_symbol_name("LoadMaterials")
+    private fundecl LoadMaterials_(fileName: cptr char, materialCount: cptr mut i32) -> cptr mut Material;
     fundecl LoadMaterialDefault() -> Material;
     fundecl IsMaterialValid(material: Material) -> bool;
     fundecl UnloadMaterial(material: Material) -> ();
-    fundecl SetMaterialTexture(material: cptr mut Material, mapType: i32, texture: Texture2D) -> ();
-    fundecl SetModelMeshMaterial(model: cptr mut Model, meshId: i32, materialId: i32) -> ();
-    fundecl LoadModelAnimations(fileName: cptr char, animCount: cptr mut i32) -> cptr mut ModelAnimation;
+    @c_symbol_name("SetMaterialTexture")
+    private fundecl SetMaterialTexture_(material: cptr mut Material, mapType: i32, texture: Texture2D) -> ();
+    @c_symbol_name("SetModelMeshMaterial")
+    private fundecl SetModelMeshMaterial_(model: cptr mut Model, meshId: i32, materialId: i32) -> ();
+    @c_symbol_name("LoadModelAnimations")
+    private fundecl LoadModelAnimations_(fileName: cptr char, animCount: cptr mut i32) -> cptr mut ModelAnimation;
     fundecl UpdateModelAnimation(model: Model, anim: ModelAnimation, frame: f32) -> ();
     fundecl UpdateModelAnimationEx(model: Model, animA: ModelAnimation, frameA: f32, animB: ModelAnimation, frameB: f32, blend: f32) -> ();
     fundecl UnloadModelAnimations(animations: cptr mut ModelAnimation, animCount: i32) -> ();
@@ -1503,8 +1548,10 @@ extern("C") {
     fundecl SetSoundPitch(sound: Sound, pitch: f32) -> ();
     fundecl SetSoundPan(sound: Sound, pan: f32) -> ();
     fundecl WaveCopy(wave: Wave) -> Wave;
-    fundecl WaveCrop(wave: cptr mut Wave, initFrame: i32, finalFrame: i32) -> ();
-    fundecl WaveFormat(wave: cptr mut Wave, sampleRate: i32, sampleSize: i32, channels: i32) -> ();
+    @c_symbol_name("WaveCrop")
+    private fundecl WaveCrop_(wave: cptr mut Wave, initFrame: i32, finalFrame: i32) -> ();
+    @c_symbol_name("WaveFormat")
+    private fundecl WaveFormat_(wave: cptr mut Wave, sampleRate: i32, sampleSize: i32, channels: i32) -> ();
     fundecl LoadWaveSamples(wave: Wave) -> cptr mut f32;
     fundecl UnloadWaveSamples(samples: cptr mut f32) -> ();
     fundecl LoadMusicStream(fileName: cptr char) -> Music;
@@ -1807,13 +1854,13 @@ fun LoadImageRaw(fileName: Text, width: i32, height: i32, format: i32,
     return LoadImageRaw(buffer.pointer as cptr char, width, height, format, headerSize);
 }
 
-fun LoadImageAnim(fileName: Text, frames: cptr mut i32) -> Image = {
+fun LoadImageAnim(fileName: Text, frames: ref mut i32) -> Image = {
     let buffer = toC_(move fileName);
     return LoadImageAnim(buffer.pointer as cptr char, frames);
 }
 
 fun LoadImageAnimFromMemory(fileType: Text, fileData: cptr u8, dataSize: i32,
-    frames: cptr mut i32) -> Image = {
+    frames: ref mut i32) -> Image = {
     let buffer = toC_(move fileType);
     return LoadImageAnimFromMemory(buffer.pointer as cptr char, fileData, dataSize, frames);
 }
@@ -1828,7 +1875,7 @@ fun ExportImage(image: Image, fileName: Text) -> bool = {
     return ExportImage(image, buffer.pointer as cptr char);
 }
 
-fun ExportImageToMemory(image: Image, fileType: Text, fileSize: cptr mut i32) -> cptr mut u8 = {
+fun ExportImageToMemory(image: Image, fileType: Text, fileSize: ref mut i32) -> cptr mut u8 = {
     let buffer = toC_(move fileType);
     return ExportImageToMemory(image, buffer.pointer as cptr char, fileSize);
 }
@@ -1853,37 +1900,37 @@ fun ImageTextEx(font: Font, text: Text, fontSize: f32, spacing: f32, tint: Color
     return ImageTextEx(font, buffer.pointer as cptr char, fontSize, spacing, tint);
 }
 
-fun ImageDrawLineStrip(dst: cptr mut Image, points: ref Vector2, pointCount: i64, color: Color) -> () =
+fun ImageDrawLineStrip(dst: ref mut Image, points: ref Vector2, pointCount: i64, color: Color) -> () =
     ImageDrawLineStrip(dst, points as cptr Vector2, pointCount as i32, color);
 
-fun ImageDrawLineStrip(dst: cptr mut Image, points: ref List[Vector2], color: Color) -> () =
+fun ImageDrawLineStrip(dst: ref mut Image, points: ref List[Vector2], color: Color) -> () =
     ImageDrawLineStrip(dst, points.pointer as cptr Vector2, points.length() as i32, color);
 
-fun ImageDrawTriangleFan(dst: cptr mut Image, points: ref Vector2, pointCount: i64, color: Color) -> () =
+fun ImageDrawTriangleFan(dst: ref mut Image, points: ref Vector2, pointCount: i64, color: Color) -> () =
     ImageDrawTriangleFan(dst, points as cptr Vector2, pointCount as i32, color);
 
-fun ImageDrawTriangleFan(dst: cptr mut Image, points: ref List[Vector2], color: Color) -> () =
+fun ImageDrawTriangleFan(dst: ref mut Image, points: ref List[Vector2], color: Color) -> () =
     ImageDrawTriangleFan(dst, points.pointer as cptr Vector2, points.length() as i32, color);
 
-fun ImageDrawTriangleStrip(dst: cptr mut Image, points: ref Vector2, pointCount: i64, color: Color) -> () =
+fun ImageDrawTriangleStrip(dst: ref mut Image, points: ref Vector2, pointCount: i64, color: Color) -> () =
     ImageDrawTriangleStrip(dst, points as cptr Vector2, pointCount as i32, color);
 
-fun ImageDrawTriangleStrip(dst: cptr mut Image, points: ref List[Vector2], color: Color) -> () =
+fun ImageDrawTriangleStrip(dst: ref mut Image, points: ref List[Vector2], color: Color) -> () =
     ImageDrawTriangleStrip(dst, points.pointer as cptr Vector2, points.length() as i32, color);
 
-fun ImageDrawText(dst: cptr mut Image, text: Text, posX: i32, posY: i32, fontSize: i32,
+fun ImageDrawText(dst: ref mut Image, text: Text, posX: i32, posY: i32, fontSize: i32,
     color: Color) -> () = {
     let buffer = toC_(move text);
     ImageDrawText(dst, buffer.pointer as cptr char, posX, posY, fontSize, color);
 }
 
-fun ImageDrawTextEx(dst: cptr mut Image, font: Font, text: Text, position: Vector2,
+fun ImageDrawTextEx(dst: ref mut Image, font: Font, text: Text, position: Vector2,
     fontSize: f32, spacing: f32, tint: Color) -> () = {
     let buffer = toC_(move text);
     ImageDrawTextEx(dst, font, buffer.pointer as cptr char, position, fontSize, spacing, tint);
 }
 
-fun ImageDrawTextPro(dst: cptr mut Image, font: Font, text: Text, position: Vector2,
+fun ImageDrawTextPro(dst: ref mut Image, font: Font, text: Text, position: Vector2,
     origin: Vector2, rotation: f32, fontSize: f32, spacing: f32, tint: Color) -> () = {
     let buffer = toC_(move text);
     ImageDrawTextPro(dst, font, buffer.pointer as cptr char, position, origin, rotation, fontSize,
@@ -1988,12 +2035,12 @@ fun ExportMeshAsCode(mesh: Mesh, fileName: Text) -> bool = {
     return ExportMeshAsCode(mesh, buffer.pointer as cptr char);
 }
 
-fun LoadMaterials(fileName: Text, materialCount: cptr mut i32) -> cptr mut Material = {
+fun LoadMaterials(fileName: Text, materialCount: ref mut i32) -> cptr mut Material = {
     let buffer = toC_(move fileName);
     return LoadMaterials(buffer.pointer as cptr char, materialCount);
 }
 
-fun LoadModelAnimations(fileName: Text, animCount: cptr mut i32) -> cptr mut ModelAnimation = {
+fun LoadModelAnimations(fileName: Text, animCount: ref mut i32) -> cptr mut ModelAnimation = {
     let buffer = toC_(move fileName);
     return LoadModelAnimations(buffer.pointer as cptr char, animCount);
 }
@@ -2049,11 +2096,21 @@ fun GetWorldToScreen(position: Vector3, camera: Camera) -> Vector2 = GetWorldToS
 fun GetWorldToScreenEx(position: Vector3, camera: Camera, width: i32, height: i32) -> Vector2 = GetWorldToScreenEx_(position, camera, width, height);
 fun GetWorldToScreen2D(position: Vector2, camera: Camera2D) -> Vector2 = GetWorldToScreen2D_(position, camera);
 fun GetScreenToWorld2D(position: Vector2, camera: Camera2D) -> Vector2 = GetScreenToWorld2D_(position, camera);
+fun LoadFileData(fileName: cptr char, dataSize: ref mut i32) -> cptr mut u8 =
+    LoadFileData_(fileName, dataSize as cptr mut i32);
 fun LoadDirectoryFiles(dirPath: cptr char) -> FilePathList = LoadDirectoryFiles_(dirPath);
 fun LoadDirectoryFilesEx(basePath: cptr char, filter: cptr char, scanSubdirs: bool) -> FilePathList = LoadDirectoryFilesEx_(basePath, filter, scanSubdirs);
 fun UnloadDirectoryFiles(files: FilePathList) -> () = UnloadDirectoryFiles_(files);
 fun LoadDroppedFiles() -> FilePathList = LoadDroppedFiles_();
 fun UnloadDroppedFiles(files: FilePathList) -> () = UnloadDroppedFiles_(files);
+fun CompressData(data: cptr u8, dataSize: i32, compDataSize: ref mut i32) -> cptr mut u8 =
+    CompressData_(data, dataSize, compDataSize as cptr mut i32);
+fun DecompressData(compData: cptr u8, compDataSize: i32, dataSize: ref mut i32) -> cptr mut u8 =
+    DecompressData_(compData, compDataSize, dataSize as cptr mut i32);
+fun EncodeDataBase64(data: cptr u8, dataSize: i32, outputSize: ref mut i32) -> cptr mut char =
+    EncodeDataBase64_(data, dataSize, outputSize as cptr mut i32);
+fun DecodeDataBase64(text: cptr char, outputSize: ref mut i32) -> cptr mut u8 =
+    DecodeDataBase64_(text, outputSize as cptr mut i32);
 fun LoadAutomationEventList(fileName: cptr char) -> AutomationEventList = LoadAutomationEventList_(fileName);
 fun UnloadAutomationEventList(list: AutomationEventList) -> () = UnloadAutomationEventList_(list);
 fun ExportAutomationEventList(list: AutomationEventList, fileName: cptr char) -> bool = ExportAutomationEventList_(list, fileName);
@@ -2063,7 +2120,9 @@ fun GetMouseWheelMoveV() -> Vector2 = GetMouseWheelMoveV_();
 fun GetTouchPosition(index: i32) -> Vector2 = GetTouchPosition_(index);
 fun GetGestureDragVector() -> Vector2 = GetGestureDragVector_();
 fun GetGesturePinchVector() -> Vector2 = GetGesturePinchVector_();
-fun UpdateCameraPro(camera: cptr mut Camera, movement: Vector3, rotation: Vector3, zoom: f32) -> () = UpdateCameraPro_(camera, movement, rotation, zoom);
+fun UpdateCamera(camera: ref mut Camera, mode: i32) -> () =
+    UpdateCamera_(camera as cptr mut Camera, mode);
+fun UpdateCameraPro(camera: ref mut Camera, movement: Vector3, rotation: Vector3, zoom: f32) -> () = UpdateCameraPro_(camera as cptr mut Camera, movement, rotation, zoom);
 fun SetShapesTexture(texture: Texture2D, rec: Rectangle) -> () = SetShapesTexture_(texture, rec);
 fun GetShapesTextureRectangle() -> Rectangle = GetShapesTextureRectangle_();
 fun DrawPixel(posX: i32, posY: i32, color: Color) -> () = DrawPixel_(posX, posY, color);
@@ -2138,6 +2197,12 @@ fun CheckCollisionPointLine(point: Vector2, p1: Vector2, p2: Vector2, threshold:
 fun CheckCollisionPointPoly(point: Vector2, points: cptr Vector2, pointCount: i32) -> bool = CheckCollisionPointPoly_(point, points, pointCount);
 fun CheckCollisionLines(startPos1: Vector2, endPos1: Vector2, startPos2: Vector2, endPos2: Vector2, collisionPoint: cptr mut Vector2) -> bool = CheckCollisionLines_(startPos1, endPos1, startPos2, endPos2, collisionPoint);
 fun GetCollisionRec(rec1: Rectangle, rec2: Rectangle) -> Rectangle = GetCollisionRec_(rec1, rec2);
+fun LoadImageAnim(fileName: cptr char, frames: ref mut i32) -> Image =
+    LoadImageAnim_(fileName, frames as cptr mut i32);
+fun LoadImageAnimFromMemory(fileType: cptr char, fileData: cptr u8, dataSize: i32, frames: ref mut i32) -> Image =
+    LoadImageAnimFromMemory_(fileType, fileData, dataSize, frames as cptr mut i32);
+fun ExportImageToMemory(image: Image, fileType: cptr char, fileSize: ref mut i32) -> cptr mut u8 =
+    ExportImageToMemory_(image, fileType, fileSize as cptr mut i32);
 fun GenImageColor(width: i32, height: i32, color: Color) -> Image = GenImageColor_(width, height, color);
 fun GenImageGradientLinear(width: i32, height: i32, direction: i32, start: Color, end: Color) -> Image = GenImageGradientLinear_(width, height, direction, start, end);
 fun GenImageGradientRadial(width: i32, height: i32, density: f32, inner: Color, outer: Color) -> Image = GenImageGradientRadial_(width, height, density, inner, outer);
@@ -2146,46 +2211,88 @@ fun GenImageChecked(width: i32, height: i32, checksX: i32, checksY: i32, col1: C
 fun ImageFromImage(image: Image, rec: Rectangle) -> Image = ImageFromImage_(image, rec);
 fun ImageText(text: cptr char, fontSize: i32, color: Color) -> Image = ImageText_(text, fontSize, color);
 fun ImageTextEx(font: Font, text: cptr char, fontSize: f32, spacing: f32, tint: Color) -> Image = ImageTextEx_(font, text, fontSize, spacing, tint);
-fun ImageToPOT(image: cptr mut Image, fill: Color) -> () = ImageToPOT_(image, fill);
-fun ImageCrop(image: cptr mut Image, crop: Rectangle) -> () = ImageCrop_(image, crop);
-fun ImageAlphaClear(image: cptr mut Image, color: Color, threshold: f32) -> () = ImageAlphaClear_(image, color, threshold);
-fun ImageResizeCanvas(image: cptr mut Image, newWidth: i32, newHeight: i32, offsetX: i32, offsetY: i32, fill: Color) -> () = ImageResizeCanvas_(image, newWidth, newHeight, offsetX, offsetY, fill);
-fun ImageColorTint(image: cptr mut Image, color: Color) -> () = ImageColorTint_(image, color);
-fun ImageColorReplace(image: cptr mut Image, color: Color, replace: Color) -> () = ImageColorReplace_(image, color, replace);
+fun ImageFormat(image: ref mut Image, newFormat: i32) -> () =
+    ImageFormat_(image as cptr mut Image, newFormat);
+fun ImageToPOT(image: ref mut Image, fill: Color) -> () = ImageToPOT_(image as cptr mut Image, fill);
+fun ImageCrop(image: ref mut Image, crop: Rectangle) -> () = ImageCrop_(image as cptr mut Image, crop);
+fun ImageAlphaCrop(image: ref mut Image, threshold: f32) -> () =
+    ImageAlphaCrop_(image as cptr mut Image, threshold);
+fun ImageAlphaClear(image: ref mut Image, color: Color, threshold: f32) -> () = ImageAlphaClear_(image as cptr mut Image, color, threshold);
+fun ImageAlphaMask(image: ref mut Image, alphaMask: Image) -> () =
+    ImageAlphaMask_(image as cptr mut Image, alphaMask);
+fun ImageAlphaPremultiply(image: ref mut Image) -> () =
+    ImageAlphaPremultiply_(image as cptr mut Image);
+fun ImageBlurGaussian(image: ref mut Image, blurSize: i32) -> () =
+    ImageBlurGaussian_(image as cptr mut Image, blurSize);
+fun ImageKernelConvolution(image: ref mut Image, kernel: cptr f32, kernelSize: i32) -> () =
+    ImageKernelConvolution_(image as cptr mut Image, kernel, kernelSize);
+fun ImageResize(image: ref mut Image, newWidth: i32, newHeight: i32) -> () =
+    ImageResize_(image as cptr mut Image, newWidth, newHeight);
+fun ImageResizeNN(image: ref mut Image, newWidth: i32, newHeight: i32) -> () =
+    ImageResizeNN_(image as cptr mut Image, newWidth, newHeight);
+fun ImageResizeCanvas(image: ref mut Image, newWidth: i32, newHeight: i32, offsetX: i32, offsetY: i32, fill: Color) -> () = ImageResizeCanvas_(image as cptr mut Image, newWidth, newHeight, offsetX, offsetY, fill);
+fun ImageMipmaps(image: ref mut Image) -> () =
+    ImageMipmaps_(image as cptr mut Image);
+fun ImageDither(image: ref mut Image, rBpp: i32, gBpp: i32, bBpp: i32, aBpp: i32) -> () =
+    ImageDither_(image as cptr mut Image, rBpp, gBpp, bBpp, aBpp);
+fun ImageFlipVertical(image: ref mut Image) -> () =
+    ImageFlipVertical_(image as cptr mut Image);
+fun ImageFlipHorizontal(image: ref mut Image) -> () =
+    ImageFlipHorizontal_(image as cptr mut Image);
+fun ImageRotate(image: ref mut Image, degrees: i32) -> () =
+    ImageRotate_(image as cptr mut Image, degrees);
+fun ImageRotateCW(image: ref mut Image) -> () =
+    ImageRotateCW_(image as cptr mut Image);
+fun ImageRotateCCW(image: ref mut Image) -> () =
+    ImageRotateCCW_(image as cptr mut Image);
+fun ImageColorTint(image: ref mut Image, color: Color) -> () = ImageColorTint_(image as cptr mut Image, color);
+fun ImageColorInvert(image: ref mut Image) -> () =
+    ImageColorInvert_(image as cptr mut Image);
+fun ImageColorGrayscale(image: ref mut Image) -> () =
+    ImageColorGrayscale_(image as cptr mut Image);
+fun ImageColorContrast(image: ref mut Image, contrast: i32) -> () =
+    ImageColorContrast_(image as cptr mut Image, contrast);
+fun ImageColorBrightness(image: ref mut Image, brightness: i32) -> () =
+    ImageColorBrightness_(image as cptr mut Image, brightness);
+fun ImageColorReplace(image: ref mut Image, color: Color, replace: Color) -> () = ImageColorReplace_(image as cptr mut Image, color, replace);
+fun LoadImagePalette(image: Image, maxPaletteSize: i32, colorCount: ref mut i32) -> cptr mut Color =
+    LoadImagePalette_(image, maxPaletteSize, colorCount as cptr mut i32);
 fun GetImageAlphaBorder(image: Image, threshold: f32) -> Rectangle = GetImageAlphaBorder_(image, threshold);
 fun GetImageColor(image: Image, x: i32, y: i32) -> Color = GetImageColor_(image, x, y);
-fun ImageClearBackground(dst: cptr mut Image, color: Color) -> () = ImageClearBackground_(dst, color);
-fun ImageDrawPixel(dst: cptr mut Image, posX: i32, posY: i32, color: Color) -> () = ImageDrawPixel_(dst, posX, posY, color);
-fun ImageDrawPixelV(dst: cptr mut Image, position: Vector2, color: Color) -> () = ImageDrawPixelV_(dst, position, color);
-fun ImageDrawLine(dst: cptr mut Image, startPosX: i32, startPosY: i32, endPosX: i32, endPosY: i32, color: Color) -> () = ImageDrawLine_(dst, startPosX, startPosY, endPosX, endPosY, color);
-fun ImageDrawLineV(dst: cptr mut Image, start: Vector2, end: Vector2, color: Color) -> () = ImageDrawLineV_(dst, start, end, color);
-fun ImageDrawLineEx(dst: cptr mut Image, start: Vector2, end: Vector2, thick: i32, color: Color) -> () = ImageDrawLineEx_(dst, start, end, thick, color);
-fun ImageDrawLineStrip(dst: cptr mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> () = ImageDrawLineStrip_(dst, points, pointCount, color);
-fun ImageDrawTriangle(dst: cptr mut Image, v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> () = ImageDrawTriangle_(dst, v1, v2, v3, color);
-fun ImageDrawTriangleGradient(dst: cptr mut Image, v1: Vector2, v2: Vector2, v3: Vector2, c1: Color, c2: Color, c3: Color) -> () = ImageDrawTriangleGradient_(dst, v1, v2, v3, c1, c2, c3);
-fun ImageDrawTriangleLines(dst: cptr mut Image, v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> () = ImageDrawTriangleLines_(dst, v1, v2, v3, color);
-fun ImageDrawTriangleFan(dst: cptr mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> () = ImageDrawTriangleFan_(dst, points, pointCount, color);
-fun ImageDrawTriangleStrip(dst: cptr mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> () = ImageDrawTriangleStrip_(dst, points, pointCount, color);
-fun ImageDrawRectangle(dst: cptr mut Image, posX: i32, posY: i32, width: i32, height: i32, color: Color) -> () = ImageDrawRectangle_(dst, posX, posY, width, height, color);
-fun ImageDrawRectangleV(dst: cptr mut Image, position: Vector2, size: Vector2, color: Color) -> () = ImageDrawRectangleV_(dst, position, size, color);
-fun ImageDrawRectangleRec(dst: cptr mut Image, rec: Rectangle, color: Color) -> () = ImageDrawRectangleRec_(dst, rec, color);
-fun ImageDrawRectanglePro(dst: cptr mut Image, rec: Rectangle, origin: Vector2, rotation: f32, color: Color) -> () = ImageDrawRectanglePro_(dst, rec, origin, rotation, color);
-fun ImageDrawRectangleLines(dst: cptr mut Image, posX: i32, posY: i32, width: i32, height: i32, color: Color) -> () = ImageDrawRectangleLines_(dst, posX, posY, width, height, color);
-fun ImageDrawRectangleLinesEx(dst: cptr mut Image, rec: Rectangle, thick: i32, color: Color) -> () = ImageDrawRectangleLinesEx_(dst, rec, thick, color);
-fun ImageDrawRectangleGradientEx(dst: cptr mut Image, rec: Rectangle, col1: Color, col2: Color, col3: Color, col4: Color) -> () = ImageDrawRectangleGradientEx_(dst, rec, col1, col2, col3, col4);
-fun ImageDrawCircle(dst: cptr mut Image, centerX: i32, centerY: i32, radius: i32, color: Color) -> () = ImageDrawCircle_(dst, centerX, centerY, radius, color);
-fun ImageDrawCircleV(dst: cptr mut Image, center: Vector2, radius: i32, color: Color) -> () = ImageDrawCircleV_(dst, center, radius, color);
-fun ImageDrawCircleLines(dst: cptr mut Image, centerX: i32, centerY: i32, radius: i32, color: Color) -> () = ImageDrawCircleLines_(dst, centerX, centerY, radius, color);
-fun ImageDrawCircleLinesV(dst: cptr mut Image, center: Vector2, radius: i32, color: Color) -> () = ImageDrawCircleLinesV_(dst, center, radius, color);
-fun ImageDrawCircleGradient(dst: cptr mut Image, center: Vector2, radius: f32, inner: Color, outer: Color) -> () = ImageDrawCircleGradient_(dst, center, radius, inner, outer);
-fun ImageDrawImage(dst: cptr mut Image, src: Image, posX: i32, posY: i32, tint: Color) -> () = ImageDrawImage_(dst, src, posX, posY, tint);
-fun ImageDrawImageEx(dst: cptr mut Image, src: Image, position: Vector2, rotation: f32, scale: f32, tint: Color) -> () = ImageDrawImageEx_(dst, src, position, rotation, scale, tint);
-fun ImageDrawImageRec(dst: cptr mut Image, src: Image, srcRec: Rectangle, position: Vector2, tint: Color) -> () = ImageDrawImageRec_(dst, src, srcRec, position, tint);
-fun ImageDrawImagePro(dst: cptr mut Image, src: Image, srcRec: Rectangle, dstRec: Rectangle, origin: Vector2, rotation: f32, tint: Color) -> () = ImageDrawImagePro_(dst, src, srcRec, dstRec, origin, rotation, tint);
-fun ImageDrawText(dst: cptr mut Image, text: cptr char, posX: i32, posY: i32, fontSize: i32, color: Color) -> () = ImageDrawText_(dst, text, posX, posY, fontSize, color);
-fun ImageDrawTextEx(dst: cptr mut Image, font: Font, text: cptr char, position: Vector2, fontSize: f32, spacing: f32, tint: Color) -> () = ImageDrawTextEx_(dst, font, text, position, fontSize, spacing, tint);
-fun ImageDrawTextPro(dst: cptr mut Image, font: Font, text: cptr char, position: Vector2, origin: Vector2, rotation: f32, fontSize: f32, spacing: f32, tint: Color) -> () = ImageDrawTextPro_(dst, font, text, position, origin, rotation, fontSize, spacing, tint);
+fun ImageClearBackground(dst: ref mut Image, color: Color) -> () = ImageClearBackground_(dst as cptr mut Image, color);
+fun ImageDrawPixel(dst: ref mut Image, posX: i32, posY: i32, color: Color) -> () = ImageDrawPixel_(dst as cptr mut Image, posX, posY, color);
+fun ImageDrawPixelV(dst: ref mut Image, position: Vector2, color: Color) -> () = ImageDrawPixelV_(dst as cptr mut Image, position, color);
+fun ImageDrawLine(dst: ref mut Image, startPosX: i32, startPosY: i32, endPosX: i32, endPosY: i32, color: Color) -> () = ImageDrawLine_(dst as cptr mut Image, startPosX, startPosY, endPosX, endPosY, color);
+fun ImageDrawLineV(dst: ref mut Image, start: Vector2, end: Vector2, color: Color) -> () = ImageDrawLineV_(dst as cptr mut Image, start, end, color);
+fun ImageDrawLineEx(dst: ref mut Image, start: Vector2, end: Vector2, thick: i32, color: Color) -> () = ImageDrawLineEx_(dst as cptr mut Image, start, end, thick, color);
+fun ImageDrawLineStrip(dst: ref mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> () = ImageDrawLineStrip_(dst as cptr mut Image, points, pointCount, color);
+fun ImageDrawTriangle(dst: ref mut Image, v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> () = ImageDrawTriangle_(dst as cptr mut Image, v1, v2, v3, color);
+fun ImageDrawTriangleGradient(dst: ref mut Image, v1: Vector2, v2: Vector2, v3: Vector2, c1: Color, c2: Color, c3: Color) -> () = ImageDrawTriangleGradient_(dst as cptr mut Image, v1, v2, v3, c1, c2, c3);
+fun ImageDrawTriangleLines(dst: ref mut Image, v1: Vector2, v2: Vector2, v3: Vector2, color: Color) -> () = ImageDrawTriangleLines_(dst as cptr mut Image, v1, v2, v3, color);
+fun ImageDrawTriangleFan(dst: ref mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> () = ImageDrawTriangleFan_(dst as cptr mut Image, points, pointCount, color);
+fun ImageDrawTriangleStrip(dst: ref mut Image, points: cptr Vector2, pointCount: i32, color: Color) -> () = ImageDrawTriangleStrip_(dst as cptr mut Image, points, pointCount, color);
+fun ImageDrawRectangle(dst: ref mut Image, posX: i32, posY: i32, width: i32, height: i32, color: Color) -> () = ImageDrawRectangle_(dst as cptr mut Image, posX, posY, width, height, color);
+fun ImageDrawRectangleV(dst: ref mut Image, position: Vector2, size: Vector2, color: Color) -> () = ImageDrawRectangleV_(dst as cptr mut Image, position, size, color);
+fun ImageDrawRectangleRec(dst: ref mut Image, rec: Rectangle, color: Color) -> () = ImageDrawRectangleRec_(dst as cptr mut Image, rec, color);
+fun ImageDrawRectanglePro(dst: ref mut Image, rec: Rectangle, origin: Vector2, rotation: f32, color: Color) -> () = ImageDrawRectanglePro_(dst as cptr mut Image, rec, origin, rotation, color);
+fun ImageDrawRectangleLines(dst: ref mut Image, posX: i32, posY: i32, width: i32, height: i32, color: Color) -> () = ImageDrawRectangleLines_(dst as cptr mut Image, posX, posY, width, height, color);
+fun ImageDrawRectangleLinesEx(dst: ref mut Image, rec: Rectangle, thick: i32, color: Color) -> () = ImageDrawRectangleLinesEx_(dst as cptr mut Image, rec, thick, color);
+fun ImageDrawRectangleGradientEx(dst: ref mut Image, rec: Rectangle, col1: Color, col2: Color, col3: Color, col4: Color) -> () = ImageDrawRectangleGradientEx_(dst as cptr mut Image, rec, col1, col2, col3, col4);
+fun ImageDrawCircle(dst: ref mut Image, centerX: i32, centerY: i32, radius: i32, color: Color) -> () = ImageDrawCircle_(dst as cptr mut Image, centerX, centerY, radius, color);
+fun ImageDrawCircleV(dst: ref mut Image, center: Vector2, radius: i32, color: Color) -> () = ImageDrawCircleV_(dst as cptr mut Image, center, radius, color);
+fun ImageDrawCircleLines(dst: ref mut Image, centerX: i32, centerY: i32, radius: i32, color: Color) -> () = ImageDrawCircleLines_(dst as cptr mut Image, centerX, centerY, radius, color);
+fun ImageDrawCircleLinesV(dst: ref mut Image, center: Vector2, radius: i32, color: Color) -> () = ImageDrawCircleLinesV_(dst as cptr mut Image, center, radius, color);
+fun ImageDrawCircleGradient(dst: ref mut Image, center: Vector2, radius: f32, inner: Color, outer: Color) -> () = ImageDrawCircleGradient_(dst as cptr mut Image, center, radius, inner, outer);
+fun ImageDrawImage(dst: ref mut Image, src: Image, posX: i32, posY: i32, tint: Color) -> () = ImageDrawImage_(dst as cptr mut Image, src, posX, posY, tint);
+fun ImageDrawImageEx(dst: ref mut Image, src: Image, position: Vector2, rotation: f32, scale: f32, tint: Color) -> () = ImageDrawImageEx_(dst as cptr mut Image, src, position, rotation, scale, tint);
+fun ImageDrawImageRec(dst: ref mut Image, src: Image, srcRec: Rectangle, position: Vector2, tint: Color) -> () = ImageDrawImageRec_(dst as cptr mut Image, src, srcRec, position, tint);
+fun ImageDrawImagePro(dst: ref mut Image, src: Image, srcRec: Rectangle, dstRec: Rectangle, origin: Vector2, rotation: f32, tint: Color) -> () = ImageDrawImagePro_(dst as cptr mut Image, src, srcRec, dstRec, origin, rotation, tint);
+fun ImageDrawText(dst: ref mut Image, text: cptr char, posX: i32, posY: i32, fontSize: i32, color: Color) -> () = ImageDrawText_(dst as cptr mut Image, text, posX, posY, fontSize, color);
+fun ImageDrawTextEx(dst: ref mut Image, font: Font, text: cptr char, position: Vector2, fontSize: f32, spacing: f32, tint: Color) -> () = ImageDrawTextEx_(dst as cptr mut Image, font, text, position, fontSize, spacing, tint);
+fun ImageDrawTextPro(dst: ref mut Image, font: Font, text: cptr char, position: Vector2, origin: Vector2, rotation: f32, fontSize: f32, spacing: f32, tint: Color) -> () = ImageDrawTextPro_(dst as cptr mut Image, font, text, position, origin, rotation, fontSize, spacing, tint);
 fun UpdateTextureRec(texture: Texture2D, rec: Rectangle, pixels: cptr u8) -> () = UpdateTextureRec_(texture, rec, pixels);
+fun GenTextureMipmaps(texture: ref mut Texture2D) -> () =
+    GenTextureMipmaps_(texture as cptr mut Texture2D);
 fun DrawTexture(texture: Texture2D, posX: i32, posY: i32, tint: Color) -> () = DrawTexture_(texture, posX, posY, tint);
 fun DrawTextureV(texture: Texture2D, position: Vector2, tint: Color) -> () = DrawTextureV_(texture, position, tint);
 fun DrawTextureEx(texture: Texture2D, position: Vector2, rotation: f32, scale: f32, tint: Color) -> () = DrawTextureEx_(texture, position, rotation, scale, tint);
@@ -2209,6 +2316,8 @@ fun GetColor(hexValue: u32) -> Color = GetColor_(hexValue);
 fun GetPixelColor(srcPtr: cptr u8, format: i32) -> Color = GetPixelColor_(srcPtr, format);
 fun SetPixelColor(dstPtr: cptr mut u8, color: Color, format: i32) -> () = SetPixelColor_(dstPtr, color, format);
 fun LoadFontFromImage(image: Image, key: Color, firstChar: i32) -> Font = LoadFontFromImage_(image, key, firstChar);
+fun LoadFontData(fileData: cptr u8, dataSize: i32, fontSize: i32, codepoints: cptr i32, codepointCount: i32, type_: i32, glyphCount: ref mut i32) -> cptr mut GlyphInfo =
+    LoadFontData_(fileData, dataSize, fontSize, codepoints, codepointCount, type_, glyphCount as cptr mut i32);
 fun DrawText(text: cptr char, posX: i32, posY: i32, fontSize: i32, color: Color) -> () = DrawText_(text, posX, posY, fontSize, color);
 fun DrawTextEx(font: Font, text: cptr char, position: Vector2, fontSize: f32, spacing: f32, tint: Color) -> () = DrawTextEx_(font, text, position, fontSize, spacing, tint);
 fun DrawTextPro(font: Font, text: cptr char, position: Vector2, origin: Vector2, rotation: f32, fontSize: f32, spacing: f32, tint: Color) -> () = DrawTextPro_(font, text, position, origin, rotation, fontSize, spacing, tint);
@@ -2217,6 +2326,22 @@ fun DrawTextCodepoints(font: Font, codepoints: cptr i32, codepointCount: i32, po
 fun MeasureTextEx(font: Font, text: cptr char, fontSize: f32, spacing: f32) -> Vector2 = MeasureTextEx_(font, text, fontSize, spacing);
 fun MeasureTextCodepoints(font: Font, codepoints: cptr i32, length: i32, fontSize: f32, spacing: f32) -> Vector2 = MeasureTextCodepoints_(font, codepoints, length, fontSize, spacing);
 fun GetGlyphAtlasRec(font: Font, codepoint: i32) -> Rectangle = GetGlyphAtlasRec_(font, codepoint);
+fun LoadCodepoints(text: cptr char, count: ref mut i32) -> cptr mut i32 =
+    LoadCodepoints_(text, count as cptr mut i32);
+fun GetCodepoint(text: cptr char, codepointSize: ref mut i32) -> i32 =
+    GetCodepoint_(text, codepointSize as cptr mut i32);
+fun GetCodepointNext(text: cptr char, codepointSize: ref mut i32) -> i32 =
+    GetCodepointNext_(text, codepointSize as cptr mut i32);
+fun GetCodepointPrevious(text: cptr char, codepointSize: ref mut i32) -> i32 =
+    GetCodepointPrevious_(text, codepointSize as cptr mut i32);
+fun CodepointToUTF8(codepoint: i32, utf8Size: ref mut i32) -> cptr char =
+    CodepointToUTF8_(codepoint, utf8Size as cptr mut i32);
+fun LoadTextLines(text: cptr char, count: ref mut i32) -> cptr mut (cptr mut char) =
+    LoadTextLines_(text, count as cptr mut i32);
+fun TextSplit(text: cptr char, delimiter: char, count: ref mut i32) -> cptr mut (cptr mut char) =
+    TextSplit_(text, delimiter, count as cptr mut i32);
+fun TextAppend(text: cptr mut char, append: cptr char, position: ref mut i32) -> () =
+    TextAppend_(text, append, position as cptr mut i32);
 fun DrawLine3D(startPos: Vector3, endPos: Vector3, color: Color) -> () = DrawLine3D_(startPos, endPos, color);
 fun DrawPoint3D(position: Vector3, color: Color) -> () = DrawPoint3D_(position, color);
 fun DrawCircle3D(center: Vector3, radius: f32, rotationAxis: Vector3, rotationAngle: f32, color: Color) -> () = DrawCircle3D_(center, radius, rotationAxis, rotationAngle, color);
@@ -2245,13 +2370,29 @@ fun DrawBoundingBox(box_: BoundingBox, color: Color) -> () = DrawBoundingBox_(bo
 fun DrawBillboard(camera: Camera, texture: Texture2D, position: Vector3, scale: f32, tint: Color) -> () = DrawBillboard_(camera, texture, position, scale, tint);
 fun DrawBillboardRec(camera: Camera, texture: Texture2D, rec: Rectangle, position: Vector3, size: Vector2, tint: Color) -> () = DrawBillboardRec_(camera, texture, rec, position, size, tint);
 fun DrawBillboardPro(camera: Camera, texture: Texture2D, rec: Rectangle, position: Vector3, up: Vector3, size: Vector2, origin: Vector2, rotation: f32, tint: Color) -> () = DrawBillboardPro_(camera, texture, rec, position, up, size, origin, rotation, tint);
+fun UploadMesh(mesh: ref mut Mesh, dynamic: bool) -> () =
+    UploadMesh_(mesh as cptr mut Mesh, dynamic);
+fun GenMeshTangents(mesh: ref mut Mesh) -> () =
+    GenMeshTangents_(mesh as cptr mut Mesh);
 fun GenMeshHeightmap(heightmap: Image, size: Vector3) -> Mesh = GenMeshHeightmap_(heightmap, size);
 fun GenMeshCubicmap(cubicmap: Image, cubeSize: Vector3) -> Mesh = GenMeshCubicmap_(cubicmap, cubeSize);
+fun LoadMaterials(fileName: cptr char, materialCount: ref mut i32) -> cptr mut Material =
+    LoadMaterials_(fileName, materialCount as cptr mut i32);
+fun SetMaterialTexture(material: ref mut Material, mapType: i32, texture: Texture2D) -> () =
+    SetMaterialTexture_(material as cptr mut Material, mapType, texture);
+fun SetModelMeshMaterial(model: ref mut Model, meshId: i32, materialId: i32) -> () =
+    SetModelMeshMaterial_(model as cptr mut Model, meshId, materialId);
+fun LoadModelAnimations(fileName: cptr char, animCount: ref mut i32) -> cptr mut ModelAnimation =
+    LoadModelAnimations_(fileName, animCount as cptr mut i32);
 fun CheckCollisionSpheres(center1: Vector3, radius1: f32, center2: Vector3, radius2: f32) -> bool = CheckCollisionSpheres_(center1, radius1, center2, radius2);
 fun CheckCollisionBoxSphere(box_: BoundingBox, center: Vector3, radius: f32) -> bool = CheckCollisionBoxSphere_(box_, center, radius);
 fun GetRayCollisionSphere(ray: Ray, center: Vector3, radius: f32) -> RayCollision = GetRayCollisionSphere_(ray, center, radius);
 fun GetRayCollisionTriangle(ray: Ray, p1: Vector3, p2: Vector3, p3: Vector3) -> RayCollision = GetRayCollisionTriangle_(ray, p1, p2, p3);
 fun GetRayCollisionQuad(ray: Ray, p1: Vector3, p2: Vector3, p3: Vector3, p4: Vector3) -> RayCollision = GetRayCollisionQuad_(ray, p1, p2, p3, p4);
+fun WaveCrop(wave: ref mut Wave, initFrame: i32, finalFrame: i32) -> () =
+    WaveCrop_(wave as cptr mut Wave, initFrame, finalFrame);
+fun WaveFormat(wave: ref mut Wave, sampleRate: i32, sampleSize: i32, channels: i32) -> () =
+    WaveFormat_(wave as cptr mut Wave, sampleRate, sampleSize, channels);
 
 private fun toC_(text: str) -> String = {
     var buffer = stringReserve(text.length() + 1);
