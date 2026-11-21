@@ -19,7 +19,8 @@ extern("C") {
     private fundecl b2GetVersion_() -> b2Version;
     fundecl b2GetTicks() -> u64;
     fundecl b2GetMilliseconds(ticks: u64) -> f32;
-    fundecl b2GetMillisecondsAndReset(ticks: cptr mut u64) -> f32;
+    @c_symbol_name("b2GetMillisecondsAndReset")
+    private fundecl b2GetMillisecondsAndReset_(ticks: cptr mut u64) -> f32;
     fundecl b2Yield() -> ();
 }
 
@@ -230,8 +231,10 @@ extern("C") {
         chainId: i32;
     }
 
-    fundecl b2IsValidRay(input: cptr b2RayCastInput) -> bool;
-    fundecl b2MakePolygon(hull: cptr b2Hull, radius: f32) -> b2Polygon;
+    @c_symbol_name("b2IsValidRay")
+    private fundecl b2IsValidRay_(input: cptr b2RayCastInput) -> bool;
+    @c_symbol_name("b2MakePolygon")
+    private fundecl b2MakePolygon_(hull: cptr b2Hull, radius: f32) -> b2Polygon;
     @c_symbol_name("b2MakeOffsetPolygon")
     private fundecl b2MakeOffsetPolygon_(hull: cptr b2Hull, position: b2Vec2, rotation: b2Rot) -> b2Polygon;
     @c_symbol_name("b2MakeOffsetRoundedPolygon")
@@ -265,14 +268,22 @@ extern("C") {
     private fundecl b2PointInCapsule_(point: b2Vec2, shape: cptr b2Capsule) -> bool;
     @c_symbol_name("b2PointInPolygon")
     private fundecl b2PointInPolygon_(point: b2Vec2, shape: cptr b2Polygon) -> bool;
-    fundecl b2RayCastCircle(input: cptr b2RayCastInput, shape: cptr b2Circle) -> b2CastOutput;
-    fundecl b2RayCastCapsule(input: cptr b2RayCastInput, shape: cptr b2Capsule) -> b2CastOutput;
-    fundecl b2RayCastSegment(input: cptr b2RayCastInput, shape: cptr b2Segment, oneSided: bool) -> b2CastOutput;
-    fundecl b2RayCastPolygon(input: cptr b2RayCastInput, shape: cptr b2Polygon) -> b2CastOutput;
-    fundecl b2ShapeCastCircle(input: cptr b2ShapeCastInput, shape: cptr b2Circle) -> b2CastOutput;
-    fundecl b2ShapeCastCapsule(input: cptr b2ShapeCastInput, shape: cptr b2Capsule) -> b2CastOutput;
-    fundecl b2ShapeCastSegment(input: cptr b2ShapeCastInput, shape: cptr b2Segment) -> b2CastOutput;
-    fundecl b2ShapeCastPolygon(input: cptr b2ShapeCastInput, shape: cptr b2Polygon) -> b2CastOutput;
+    @c_symbol_name("b2RayCastCircle")
+    private fundecl b2RayCastCircle_(input: cptr b2RayCastInput, shape: cptr b2Circle) -> b2CastOutput;
+    @c_symbol_name("b2RayCastCapsule")
+    private fundecl b2RayCastCapsule_(input: cptr b2RayCastInput, shape: cptr b2Capsule) -> b2CastOutput;
+    @c_symbol_name("b2RayCastSegment")
+    private fundecl b2RayCastSegment_(input: cptr b2RayCastInput, shape: cptr b2Segment, oneSided: bool) -> b2CastOutput;
+    @c_symbol_name("b2RayCastPolygon")
+    private fundecl b2RayCastPolygon_(input: cptr b2RayCastInput, shape: cptr b2Polygon) -> b2CastOutput;
+    @c_symbol_name("b2ShapeCastCircle")
+    private fundecl b2ShapeCastCircle_(input: cptr b2ShapeCastInput, shape: cptr b2Circle) -> b2CastOutput;
+    @c_symbol_name("b2ShapeCastCapsule")
+    private fundecl b2ShapeCastCapsule_(input: cptr b2ShapeCastInput, shape: cptr b2Capsule) -> b2CastOutput;
+    @c_symbol_name("b2ShapeCastSegment")
+    private fundecl b2ShapeCastSegment_(input: cptr b2ShapeCastInput, shape: cptr b2Segment) -> b2CastOutput;
+    @c_symbol_name("b2ShapeCastPolygon")
+    private fundecl b2ShapeCastPolygon_(input: cptr b2ShapeCastInput, shape: cptr b2Polygon) -> b2CastOutput;
 
     class b2Hull {
         points: b2Vec2[8];
@@ -280,7 +291,8 @@ extern("C") {
     }
 
     fundecl b2ComputeHull(points: cptr b2Vec2, count: i32) -> b2Hull;
-    fundecl b2ValidateHull(hull: cptr b2Hull) -> bool;
+    @c_symbol_name("b2ValidateHull")
+    private fundecl b2ValidateHull_(hull: cptr b2Hull) -> bool;
 
     class b2SegmentDistanceResult {
         closest1: b2Vec2;
@@ -336,7 +348,8 @@ extern("C") {
         count: i32;
     }
 
-    fundecl b2ShapeDistance(input: cptr b2DistanceInput, cache: cptr mut b2SimplexCache, simplexes: cptr mut b2Simplex, simplexCapacity: i32) -> b2DistanceOutput;
+    @c_symbol_name("b2ShapeDistance")
+    private fundecl b2ShapeDistance_(input: cptr b2DistanceInput, cache: cptr mut b2SimplexCache, simplexes: cptr mut b2Simplex, simplexCapacity: i32) -> b2DistanceOutput;
 
     class b2ShapeCastPairInput {
         proxyA: b2ShapeProxy;
@@ -348,7 +361,8 @@ extern("C") {
         canEncroach: bool;
     }
 
-    fundecl b2ShapeCast(input: cptr b2ShapeCastPairInput) -> b2CastOutput;
+    @c_symbol_name("b2ShapeCast")
+    private fundecl b2ShapeCast_(input: cptr b2ShapeCastPairInput) -> b2CastOutput;
     fundecl b2MakeProxy(points: cptr b2Vec2, count: i32, radius: f32) -> b2ShapeProxy;
     @c_symbol_name("b2MakeOffsetProxy")
     private fundecl b2MakeOffsetProxy_(points: cptr b2Vec2, count: i32, radius: f32, position: b2Vec2, rotation: b2Rot) -> b2ShapeProxy;
@@ -454,16 +468,20 @@ extern("C") {
     }
 
     fundecl b2DynamicTree_Create() -> b2DynamicTree;
-    fundecl b2DynamicTree_Destroy(tree: cptr mut b2DynamicTree) -> ();
+    @c_symbol_name("b2DynamicTree_Destroy")
+    private fundecl b2DynamicTree_Destroy_(tree: cptr mut b2DynamicTree) -> ();
     @c_symbol_name("b2DynamicTree_CreateProxy")
     private fundecl b2DynamicTree_CreateProxy_(tree: cptr mut b2DynamicTree, aabb: b2AABB, categoryBits: u64, userData: u64) -> i32;
-    fundecl b2DynamicTree_DestroyProxy(tree: cptr mut b2DynamicTree, proxyId: i32) -> ();
+    @c_symbol_name("b2DynamicTree_DestroyProxy")
+    private fundecl b2DynamicTree_DestroyProxy_(tree: cptr mut b2DynamicTree, proxyId: i32) -> ();
     @c_symbol_name("b2DynamicTree_MoveProxy")
     private fundecl b2DynamicTree_MoveProxy_(tree: cptr mut b2DynamicTree, proxyId: i32, aabb: b2AABB) -> ();
     @c_symbol_name("b2DynamicTree_EnlargeProxy")
     private fundecl b2DynamicTree_EnlargeProxy_(tree: cptr mut b2DynamicTree, proxyId: i32, aabb: b2AABB) -> ();
-    fundecl b2DynamicTree_SetCategoryBits(tree: cptr mut b2DynamicTree, proxyId: i32, categoryBits: u64) -> ();
-    fundecl b2DynamicTree_GetCategoryBits(tree: cptr mut b2DynamicTree, proxyId: i32) -> u64;
+    @c_symbol_name("b2DynamicTree_SetCategoryBits")
+    private fundecl b2DynamicTree_SetCategoryBits_(tree: cptr mut b2DynamicTree, proxyId: i32, categoryBits: u64) -> ();
+    @c_symbol_name("b2DynamicTree_GetCategoryBits")
+    private fundecl b2DynamicTree_GetCategoryBits_(tree: cptr mut b2DynamicTree, proxyId: i32) -> u64;
 }
 
 const b2TreeQueryCallbackFcn = cptr u8;
@@ -485,18 +503,26 @@ const b2TreeShapeCastCallbackFcn = cptr u8;
 extern("C") {
     @c_symbol_name("b2DynamicTree_ShapeCast")
     private fundecl b2DynamicTree_ShapeCast_(tree: cptr b2DynamicTree, input: cptr b2ShapeCastInput, maskBits: u64, callback: b2TreeShapeCastCallbackFcn, context: cptr mut u8) -> b2TreeStats;
-    fundecl b2DynamicTree_GetHeight(tree: cptr b2DynamicTree) -> i32;
-    fundecl b2DynamicTree_GetAreaRatio(tree: cptr b2DynamicTree) -> f32;
+    @c_symbol_name("b2DynamicTree_GetHeight")
+    private fundecl b2DynamicTree_GetHeight_(tree: cptr b2DynamicTree) -> i32;
+    @c_symbol_name("b2DynamicTree_GetAreaRatio")
+    private fundecl b2DynamicTree_GetAreaRatio_(tree: cptr b2DynamicTree) -> f32;
     @c_symbol_name("b2DynamicTree_GetRootBounds")
     private fundecl b2DynamicTree_GetRootBounds_(tree: cptr b2DynamicTree) -> b2AABB;
-    fundecl b2DynamicTree_GetProxyCount(tree: cptr b2DynamicTree) -> i32;
-    fundecl b2DynamicTree_Rebuild(tree: cptr mut b2DynamicTree, fullBuild: bool) -> i32;
-    fundecl b2DynamicTree_GetByteCount(tree: cptr b2DynamicTree) -> i32;
-    fundecl b2DynamicTree_GetUserData(tree: cptr b2DynamicTree, proxyId: i32) -> u64;
+    @c_symbol_name("b2DynamicTree_GetProxyCount")
+    private fundecl b2DynamicTree_GetProxyCount_(tree: cptr b2DynamicTree) -> i32;
+    @c_symbol_name("b2DynamicTree_Rebuild")
+    private fundecl b2DynamicTree_Rebuild_(tree: cptr mut b2DynamicTree, fullBuild: bool) -> i32;
+    @c_symbol_name("b2DynamicTree_GetByteCount")
+    private fundecl b2DynamicTree_GetByteCount_(tree: cptr b2DynamicTree) -> i32;
+    @c_symbol_name("b2DynamicTree_GetUserData")
+    private fundecl b2DynamicTree_GetUserData_(tree: cptr b2DynamicTree, proxyId: i32) -> u64;
     @c_symbol_name("b2DynamicTree_GetAABB")
     private fundecl b2DynamicTree_GetAABB_(tree: cptr b2DynamicTree, proxyId: i32) -> b2AABB;
-    fundecl b2DynamicTree_Validate(tree: cptr b2DynamicTree) -> ();
-    fundecl b2DynamicTree_ValidateNoEnlarged(tree: cptr b2DynamicTree) -> ();
+    @c_symbol_name("b2DynamicTree_Validate")
+    private fundecl b2DynamicTree_Validate_(tree: cptr b2DynamicTree) -> ();
+    @c_symbol_name("b2DynamicTree_ValidateNoEnlarged")
+    private fundecl b2DynamicTree_ValidateNoEnlarged_(tree: cptr b2DynamicTree) -> ();
 
     class b2PlaneResult {
         plane: b2Plane;
@@ -1859,6 +1885,8 @@ fun b2Body_SetName(bodyId: b2BodyId, name: str | String) -> () = {
 }
 
 fun b2GetVersion() -> b2Version = b2GetVersion_();
+fun b2GetMillisecondsAndReset(ticks: ref mut u64) -> f32 =
+    b2GetMillisecondsAndReset_(ticks as cptr mut u64);
 fun b2IsValidVec2(v: b2Vec2) -> bool = b2IsValidVec2_(v);
 fun b2IsValidRotation(q: b2Rot) -> bool = b2IsValidRotation_(q);
 fun b2IsValidAABB(aabb: b2AABB) -> bool = b2IsValidAABB_(aabb);
@@ -1886,7 +1914,7 @@ fun b2Length(v: b2Vec2) -> f32 = b2Length_(v);
 fun b2Distance(a: b2Vec2, b: b2Vec2) -> f32 = b2Distance_(a, b);
 fun b2Normalize(v: b2Vec2) -> b2Vec2 = b2Normalize_(v);
 fun b2IsNormalized(a: b2Vec2) -> bool = b2IsNormalized_(a);
-fun b2GetLengthAndNormalize(length: cptr mut f32, v: b2Vec2) -> b2Vec2 = b2GetLengthAndNormalize_(length, v);
+fun b2GetLengthAndNormalize(length: ref mut f32, v: b2Vec2) -> b2Vec2 = b2GetLengthAndNormalize_(length as cptr mut f32, v);
 fun b2NormalizeRot(q: b2Rot) -> b2Rot = b2NormalizeRot_(q);
 fun b2IntegrateRotation(q1: b2Rot, deltaAngle: f32) -> b2Rot = b2IntegrateRotation_(q1, deltaAngle);
 fun b2LengthSquared(v: b2Vec2) -> f32 = b2LengthSquared_(v);
@@ -1918,45 +1946,127 @@ fun b2AABB_Union(a: b2AABB, b: b2AABB) -> b2AABB = b2AABB_Union_(a, b);
 fun b2AABB_Overlaps(a: b2AABB, b: b2AABB) -> bool = b2AABB_Overlaps_(a, b);
 fun b2MakeAABB(points: cptr b2Vec2, count: i32, radius: f32) -> b2AABB = b2MakeAABB_(points, count, radius);
 fun b2PlaneSeparation(plane: b2Plane, point: b2Vec2) -> f32 = b2PlaneSeparation_(plane, point);
-fun b2MakeOffsetPolygon(hull: cptr b2Hull, position: b2Vec2, rotation: b2Rot) -> b2Polygon = b2MakeOffsetPolygon_(hull, position, rotation);
-fun b2MakeOffsetRoundedPolygon(hull: cptr b2Hull, position: b2Vec2, rotation: b2Rot, radius: f32) -> b2Polygon = b2MakeOffsetRoundedPolygon_(hull, position, rotation, radius);
+fun b2IsValidRay(input: ref b2RayCastInput) -> bool =
+    b2IsValidRay_(input as cptr b2RayCastInput);
+fun b2MakePolygon(hull: ref b2Hull, radius: f32) -> b2Polygon =
+    b2MakePolygon_(hull as cptr b2Hull, radius);
+fun b2MakeOffsetPolygon(hull: ref b2Hull, position: b2Vec2, rotation: b2Rot) -> b2Polygon =
+    b2MakeOffsetPolygon_(hull as cptr b2Hull, position, rotation);
+fun b2MakeOffsetRoundedPolygon(hull: ref b2Hull, position: b2Vec2, rotation: b2Rot, radius: f32) -> b2Polygon =
+    b2MakeOffsetRoundedPolygon_(hull as cptr b2Hull, position, rotation, radius);
 fun b2MakeOffsetBox(halfWidth: f32, halfHeight: f32, center: b2Vec2, rotation: b2Rot) -> b2Polygon = b2MakeOffsetBox_(halfWidth, halfHeight, center, rotation);
 fun b2MakeOffsetRoundedBox(halfWidth: f32, halfHeight: f32, center: b2Vec2, rotation: b2Rot, radius: f32) -> b2Polygon = b2MakeOffsetRoundedBox_(halfWidth, halfHeight, center, rotation, radius);
-fun b2TransformPolygon(transform: b2Transform, polygon: cptr b2Polygon) -> b2Polygon = b2TransformPolygon_(transform, polygon);
-fun b2ComputeCircleMass(shape: cptr b2Circle, density: f32) -> b2MassData = b2ComputeCircleMass_(shape, density);
-fun b2ComputeCapsuleMass(shape: cptr b2Capsule, density: f32) -> b2MassData = b2ComputeCapsuleMass_(shape, density);
-fun b2ComputePolygonMass(shape: cptr b2Polygon, density: f32) -> b2MassData = b2ComputePolygonMass_(shape, density);
-fun b2ComputeCircleAABB(shape: cptr b2Circle, transform: b2Transform) -> b2AABB = b2ComputeCircleAABB_(shape, transform);
-fun b2ComputeCapsuleAABB(shape: cptr b2Capsule, transform: b2Transform) -> b2AABB = b2ComputeCapsuleAABB_(shape, transform);
-fun b2ComputePolygonAABB(shape: cptr b2Polygon, transform: b2Transform) -> b2AABB = b2ComputePolygonAABB_(shape, transform);
-fun b2ComputeSegmentAABB(shape: cptr b2Segment, transform: b2Transform) -> b2AABB = b2ComputeSegmentAABB_(shape, transform);
-fun b2PointInCircle(point: b2Vec2, shape: cptr b2Circle) -> bool = b2PointInCircle_(point, shape);
-fun b2PointInCapsule(point: b2Vec2, shape: cptr b2Capsule) -> bool = b2PointInCapsule_(point, shape);
-fun b2PointInPolygon(point: b2Vec2, shape: cptr b2Polygon) -> bool = b2PointInPolygon_(point, shape);
+fun b2TransformPolygon(transform: b2Transform, polygon: ref b2Polygon) -> b2Polygon =
+    b2TransformPolygon_(transform, polygon as cptr b2Polygon);
+fun b2ComputeCircleMass(shape: ref b2Circle, density: f32) -> b2MassData =
+    b2ComputeCircleMass_(shape as cptr b2Circle, density);
+fun b2ComputeCapsuleMass(shape: ref b2Capsule, density: f32) -> b2MassData =
+    b2ComputeCapsuleMass_(shape as cptr b2Capsule, density);
+fun b2ComputePolygonMass(shape: ref b2Polygon, density: f32) -> b2MassData =
+    b2ComputePolygonMass_(shape as cptr b2Polygon, density);
+fun b2ComputeCircleAABB(shape: ref b2Circle, transform: b2Transform) -> b2AABB =
+    b2ComputeCircleAABB_(shape as cptr b2Circle, transform);
+fun b2ComputeCapsuleAABB(shape: ref b2Capsule, transform: b2Transform) -> b2AABB =
+    b2ComputeCapsuleAABB_(shape as cptr b2Capsule, transform);
+fun b2ComputePolygonAABB(shape: ref b2Polygon, transform: b2Transform) -> b2AABB =
+    b2ComputePolygonAABB_(shape as cptr b2Polygon, transform);
+fun b2ComputeSegmentAABB(shape: ref b2Segment, transform: b2Transform) -> b2AABB =
+    b2ComputeSegmentAABB_(shape as cptr b2Segment, transform);
+fun b2PointInCircle(point: b2Vec2, shape: ref b2Circle) -> bool =
+    b2PointInCircle_(point, shape as cptr b2Circle);
+fun b2PointInCapsule(point: b2Vec2, shape: ref b2Capsule) -> bool =
+    b2PointInCapsule_(point, shape as cptr b2Capsule);
+fun b2PointInPolygon(point: b2Vec2, shape: ref b2Polygon) -> bool =
+    b2PointInPolygon_(point, shape as cptr b2Polygon);
+fun b2RayCastCircle(input: ref b2RayCastInput, shape: ref b2Circle) -> b2CastOutput =
+    b2RayCastCircle_(input as cptr b2RayCastInput, shape as cptr b2Circle);
+fun b2RayCastCapsule(input: ref b2RayCastInput, shape: ref b2Capsule) -> b2CastOutput =
+    b2RayCastCapsule_(input as cptr b2RayCastInput, shape as cptr b2Capsule);
+fun b2RayCastSegment(input: ref b2RayCastInput, shape: ref b2Segment, oneSided: bool) -> b2CastOutput =
+    b2RayCastSegment_(input as cptr b2RayCastInput, shape as cptr b2Segment, oneSided);
+fun b2RayCastPolygon(input: ref b2RayCastInput, shape: ref b2Polygon) -> b2CastOutput =
+    b2RayCastPolygon_(input as cptr b2RayCastInput, shape as cptr b2Polygon);
+fun b2ShapeCastCircle(input: ref b2ShapeCastInput, shape: ref b2Circle) -> b2CastOutput =
+    b2ShapeCastCircle_(input as cptr b2ShapeCastInput, shape as cptr b2Circle);
+fun b2ShapeCastCapsule(input: ref b2ShapeCastInput, shape: ref b2Capsule) -> b2CastOutput =
+    b2ShapeCastCapsule_(input as cptr b2ShapeCastInput, shape as cptr b2Capsule);
+fun b2ShapeCastSegment(input: ref b2ShapeCastInput, shape: ref b2Segment) -> b2CastOutput =
+    b2ShapeCastSegment_(input as cptr b2ShapeCastInput, shape as cptr b2Segment);
+fun b2ShapeCastPolygon(input: ref b2ShapeCastInput, shape: ref b2Polygon) -> b2CastOutput =
+    b2ShapeCastPolygon_(input as cptr b2ShapeCastInput, shape as cptr b2Polygon);
+fun b2ValidateHull(hull: ref b2Hull) -> bool =
+    b2ValidateHull_(hull as cptr b2Hull);
 fun b2SegmentDistance(p1: b2Vec2, q1: b2Vec2, p2: b2Vec2, q2: b2Vec2) -> b2SegmentDistanceResult = b2SegmentDistance_(p1, q1, p2, q2);
+fun b2ShapeDistance(input: ref b2DistanceInput, cache: ref mut b2SimplexCache, simplexes: cptr mut b2Simplex, simplexCapacity: i32) -> b2DistanceOutput =
+    b2ShapeDistance_(input as cptr b2DistanceInput, cache as cptr mut b2SimplexCache, simplexes, simplexCapacity);
+fun b2ShapeCast(input: ref b2ShapeCastPairInput) -> b2CastOutput =
+    b2ShapeCast_(input as cptr b2ShapeCastPairInput);
 fun b2MakeOffsetProxy(points: cptr b2Vec2, count: i32, radius: f32, position: b2Vec2, rotation: b2Rot) -> b2ShapeProxy = b2MakeOffsetProxy_(points, count, radius, position, rotation);
-fun b2GetSweepTransform(sweep: cptr b2Sweep, time: f32) -> b2Transform = b2GetSweepTransform_(sweep, time);
-fun b2TimeOfImpact(input: cptr b2TOIInput) -> b2TOIOutput = b2TimeOfImpact_(input);
-fun b2CollideCircles(circleA: cptr b2Circle, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold = b2CollideCircles_(circleA, xfA, circleB, xfB);
-fun b2CollideCapsuleAndCircle(capsuleA: cptr b2Capsule, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold = b2CollideCapsuleAndCircle_(capsuleA, xfA, circleB, xfB);
-fun b2CollideSegmentAndCircle(segmentA: cptr b2Segment, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold = b2CollideSegmentAndCircle_(segmentA, xfA, circleB, xfB);
-fun b2CollidePolygonAndCircle(polygonA: cptr b2Polygon, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold = b2CollidePolygonAndCircle_(polygonA, xfA, circleB, xfB);
-fun b2CollideCapsules(capsuleA: cptr b2Capsule, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform) -> b2Manifold = b2CollideCapsules_(capsuleA, xfA, capsuleB, xfB);
-fun b2CollideSegmentAndCapsule(segmentA: cptr b2Segment, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform) -> b2Manifold = b2CollideSegmentAndCapsule_(segmentA, xfA, capsuleB, xfB);
-fun b2CollidePolygonAndCapsule(polygonA: cptr b2Polygon, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform) -> b2Manifold = b2CollidePolygonAndCapsule_(polygonA, xfA, capsuleB, xfB);
-fun b2CollidePolygons(polygonA: cptr b2Polygon, xfA: b2Transform, polygonB: cptr b2Polygon, xfB: b2Transform) -> b2Manifold = b2CollidePolygons_(polygonA, xfA, polygonB, xfB);
-fun b2CollideSegmentAndPolygon(segmentA: cptr b2Segment, xfA: b2Transform, polygonB: cptr b2Polygon, xfB: b2Transform) -> b2Manifold = b2CollideSegmentAndPolygon_(segmentA, xfA, polygonB, xfB);
-fun b2CollideChainSegmentAndCircle(segmentA: cptr b2ChainSegment, xfA: b2Transform, circleB: cptr b2Circle, xfB: b2Transform) -> b2Manifold = b2CollideChainSegmentAndCircle_(segmentA, xfA, circleB, xfB);
-fun b2CollideChainSegmentAndCapsule(segmentA: cptr b2ChainSegment, xfA: b2Transform, capsuleB: cptr b2Capsule, xfB: b2Transform, cache: cptr mut b2SimplexCache) -> b2Manifold = b2CollideChainSegmentAndCapsule_(segmentA, xfA, capsuleB, xfB, cache);
-fun b2CollideChainSegmentAndPolygon(segmentA: cptr b2ChainSegment, xfA: b2Transform, polygonB: cptr b2Polygon, xfB: b2Transform, cache: cptr mut b2SimplexCache) -> b2Manifold = b2CollideChainSegmentAndPolygon_(segmentA, xfA, polygonB, xfB, cache);
-fun b2DynamicTree_CreateProxy(tree: cptr mut b2DynamicTree, aabb: b2AABB, categoryBits: u64, userData: u64) -> i32 = b2DynamicTree_CreateProxy_(tree, aabb, categoryBits, userData);
-fun b2DynamicTree_MoveProxy(tree: cptr mut b2DynamicTree, proxyId: i32, aabb: b2AABB) -> () = b2DynamicTree_MoveProxy_(tree, proxyId, aabb);
-fun b2DynamicTree_EnlargeProxy(tree: cptr mut b2DynamicTree, proxyId: i32, aabb: b2AABB) -> () = b2DynamicTree_EnlargeProxy_(tree, proxyId, aabb);
-fun b2DynamicTree_Query(tree: cptr b2DynamicTree, aabb: b2AABB, maskBits: u64, callback: b2TreeQueryCallbackFcn, context: cptr mut u8) -> b2TreeStats = b2DynamicTree_Query_(tree, aabb, maskBits, callback, context);
-fun b2DynamicTree_RayCast(tree: cptr b2DynamicTree, input: cptr b2RayCastInput, maskBits: u64, callback: b2TreeRayCastCallbackFcn, context: cptr mut u8) -> b2TreeStats = b2DynamicTree_RayCast_(tree, input, maskBits, callback, context);
-fun b2DynamicTree_ShapeCast(tree: cptr b2DynamicTree, input: cptr b2ShapeCastInput, maskBits: u64, callback: b2TreeShapeCastCallbackFcn, context: cptr mut u8) -> b2TreeStats = b2DynamicTree_ShapeCast_(tree, input, maskBits, callback, context);
-fun b2DynamicTree_GetRootBounds(tree: cptr b2DynamicTree) -> b2AABB = b2DynamicTree_GetRootBounds_(tree);
-fun b2DynamicTree_GetAABB(tree: cptr b2DynamicTree, proxyId: i32) -> b2AABB = b2DynamicTree_GetAABB_(tree, proxyId);
+fun b2GetSweepTransform(sweep: ref b2Sweep, time: f32) -> b2Transform =
+    b2GetSweepTransform_(sweep as cptr b2Sweep, time);
+fun b2TimeOfImpact(input: ref b2TOIInput) -> b2TOIOutput =
+    b2TimeOfImpact_(input as cptr b2TOIInput);
+fun b2CollideCircles(circleA: ref b2Circle, xfA: b2Transform, circleB: ref b2Circle, xfB: b2Transform) -> b2Manifold =
+    b2CollideCircles_(circleA as cptr b2Circle, xfA, circleB as cptr b2Circle, xfB);
+fun b2CollideCapsuleAndCircle(capsuleA: ref b2Capsule, xfA: b2Transform, circleB: ref b2Circle, xfB: b2Transform) -> b2Manifold =
+    b2CollideCapsuleAndCircle_(capsuleA as cptr b2Capsule, xfA, circleB as cptr b2Circle, xfB);
+fun b2CollideSegmentAndCircle(segmentA: ref b2Segment, xfA: b2Transform, circleB: ref b2Circle, xfB: b2Transform) -> b2Manifold =
+    b2CollideSegmentAndCircle_(segmentA as cptr b2Segment, xfA, circleB as cptr b2Circle, xfB);
+fun b2CollidePolygonAndCircle(polygonA: ref b2Polygon, xfA: b2Transform, circleB: ref b2Circle, xfB: b2Transform) -> b2Manifold =
+    b2CollidePolygonAndCircle_(polygonA as cptr b2Polygon, xfA, circleB as cptr b2Circle, xfB);
+fun b2CollideCapsules(capsuleA: ref b2Capsule, xfA: b2Transform, capsuleB: ref b2Capsule, xfB: b2Transform) -> b2Manifold =
+    b2CollideCapsules_(capsuleA as cptr b2Capsule, xfA, capsuleB as cptr b2Capsule, xfB);
+fun b2CollideSegmentAndCapsule(segmentA: ref b2Segment, xfA: b2Transform, capsuleB: ref b2Capsule, xfB: b2Transform) -> b2Manifold =
+    b2CollideSegmentAndCapsule_(segmentA as cptr b2Segment, xfA, capsuleB as cptr b2Capsule, xfB);
+fun b2CollidePolygonAndCapsule(polygonA: ref b2Polygon, xfA: b2Transform, capsuleB: ref b2Capsule, xfB: b2Transform) -> b2Manifold =
+    b2CollidePolygonAndCapsule_(polygonA as cptr b2Polygon, xfA, capsuleB as cptr b2Capsule, xfB);
+fun b2CollidePolygons(polygonA: ref b2Polygon, xfA: b2Transform, polygonB: ref b2Polygon, xfB: b2Transform) -> b2Manifold =
+    b2CollidePolygons_(polygonA as cptr b2Polygon, xfA, polygonB as cptr b2Polygon, xfB);
+fun b2CollideSegmentAndPolygon(segmentA: ref b2Segment, xfA: b2Transform, polygonB: ref b2Polygon, xfB: b2Transform) -> b2Manifold =
+    b2CollideSegmentAndPolygon_(segmentA as cptr b2Segment, xfA, polygonB as cptr b2Polygon, xfB);
+fun b2CollideChainSegmentAndCircle(segmentA: ref b2ChainSegment, xfA: b2Transform, circleB: ref b2Circle, xfB: b2Transform) -> b2Manifold =
+    b2CollideChainSegmentAndCircle_(segmentA as cptr b2ChainSegment, xfA, circleB as cptr b2Circle, xfB);
+fun b2CollideChainSegmentAndCapsule(segmentA: ref b2ChainSegment, xfA: b2Transform, capsuleB: ref b2Capsule, xfB: b2Transform, cache: ref mut b2SimplexCache) -> b2Manifold =
+    b2CollideChainSegmentAndCapsule_(segmentA as cptr b2ChainSegment, xfA, capsuleB as cptr b2Capsule, xfB, cache as cptr mut b2SimplexCache);
+fun b2CollideChainSegmentAndPolygon(segmentA: ref b2ChainSegment, xfA: b2Transform, polygonB: ref b2Polygon, xfB: b2Transform, cache: ref mut b2SimplexCache) -> b2Manifold =
+    b2CollideChainSegmentAndPolygon_(segmentA as cptr b2ChainSegment, xfA, polygonB as cptr b2Polygon, xfB, cache as cptr mut b2SimplexCache);
+fun b2DynamicTree_Destroy(tree: ref mut b2DynamicTree) -> () =
+    b2DynamicTree_Destroy_(tree as cptr mut b2DynamicTree);
+fun b2DynamicTree_CreateProxy(tree: ref mut b2DynamicTree, aabb: b2AABB, categoryBits: u64, userData: u64) -> i32 = b2DynamicTree_CreateProxy_(tree as cptr mut b2DynamicTree, aabb, categoryBits, userData);
+fun b2DynamicTree_DestroyProxy(tree: ref mut b2DynamicTree, proxyId: i32) -> () =
+    b2DynamicTree_DestroyProxy_(tree as cptr mut b2DynamicTree, proxyId);
+fun b2DynamicTree_MoveProxy(tree: ref mut b2DynamicTree, proxyId: i32, aabb: b2AABB) -> () = b2DynamicTree_MoveProxy_(tree as cptr mut b2DynamicTree, proxyId, aabb);
+fun b2DynamicTree_EnlargeProxy(tree: ref mut b2DynamicTree, proxyId: i32, aabb: b2AABB) -> () = b2DynamicTree_EnlargeProxy_(tree as cptr mut b2DynamicTree, proxyId, aabb);
+fun b2DynamicTree_SetCategoryBits(tree: ref mut b2DynamicTree, proxyId: i32, categoryBits: u64) -> () =
+    b2DynamicTree_SetCategoryBits_(tree as cptr mut b2DynamicTree, proxyId, categoryBits);
+fun b2DynamicTree_GetCategoryBits(tree: ref mut b2DynamicTree, proxyId: i32) -> u64 =
+    b2DynamicTree_GetCategoryBits_(tree as cptr mut b2DynamicTree, proxyId);
+fun b2DynamicTree_Query(tree: ref b2DynamicTree, aabb: b2AABB, maskBits: u64, callback: b2TreeQueryCallbackFcn, context: cptr mut u8) -> b2TreeStats =
+    b2DynamicTree_Query_(tree as cptr b2DynamicTree, aabb, maskBits, callback, context);
+fun b2DynamicTree_RayCast(tree: ref b2DynamicTree, input: ref b2RayCastInput, maskBits: u64, callback: b2TreeRayCastCallbackFcn, context: cptr mut u8) -> b2TreeStats =
+    b2DynamicTree_RayCast_(tree as cptr b2DynamicTree, input as cptr b2RayCastInput, maskBits, callback, context);
+fun b2DynamicTree_ShapeCast(tree: ref b2DynamicTree, input: ref b2ShapeCastInput, maskBits: u64, callback: b2TreeShapeCastCallbackFcn, context: cptr mut u8) -> b2TreeStats =
+    b2DynamicTree_ShapeCast_(tree as cptr b2DynamicTree, input as cptr b2ShapeCastInput, maskBits, callback, context);
+fun b2DynamicTree_GetHeight(tree: ref b2DynamicTree) -> i32 =
+    b2DynamicTree_GetHeight_(tree as cptr b2DynamicTree);
+fun b2DynamicTree_GetAreaRatio(tree: ref b2DynamicTree) -> f32 =
+    b2DynamicTree_GetAreaRatio_(tree as cptr b2DynamicTree);
+fun b2DynamicTree_GetRootBounds(tree: ref b2DynamicTree) -> b2AABB =
+    b2DynamicTree_GetRootBounds_(tree as cptr b2DynamicTree);
+fun b2DynamicTree_GetProxyCount(tree: ref b2DynamicTree) -> i32 =
+    b2DynamicTree_GetProxyCount_(tree as cptr b2DynamicTree);
+fun b2DynamicTree_Rebuild(tree: ref mut b2DynamicTree, fullBuild: bool) -> i32 =
+    b2DynamicTree_Rebuild_(tree as cptr mut b2DynamicTree, fullBuild);
+fun b2DynamicTree_GetByteCount(tree: ref b2DynamicTree) -> i32 =
+    b2DynamicTree_GetByteCount_(tree as cptr b2DynamicTree);
+fun b2DynamicTree_GetUserData(tree: ref b2DynamicTree, proxyId: i32) -> u64 =
+    b2DynamicTree_GetUserData_(tree as cptr b2DynamicTree, proxyId);
+fun b2DynamicTree_GetAABB(tree: ref b2DynamicTree, proxyId: i32) -> b2AABB =
+    b2DynamicTree_GetAABB_(tree as cptr b2DynamicTree, proxyId);
+fun b2DynamicTree_Validate(tree: ref b2DynamicTree) -> () =
+    b2DynamicTree_Validate_(tree as cptr b2DynamicTree);
+fun b2DynamicTree_ValidateNoEnlarged(tree: ref b2DynamicTree) -> () =
+    b2DynamicTree_ValidateNoEnlarged_(tree as cptr b2DynamicTree);
 fun b2SolvePlanes(targetDelta: b2Vec2, planes: cptr mut b2CollisionPlane, count: i32) -> b2PlaneSolverResult = b2SolvePlanes_(targetDelta, planes, count);
 fun b2ClipVector(vector: b2Vec2, planes: cptr b2CollisionPlane, count: i32) -> b2Vec2 = b2ClipVector_(vector, planes, count);
 fun B2_IS_NULL(id: b2WorldId) -> bool = B2_IS_NULL_(id);
@@ -1983,21 +2093,26 @@ fun b2StoreChainId(id: b2ChainId) -> u64 = b2StoreChainId_(id);
 fun b2LoadChainId(x: u64) -> b2ChainId = b2LoadChainId_(x);
 fun b2StoreJointId(id: b2JointId) -> u64 = b2StoreJointId_(id);
 fun b2LoadJointId(x: u64) -> b2JointId = b2LoadJointId_(x);
-fun b2CreateWorld(def: cptr b2WorldDef) -> b2WorldId = b2CreateWorld_(def);
+fun b2CreateWorld(def: ref b2WorldDef) -> b2WorldId =
+    b2CreateWorld_(def as cptr b2WorldDef);
 fun b2DestroyWorld(worldId: b2WorldId) -> () = b2DestroyWorld_(worldId);
 fun b2World_IsValid(id: b2WorldId) -> bool = b2World_IsValid_(id);
 fun b2World_Step(worldId: b2WorldId, timeStep: f32, subStepCount: i32) -> () = b2World_Step_(worldId, timeStep, subStepCount);
-fun b2World_Draw(worldId: b2WorldId, draw: cptr mut b2DebugDraw) -> () = b2World_Draw_(worldId, draw);
+fun b2World_Draw(worldId: b2WorldId, draw: ref mut b2DebugDraw) -> () = b2World_Draw_(worldId, draw as cptr mut b2DebugDraw);
 fun b2World_GetBodyEvents(worldId: b2WorldId) -> b2BodyEvents = b2World_GetBodyEvents_(worldId);
 fun b2World_GetSensorEvents(worldId: b2WorldId) -> b2SensorEvents = b2World_GetSensorEvents_(worldId);
 fun b2World_GetContactEvents(worldId: b2WorldId) -> b2ContactEvents = b2World_GetContactEvents_(worldId);
 fun b2World_OverlapAABB(worldId: b2WorldId, aabb: b2AABB, filter: b2QueryFilter, fcn: b2OverlapResultFcn, context: cptr mut u8) -> b2TreeStats = b2World_OverlapAABB_(worldId, aabb, filter, fcn, context);
-fun b2World_OverlapShape(worldId: b2WorldId, proxy: cptr b2ShapeProxy, filter: b2QueryFilter, fcn: b2OverlapResultFcn, context: cptr mut u8) -> b2TreeStats = b2World_OverlapShape_(worldId, proxy, filter, fcn, context);
+fun b2World_OverlapShape(worldId: b2WorldId, proxy: ref b2ShapeProxy, filter: b2QueryFilter, fcn: b2OverlapResultFcn, context: cptr mut u8) -> b2TreeStats =
+    b2World_OverlapShape_(worldId, proxy as cptr b2ShapeProxy, filter, fcn, context);
 fun b2World_CastRay(worldId: b2WorldId, origin: b2Vec2, translation: b2Vec2, filter: b2QueryFilter, fcn: b2CastResultFcn, context: cptr mut u8) -> b2TreeStats = b2World_CastRay_(worldId, origin, translation, filter, fcn, context);
 fun b2World_CastRayClosest(worldId: b2WorldId, origin: b2Vec2, translation: b2Vec2, filter: b2QueryFilter) -> b2RayResult = b2World_CastRayClosest_(worldId, origin, translation, filter);
-fun b2World_CastShape(worldId: b2WorldId, proxy: cptr b2ShapeProxy, translation: b2Vec2, filter: b2QueryFilter, fcn: b2CastResultFcn, context: cptr mut u8) -> b2TreeStats = b2World_CastShape_(worldId, proxy, translation, filter, fcn, context);
-fun b2World_CastMover(worldId: b2WorldId, mover: cptr b2Capsule, translation: b2Vec2, filter: b2QueryFilter) -> f32 = b2World_CastMover_(worldId, mover, translation, filter);
-fun b2World_CollideMover(worldId: b2WorldId, mover: cptr b2Capsule, filter: b2QueryFilter, fcn: b2PlaneResultFcn, context: cptr mut u8) -> () = b2World_CollideMover_(worldId, mover, filter, fcn, context);
+fun b2World_CastShape(worldId: b2WorldId, proxy: ref b2ShapeProxy, translation: b2Vec2, filter: b2QueryFilter, fcn: b2CastResultFcn, context: cptr mut u8) -> b2TreeStats =
+    b2World_CastShape_(worldId, proxy as cptr b2ShapeProxy, translation, filter, fcn, context);
+fun b2World_CastMover(worldId: b2WorldId, mover: ref b2Capsule, translation: b2Vec2, filter: b2QueryFilter) -> f32 =
+    b2World_CastMover_(worldId, mover as cptr b2Capsule, translation, filter);
+fun b2World_CollideMover(worldId: b2WorldId, mover: ref b2Capsule, filter: b2QueryFilter, fcn: b2PlaneResultFcn, context: cptr mut u8) -> () =
+    b2World_CollideMover_(worldId, mover as cptr b2Capsule, filter, fcn, context);
 fun b2World_EnableSleeping(worldId: b2WorldId, flag: bool) -> () = b2World_EnableSleeping_(worldId, flag);
 fun b2World_IsSleepingEnabled(worldId: b2WorldId) -> bool = b2World_IsSleepingEnabled_(worldId);
 fun b2World_EnableContinuous(worldId: b2WorldId, flag: bool) -> () = b2World_EnableContinuous_(worldId, flag);
@@ -2010,7 +2125,8 @@ fun b2World_SetCustomFilterCallback(worldId: b2WorldId, fcn: b2CustomFilterFcn, 
 fun b2World_SetPreSolveCallback(worldId: b2WorldId, fcn: b2PreSolveFcn, context: cptr mut u8) -> () = b2World_SetPreSolveCallback_(worldId, fcn, context);
 fun b2World_SetGravity(worldId: b2WorldId, gravity: b2Vec2) -> () = b2World_SetGravity_(worldId, gravity);
 fun b2World_GetGravity(worldId: b2WorldId) -> b2Vec2 = b2World_GetGravity_(worldId);
-fun b2World_Explode(worldId: b2WorldId, explosionDef: cptr b2ExplosionDef) -> () = b2World_Explode_(worldId, explosionDef);
+fun b2World_Explode(worldId: b2WorldId, explosionDef: ref b2ExplosionDef) -> () =
+    b2World_Explode_(worldId, explosionDef as cptr b2ExplosionDef);
 fun b2World_SetContactTuning(worldId: b2WorldId, hertz: f32, dampingRatio: f32, pushSpeed: f32) -> () = b2World_SetContactTuning_(worldId, hertz, dampingRatio, pushSpeed);
 fun b2World_SetMaximumLinearSpeed(worldId: b2WorldId, maximumLinearSpeed: f32) -> () = b2World_SetMaximumLinearSpeed_(worldId, maximumLinearSpeed);
 fun b2World_GetMaximumLinearSpeed(worldId: b2WorldId) -> f32 = b2World_GetMaximumLinearSpeed_(worldId);
@@ -2026,7 +2142,8 @@ fun b2World_SetRestitutionCallback(worldId: b2WorldId, callback: b2RestitutionCa
 fun b2World_DumpMemoryStats(worldId: b2WorldId) -> () = b2World_DumpMemoryStats_(worldId);
 fun b2World_RebuildStaticTree(worldId: b2WorldId) -> () = b2World_RebuildStaticTree_(worldId);
 fun b2World_EnableSpeculative(worldId: b2WorldId, flag: bool) -> () = b2World_EnableSpeculative_(worldId, flag);
-fun b2CreateBody(worldId: b2WorldId, def: cptr b2BodyDef) -> b2BodyId = b2CreateBody_(worldId, def);
+fun b2CreateBody(worldId: b2WorldId, def: ref b2BodyDef) -> b2BodyId =
+    b2CreateBody_(worldId, def as cptr b2BodyDef);
 fun b2DestroyBody(bodyId: b2BodyId) -> () = b2DestroyBody_(bodyId);
 fun b2Body_IsValid(id: b2BodyId) -> bool = b2Body_IsValid_(id);
 fun b2Body_GetType(bodyId: b2BodyId) -> b2BodyType = b2Body_GetType_(bodyId);
@@ -2092,10 +2209,14 @@ fun b2Body_GetJoints(bodyId: b2BodyId, jointArray: cptr mut b2JointId, capacity:
 fun b2Body_GetContactCapacity(bodyId: b2BodyId) -> i32 = b2Body_GetContactCapacity_(bodyId);
 fun b2Body_GetContactData(bodyId: b2BodyId, contactData: cptr mut b2ContactData, capacity: i32) -> i32 = b2Body_GetContactData_(bodyId, contactData, capacity);
 fun b2Body_ComputeAABB(bodyId: b2BodyId) -> b2AABB = b2Body_ComputeAABB_(bodyId);
-fun b2CreateCircleShape(bodyId: b2BodyId, def: cptr b2ShapeDef, circle: cptr b2Circle) -> b2ShapeId = b2CreateCircleShape_(bodyId, def, circle);
-fun b2CreateSegmentShape(bodyId: b2BodyId, def: cptr b2ShapeDef, segment: cptr b2Segment) -> b2ShapeId = b2CreateSegmentShape_(bodyId, def, segment);
-fun b2CreateCapsuleShape(bodyId: b2BodyId, def: cptr b2ShapeDef, capsule: cptr b2Capsule) -> b2ShapeId = b2CreateCapsuleShape_(bodyId, def, capsule);
-fun b2CreatePolygonShape(bodyId: b2BodyId, def: cptr b2ShapeDef, polygon: cptr b2Polygon) -> b2ShapeId = b2CreatePolygonShape_(bodyId, def, polygon);
+fun b2CreateCircleShape(bodyId: b2BodyId, def: ref b2ShapeDef, circle: ref b2Circle) -> b2ShapeId =
+    b2CreateCircleShape_(bodyId, def as cptr b2ShapeDef, circle as cptr b2Circle);
+fun b2CreateSegmentShape(bodyId: b2BodyId, def: ref b2ShapeDef, segment: ref b2Segment) -> b2ShapeId =
+    b2CreateSegmentShape_(bodyId, def as cptr b2ShapeDef, segment as cptr b2Segment);
+fun b2CreateCapsuleShape(bodyId: b2BodyId, def: ref b2ShapeDef, capsule: ref b2Capsule) -> b2ShapeId =
+    b2CreateCapsuleShape_(bodyId, def as cptr b2ShapeDef, capsule as cptr b2Capsule);
+fun b2CreatePolygonShape(bodyId: b2BodyId, def: ref b2ShapeDef, polygon: ref b2Polygon) -> b2ShapeId =
+    b2CreatePolygonShape_(bodyId, def as cptr b2ShapeDef, polygon as cptr b2Polygon);
 fun b2DestroyShape(shapeId: b2ShapeId, updateBodyMass: bool) -> () = b2DestroyShape_(shapeId, updateBodyMass);
 fun b2Shape_IsValid(id: b2ShapeId) -> bool = b2Shape_IsValid_(id);
 fun b2Shape_GetType(shapeId: b2ShapeId) -> b2ShapeType = b2Shape_GetType_(shapeId);
@@ -2125,16 +2246,21 @@ fun b2Shape_ArePreSolveEventsEnabled(shapeId: b2ShapeId) -> bool = b2Shape_ArePr
 fun b2Shape_EnableHitEvents(shapeId: b2ShapeId, flag: bool) -> () = b2Shape_EnableHitEvents_(shapeId, flag);
 fun b2Shape_AreHitEventsEnabled(shapeId: b2ShapeId) -> bool = b2Shape_AreHitEventsEnabled_(shapeId);
 fun b2Shape_TestPoint(shapeId: b2ShapeId, point: b2Vec2) -> bool = b2Shape_TestPoint_(shapeId, point);
-fun b2Shape_RayCast(shapeId: b2ShapeId, input: cptr b2RayCastInput) -> b2CastOutput = b2Shape_RayCast_(shapeId, input);
+fun b2Shape_RayCast(shapeId: b2ShapeId, input: ref b2RayCastInput) -> b2CastOutput =
+    b2Shape_RayCast_(shapeId, input as cptr b2RayCastInput);
 fun b2Shape_GetCircle(shapeId: b2ShapeId) -> b2Circle = b2Shape_GetCircle_(shapeId);
 fun b2Shape_GetSegment(shapeId: b2ShapeId) -> b2Segment = b2Shape_GetSegment_(shapeId);
 fun b2Shape_GetChainSegment(shapeId: b2ShapeId) -> b2ChainSegment = b2Shape_GetChainSegment_(shapeId);
 fun b2Shape_GetCapsule(shapeId: b2ShapeId) -> b2Capsule = b2Shape_GetCapsule_(shapeId);
 fun b2Shape_GetPolygon(shapeId: b2ShapeId) -> b2Polygon = b2Shape_GetPolygon_(shapeId);
-fun b2Shape_SetCircle(shapeId: b2ShapeId, circle: cptr b2Circle) -> () = b2Shape_SetCircle_(shapeId, circle);
-fun b2Shape_SetCapsule(shapeId: b2ShapeId, capsule: cptr b2Capsule) -> () = b2Shape_SetCapsule_(shapeId, capsule);
-fun b2Shape_SetSegment(shapeId: b2ShapeId, segment: cptr b2Segment) -> () = b2Shape_SetSegment_(shapeId, segment);
-fun b2Shape_SetPolygon(shapeId: b2ShapeId, polygon: cptr b2Polygon) -> () = b2Shape_SetPolygon_(shapeId, polygon);
+fun b2Shape_SetCircle(shapeId: b2ShapeId, circle: ref b2Circle) -> () =
+    b2Shape_SetCircle_(shapeId, circle as cptr b2Circle);
+fun b2Shape_SetCapsule(shapeId: b2ShapeId, capsule: ref b2Capsule) -> () =
+    b2Shape_SetCapsule_(shapeId, capsule as cptr b2Capsule);
+fun b2Shape_SetSegment(shapeId: b2ShapeId, segment: ref b2Segment) -> () =
+    b2Shape_SetSegment_(shapeId, segment as cptr b2Segment);
+fun b2Shape_SetPolygon(shapeId: b2ShapeId, polygon: ref b2Polygon) -> () =
+    b2Shape_SetPolygon_(shapeId, polygon as cptr b2Polygon);
 fun b2Shape_GetParentChain(shapeId: b2ShapeId) -> b2ChainId = b2Shape_GetParentChain_(shapeId);
 fun b2Shape_GetContactCapacity(shapeId: b2ShapeId) -> i32 = b2Shape_GetContactCapacity_(shapeId);
 fun b2Shape_GetContactData(shapeId: b2ShapeId, contactData: cptr mut b2ContactData, capacity: i32) -> i32 = b2Shape_GetContactData_(shapeId, contactData, capacity);
@@ -2143,7 +2269,8 @@ fun b2Shape_GetSensorOverlaps(shapeId: b2ShapeId, overlaps: cptr mut b2ShapeId, 
 fun b2Shape_GetAABB(shapeId: b2ShapeId) -> b2AABB = b2Shape_GetAABB_(shapeId);
 fun b2Shape_GetMassData(shapeId: b2ShapeId) -> b2MassData = b2Shape_GetMassData_(shapeId);
 fun b2Shape_GetClosestPoint(shapeId: b2ShapeId, target: b2Vec2) -> b2Vec2 = b2Shape_GetClosestPoint_(shapeId, target);
-fun b2CreateChain(bodyId: b2BodyId, def: cptr b2ChainDef) -> b2ChainId = b2CreateChain_(bodyId, def);
+fun b2CreateChain(bodyId: b2BodyId, def: ref b2ChainDef) -> b2ChainId =
+    b2CreateChain_(bodyId, def as cptr b2ChainDef);
 fun b2DestroyChain(chainId: b2ChainId) -> () = b2DestroyChain_(chainId);
 fun b2Chain_GetWorld(chainId: b2ChainId) -> b2WorldId = b2Chain_GetWorld_(chainId);
 fun b2Chain_GetSegmentCount(chainId: b2ChainId) -> i32 = b2Chain_GetSegmentCount_(chainId);
@@ -2178,9 +2305,10 @@ fun b2Joint_GetConstraintForce(jointId: b2JointId) -> b2Vec2 = b2Joint_GetConstr
 fun b2Joint_GetConstraintTorque(jointId: b2JointId) -> f32 = b2Joint_GetConstraintTorque_(jointId);
 fun b2Joint_GetLinearSeparation(jointId: b2JointId) -> f32 = b2Joint_GetLinearSeparation_(jointId);
 fun b2Joint_GetAngularSeparation(jointId: b2JointId) -> f32 = b2Joint_GetAngularSeparation_(jointId);
-fun b2Joint_GetConstraintTuning(jointId: b2JointId, hertz: cptr mut f32, dampingRatio: cptr mut f32) -> () = b2Joint_GetConstraintTuning_(jointId, hertz, dampingRatio);
+fun b2Joint_GetConstraintTuning(jointId: b2JointId, hertz: ref mut f32, dampingRatio: ref mut f32) -> () = b2Joint_GetConstraintTuning_(jointId, hertz as cptr mut f32, dampingRatio as cptr mut f32);
 fun b2Joint_SetConstraintTuning(jointId: b2JointId, hertz: f32, dampingRatio: f32) -> () = b2Joint_SetConstraintTuning_(jointId, hertz, dampingRatio);
-fun b2CreateDistanceJoint(worldId: b2WorldId, def: cptr b2DistanceJointDef) -> b2JointId = b2CreateDistanceJoint_(worldId, def);
+fun b2CreateDistanceJoint(worldId: b2WorldId, def: ref b2DistanceJointDef) -> b2JointId =
+    b2CreateDistanceJoint_(worldId, def as cptr b2DistanceJointDef);
 fun b2DistanceJoint_SetLength(jointId: b2JointId, length: f32) -> () = b2DistanceJoint_SetLength_(jointId, length);
 fun b2DistanceJoint_GetLength(jointId: b2JointId) -> f32 = b2DistanceJoint_GetLength_(jointId);
 fun b2DistanceJoint_EnableSpring(jointId: b2JointId, enableSpring: bool) -> () = b2DistanceJoint_EnableSpring_(jointId, enableSpring);
@@ -2202,7 +2330,8 @@ fun b2DistanceJoint_GetMotorSpeed(jointId: b2JointId) -> f32 = b2DistanceJoint_G
 fun b2DistanceJoint_SetMaxMotorForce(jointId: b2JointId, force: f32) -> () = b2DistanceJoint_SetMaxMotorForce_(jointId, force);
 fun b2DistanceJoint_GetMaxMotorForce(jointId: b2JointId) -> f32 = b2DistanceJoint_GetMaxMotorForce_(jointId);
 fun b2DistanceJoint_GetMotorForce(jointId: b2JointId) -> f32 = b2DistanceJoint_GetMotorForce_(jointId);
-fun b2CreateMotorJoint(worldId: b2WorldId, def: cptr b2MotorJointDef) -> b2JointId = b2CreateMotorJoint_(worldId, def);
+fun b2CreateMotorJoint(worldId: b2WorldId, def: ref b2MotorJointDef) -> b2JointId =
+    b2CreateMotorJoint_(worldId, def as cptr b2MotorJointDef);
 fun b2MotorJoint_SetLinearOffset(jointId: b2JointId, linearOffset: b2Vec2) -> () = b2MotorJoint_SetLinearOffset_(jointId, linearOffset);
 fun b2MotorJoint_GetLinearOffset(jointId: b2JointId) -> b2Vec2 = b2MotorJoint_GetLinearOffset_(jointId);
 fun b2MotorJoint_SetAngularOffset(jointId: b2JointId, angularOffset: f32) -> () = b2MotorJoint_SetAngularOffset_(jointId, angularOffset);
@@ -2213,7 +2342,8 @@ fun b2MotorJoint_SetMaxTorque(jointId: b2JointId, maxTorque: f32) -> () = b2Moto
 fun b2MotorJoint_GetMaxTorque(jointId: b2JointId) -> f32 = b2MotorJoint_GetMaxTorque_(jointId);
 fun b2MotorJoint_SetCorrectionFactor(jointId: b2JointId, correctionFactor: f32) -> () = b2MotorJoint_SetCorrectionFactor_(jointId, correctionFactor);
 fun b2MotorJoint_GetCorrectionFactor(jointId: b2JointId) -> f32 = b2MotorJoint_GetCorrectionFactor_(jointId);
-fun b2CreateMouseJoint(worldId: b2WorldId, def: cptr b2MouseJointDef) -> b2JointId = b2CreateMouseJoint_(worldId, def);
+fun b2CreateMouseJoint(worldId: b2WorldId, def: ref b2MouseJointDef) -> b2JointId =
+    b2CreateMouseJoint_(worldId, def as cptr b2MouseJointDef);
 fun b2MouseJoint_SetTarget(jointId: b2JointId, target: b2Vec2) -> () = b2MouseJoint_SetTarget_(jointId, target);
 fun b2MouseJoint_GetTarget(jointId: b2JointId) -> b2Vec2 = b2MouseJoint_GetTarget_(jointId);
 fun b2MouseJoint_SetSpringHertz(jointId: b2JointId, hertz: f32) -> () = b2MouseJoint_SetSpringHertz_(jointId, hertz);
@@ -2222,8 +2352,10 @@ fun b2MouseJoint_SetSpringDampingRatio(jointId: b2JointId, dampingRatio: f32) ->
 fun b2MouseJoint_GetSpringDampingRatio(jointId: b2JointId) -> f32 = b2MouseJoint_GetSpringDampingRatio_(jointId);
 fun b2MouseJoint_SetMaxForce(jointId: b2JointId, maxForce: f32) -> () = b2MouseJoint_SetMaxForce_(jointId, maxForce);
 fun b2MouseJoint_GetMaxForce(jointId: b2JointId) -> f32 = b2MouseJoint_GetMaxForce_(jointId);
-fun b2CreateFilterJoint(worldId: b2WorldId, def: cptr b2FilterJointDef) -> b2JointId = b2CreateFilterJoint_(worldId, def);
-fun b2CreatePrismaticJoint(worldId: b2WorldId, def: cptr b2PrismaticJointDef) -> b2JointId = b2CreatePrismaticJoint_(worldId, def);
+fun b2CreateFilterJoint(worldId: b2WorldId, def: ref b2FilterJointDef) -> b2JointId =
+    b2CreateFilterJoint_(worldId, def as cptr b2FilterJointDef);
+fun b2CreatePrismaticJoint(worldId: b2WorldId, def: ref b2PrismaticJointDef) -> b2JointId =
+    b2CreatePrismaticJoint_(worldId, def as cptr b2PrismaticJointDef);
 fun b2PrismaticJoint_EnableSpring(jointId: b2JointId, enableSpring: bool) -> () = b2PrismaticJoint_EnableSpring_(jointId, enableSpring);
 fun b2PrismaticJoint_IsSpringEnabled(jointId: b2JointId) -> bool = b2PrismaticJoint_IsSpringEnabled_(jointId);
 fun b2PrismaticJoint_SetSpringHertz(jointId: b2JointId, hertz: f32) -> () = b2PrismaticJoint_SetSpringHertz_(jointId, hertz);
@@ -2246,7 +2378,8 @@ fun b2PrismaticJoint_GetMaxMotorForce(jointId: b2JointId) -> f32 = b2PrismaticJo
 fun b2PrismaticJoint_GetMotorForce(jointId: b2JointId) -> f32 = b2PrismaticJoint_GetMotorForce_(jointId);
 fun b2PrismaticJoint_GetTranslation(jointId: b2JointId) -> f32 = b2PrismaticJoint_GetTranslation_(jointId);
 fun b2PrismaticJoint_GetSpeed(jointId: b2JointId) -> f32 = b2PrismaticJoint_GetSpeed_(jointId);
-fun b2CreateRevoluteJoint(worldId: b2WorldId, def: cptr b2RevoluteJointDef) -> b2JointId = b2CreateRevoluteJoint_(worldId, def);
+fun b2CreateRevoluteJoint(worldId: b2WorldId, def: ref b2RevoluteJointDef) -> b2JointId =
+    b2CreateRevoluteJoint_(worldId, def as cptr b2RevoluteJointDef);
 fun b2RevoluteJoint_EnableSpring(jointId: b2JointId, enableSpring: bool) -> () = b2RevoluteJoint_EnableSpring_(jointId, enableSpring);
 fun b2RevoluteJoint_IsSpringEnabled(jointId: b2JointId) -> bool = b2RevoluteJoint_IsSpringEnabled_(jointId);
 fun b2RevoluteJoint_SetSpringHertz(jointId: b2JointId, hertz: f32) -> () = b2RevoluteJoint_SetSpringHertz_(jointId, hertz);
@@ -2268,7 +2401,8 @@ fun b2RevoluteJoint_GetMotorSpeed(jointId: b2JointId) -> f32 = b2RevoluteJoint_G
 fun b2RevoluteJoint_GetMotorTorque(jointId: b2JointId) -> f32 = b2RevoluteJoint_GetMotorTorque_(jointId);
 fun b2RevoluteJoint_SetMaxMotorTorque(jointId: b2JointId, torque: f32) -> () = b2RevoluteJoint_SetMaxMotorTorque_(jointId, torque);
 fun b2RevoluteJoint_GetMaxMotorTorque(jointId: b2JointId) -> f32 = b2RevoluteJoint_GetMaxMotorTorque_(jointId);
-fun b2CreateWeldJoint(worldId: b2WorldId, def: cptr b2WeldJointDef) -> b2JointId = b2CreateWeldJoint_(worldId, def);
+fun b2CreateWeldJoint(worldId: b2WorldId, def: ref b2WeldJointDef) -> b2JointId =
+    b2CreateWeldJoint_(worldId, def as cptr b2WeldJointDef);
 fun b2WeldJoint_SetLinearHertz(jointId: b2JointId, hertz: f32) -> () = b2WeldJoint_SetLinearHertz_(jointId, hertz);
 fun b2WeldJoint_GetLinearHertz(jointId: b2JointId) -> f32 = b2WeldJoint_GetLinearHertz_(jointId);
 fun b2WeldJoint_SetLinearDampingRatio(jointId: b2JointId, dampingRatio: f32) -> () = b2WeldJoint_SetLinearDampingRatio_(jointId, dampingRatio);
@@ -2277,7 +2411,8 @@ fun b2WeldJoint_SetAngularHertz(jointId: b2JointId, hertz: f32) -> () = b2WeldJo
 fun b2WeldJoint_GetAngularHertz(jointId: b2JointId) -> f32 = b2WeldJoint_GetAngularHertz_(jointId);
 fun b2WeldJoint_SetAngularDampingRatio(jointId: b2JointId, dampingRatio: f32) -> () = b2WeldJoint_SetAngularDampingRatio_(jointId, dampingRatio);
 fun b2WeldJoint_GetAngularDampingRatio(jointId: b2JointId) -> f32 = b2WeldJoint_GetAngularDampingRatio_(jointId);
-fun b2CreateWheelJoint(worldId: b2WorldId, def: cptr b2WheelJointDef) -> b2JointId = b2CreateWheelJoint_(worldId, def);
+fun b2CreateWheelJoint(worldId: b2WorldId, def: ref b2WheelJointDef) -> b2JointId =
+    b2CreateWheelJoint_(worldId, def as cptr b2WheelJointDef);
 fun b2WheelJoint_EnableSpring(jointId: b2JointId, enableSpring: bool) -> () = b2WheelJoint_EnableSpring_(jointId, enableSpring);
 fun b2WheelJoint_IsSpringEnabled(jointId: b2JointId) -> bool = b2WheelJoint_IsSpringEnabled_(jointId);
 fun b2WheelJoint_SetSpringHertz(jointId: b2JointId, hertz: f32) -> () = b2WheelJoint_SetSpringHertz_(jointId, hertz);
