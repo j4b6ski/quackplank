@@ -39,12 +39,24 @@ fun main() = {
         rl.BeginDrawing();
         rl.ClearBackground(rl.BLACK);
         rl.BeginMode2D(camera);
-        let extent = 4.0;
-        var pos = -extent;
-        while (pos <= extent) {
-            rl.DrawLineV(rl.Vector2(pos, -extent), rl.Vector2(pos, extent), rl.DARKGRAY);
-            rl.DrawLineV(rl.Vector2(-extent, pos), rl.Vector2(extent, pos), rl.DARKGRAY);
-            pos += 0.25;
+        let step = 0.25;
+        let viewport = rl.Vector2(rl.GetRenderWidth() as f32,
+                                  rl.GetRenderHeight() as f32);
+        let lo = rl.GetScreenToWorld2D(rl.Vector2(0.0, 0.0), camera);
+        let hi = rl.GetScreenToWorld2D(viewport, camera);
+
+        var col = (lo.x / step) as i32;
+        while (col <= (hi.x / step) as i32) {
+            let x = (col as f32) * step;
+            rl.DrawLineV(rl.Vector2(x, lo.y), rl.Vector2(x, hi.y), rl.DARKGRAY);
+            col += 1;
+        }
+
+        var row = (lo.y / step) as i32;
+        while (row <= (hi.y / step) as i32) {
+            let y = (row as f32) * step;
+            rl.DrawLineV(rl.Vector2(lo.x, y), rl.Vector2(hi.x, y), rl.DARKGRAY);
+            row += 1;
         }
         rl.EndMode2D();
         rl.DrawText(f"{rl.GetFPS()}",
