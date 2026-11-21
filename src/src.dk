@@ -155,6 +155,12 @@ fun drawCoords(col: i32, row: i32) = {
     rl.DrawText(f"{col}, {row}", 4, rl.GetScreenHeight() - 16, 12, rl.WHITE);
 }
 
+fun drawMode(edit: bool) = {
+    let mode = if edit then "Edit" else "Test";
+    let x = (rl.GetScreenWidth() - rl.MeasureText(mode, 12)) / 2;
+    rl.DrawText(mode, x, rl.GetScreenHeight() - 16, 12, rl.WHITE);
+}
+
 fun main() = {
     rl.InitWindow(800, 600, "QuackPlank");
     check(rl.IsWindowReady());
@@ -204,6 +210,7 @@ fun main() = {
 
         drawFps();
         drawCoords(col, row);
+        drawMode(edit);
         rl.EndDrawing();
     }
 
