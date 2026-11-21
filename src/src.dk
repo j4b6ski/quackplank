@@ -2,6 +2,8 @@ import rl;
 import rl.Vector2 as Vec2;
 import std.math as math;
 const gridStep = 0.25;
+const initialZoom = 40.0f32;
+const maxZoomFactor = 8.0f32;
 
 fun check(ok: bool) = {
     if (not ok)
@@ -11,10 +13,8 @@ fun check(ok: bool) = {
 fun updateCamera(camera: ref mut rl.Camera2D) = {
     if (rl.IsMouseButtonDown(rl.MOUSE_BUTTON_RIGHT)) {
         let delta = rl.GetMouseDelta();
-        let scaleX = rl.GetRenderWidth() as f32 / (rl.GetScreenWidth() as f32);
-        let scaleY = rl.GetRenderHeight() as f32 / (rl.GetScreenHeight() as f32);
-        camera.target.x -= delta.x * scaleX / camera.zoom;
-        camera.target.y -= delta.y * scaleY / camera.zoom;
+        camera.target.x -= delta.x / camera.zoom;
+        camera.target.y -= delta.y / camera.zoom;
     }
 
     let wheel = rl.GetMouseWheelMove();
@@ -22,15 +22,29 @@ fun updateCamera(camera: ref mut rl.Camera2D) = {
         let mouse = rl.GetMousePosition();
         camera.target = rl.GetScreenToWorld2D(mouse, camera);
         camera.offset = mouse;
-        let zoom = camera.zoom * math.exp(wheel * 0.2f32);
-        camera.zoom = math.min(320.0, math.max(10.0, zoom));
+        camera.zoom = math.min(initialZoom * maxZoomFactor,
+                               camera.zoom * math.exp(wheel * 0.2f32));
     }
+
+    let mapWidth = 20.0f32;
+    let mapHeight = 15.0f32;
+    let width = rl.GetScreenWidth() as f32;
+    let height = rl.GetScreenHeight() as f32;
+    let minZoom = math.max(initialZoom, math.max(width / mapWidth, height / mapHeight));
+    camera.zoom = math.max(camera.zoom, minZoom);
+
+    let minX = camera.offset.x / camera.zoom - mapWidth / 2.0;
+    let maxX = mapWidth / 2.0 - (width - camera.offset.x) / camera.zoom;
+    let minY = camera.offset.y / camera.zoom - mapHeight / 2.0;
+    let maxY = mapHeight / 2.0 - (height - camera.offset.y) / camera.zoom;
+    camera.target.x = math.min(maxX, math.max(minX, camera.target.x));
+    camera.target.y = math.min(maxY, math.max(minY, camera.target.y));
 }
 
 fun drawGrid(camera: ref rl.Camera2D) = {
     let color = rl.Color(40u8, 40u8, 40u8, 255u8);
-    let viewport = rl.Vector2(rl.GetRenderWidth() as f32,
-                              rl.GetRenderHeight() as f32);
+    let viewport = rl.Vector2(rl.GetScreenWidth() as f32,
+                              rl.GetScreenHeight() as f32);
     let lo = rl.GetScreenToWorld2D(rl.Vector2(0.0, 0.0), camera);
     let hi = rl.GetScreenToWorld2D(viewport, camera);
 
@@ -145,11 +159,11 @@ fun main() = {
     check(rl.IsWindowReady());
 
     var camera = rl.Camera2D(
-        offset=rl.Vector2(rl.GetRenderWidth() as f32 / 2.0,
-                          rl.GetRenderHeight() as f32 / 2.0),
+        offset=rl.Vector2(rl.GetScreenWidth() as f32 / 2.0,
+                          rl.GetScreenHeight() as f32 / 2.0),
         target=rl.Vector2(0.0, 0.0),
         rotation=0.0,
-        zoom=40.0,
+        zoom=initialZoom,
     );
 
     let level = level1();
