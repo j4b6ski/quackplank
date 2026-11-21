@@ -213,6 +213,9 @@ fun main() = {
     );
 
     let level = level1();
+    var road = copy level.road;
+    const tick = 1.0 / 60.0;
+    var elapsed = 0.0;
     var edit = true;
     var world = b2.b2_nullWorldId;
     var roadBodies: List[b2.b2BodyId];
@@ -222,11 +225,26 @@ fun main() = {
                 let def = b2.b2DefaultWorldDef();
                 world = b2.b2CreateWorld(&def);
                 createRoad(world, &level.road, &roadBodies);
+                elapsed = 0.0;
             } else {
                 b2.b2DestroyWorld(world);
                 roadBodies.clear();
             }
             edit = not edit;
+        }
+
+        if (not edit) {
+            elapsed += rl.GetFrameTime();
+            while (elapsed >= tick) {
+                b2.b2World_Step(world, tick as f32, 4);
+                elapsed -= tick;
+            }
+            var i = 0;
+            while (i < roadBodies.length()) {
+                let point = b2.b2Body_GetPosition(roadBodies.pointer[i]);
+                road.pointer[i] = Vec2(point.x, point.y);
+                i += 1;
+            }
         }
 
         updateCamera(&camera);
@@ -244,8 +262,9 @@ fun main() = {
         rl.BeginMode2D(camera);
         drawGrid(&camera);
         drawTerrain(&level.terrain);
-        drawRoad(&level.road);
-        drawJoints(&level.road, rl.GRAY);
+        let points = if edit then &level.road else &road;
+        drawRoad(points);
+        drawJoints(points, rl.GRAY);
         drawJoints(&level.anchors, rl.WHITE);
         drawCursor(connection);
         rl.EndMode2D();
