@@ -1,5 +1,4 @@
 import b2;
-import b2.b2ContactData;
 import b2.b2Manifold;
 import b2.b2ShapeId;
 import rl;
@@ -67,13 +66,11 @@ class Level {
     road: List[Joint];
     anchors: List[Vec2];
     start: Vec2;
-    finish: f32;
 }
 
 fun level1() -> Level = {
     var level: Level;
     level.start = Vec2(-4.5, 0.0);
-    level.finish = 4.5;
 
     for (vertices in [
         [Vec2(-10.0, 0.0), Vec2(-10.0, -7.5), Vec2(-1.0, -7.5),
@@ -314,24 +311,6 @@ fun resizeDuck(shape: b2.b2ShapeId, mass: f32) = {
     b2.b2Body_SetAwake(body, true);
 }
 
-fun onGround(duck: b2.b2ShapeId, ground: b2.b2BodyId) -> bool = {
-    let capacity = b2.b2Shape_GetContactCapacity(duck);
-    if (capacity == 0) return false;
-    var contacts: List[b2ContactData];
-    contacts.reserve(capacity);
-    let count = b2.b2Shape_GetContactData(duck, contacts.pointer as cptr mut b2ContactData, capacity);
-    var i = 0;
-    while (i < count) {
-        let c = contacts.pointer[i];
-        let groundA = b2.B2_ID_EQUALS(b2.b2Shape_GetBody(c.shapeIdA), ground);
-        let groundB = b2.B2_ID_EQUALS(b2.b2Shape_GetBody(c.shapeIdB), ground);
-        if ((groundA and c.manifold.normal.y > 0.0) or (groundB and c.manifold.normal.y < 0.0))
-            return true;
-        i += 1;
-    }
-    return false;
-}
-
 fun bodyPosition(body: b2.b2BodyId) -> Vec2 = {
     let p = b2.b2Body_GetPosition(body);
     return Vec2(p.x, p.y);
@@ -396,16 +375,6 @@ fun breakOverloadedPlanks(world: b2.b2WorldId, pins: ref mut List[List[Attachmen
         planks.pointer[i].load = 0.0;
         i += 1;
     }
-}
-
-fun finishCrossing(duck: b2.b2ShapeId, ground: b2.b2BodyId, finish: f32) -> bool = {
-    if (bodyPosition(b2.b2Shape_GetBody(duck)).x < finish or not onGround(duck, ground))
-        return false;
-
-    var material = b2.b2Shape_GetSurfaceMaterial(duck);
-    material.tangentSpeed = 0.0;
-    b2.b2Shape_SetSurfaceMaterial(duck, material);
-    return true;
 }
 
 fun updateCamera(camera: ref mut rl.Camera2D, initialZoom: f32) = {
@@ -770,8 +739,8 @@ fun drawCoords(col: i32, row: i32) = {
     rl.DrawText(f"{col}, {row}", 4, rl.GetScreenHeight() - fontSize - 4, fontSize, rl.WHITE);
 }
 
-fun drawMode(editing: bool, crossed: bool) = {
-    let mode = if editing then "Edit" else (if crossed then "Success" else "Test");
+fun drawMode(editing: bool) = {
+    let mode = if editing then "Edit" else "Test";
     let x = (rl.GetScreenWidth() - rl.MeasureText(mode, fontSize)) / 2;
     rl.DrawText(mode, x, rl.GetScreenHeight() - fontSize - 4, fontSize, rl.WHITE);
 }
@@ -813,8 +782,6 @@ fun main() = {
 
     var world: b2.b2WorldId;
     var roadAnchors: List[RoadAnchor];
-    var ground: b2.b2BodyId;
-    var crossed = false;
     var duckMass = 35.0f32;
     var duckShape: b2.b2ShapeId;
     var pins: List[List[Attachment]];
@@ -834,12 +801,11 @@ fun main() = {
                 let def = b2.b2DefaultWorldDef();
                 world = b2.b2CreateWorld(&def);
                 var banks: List[b2ShapeId];
-                ground = createTerrain(world, &level.terrain, &banks);
+                let ground = createTerrain(world, &level.terrain, &banks);
                 createBridge(world, ground, &bridge, &pins, &planks);
                 roadAnchors = findRoadAnchors(&bridge, &planks, &banks);
                 registerPreSolve(world, &roadAnchors as cptr u8);
                 duckShape = createDuck(world, level.start, duckMass);
-                crossed = false;
                 elapsed = 0.0;
             }
         }
@@ -850,7 +816,6 @@ fun main() = {
             while (elapsed >= tick) {
                 b2.b2World_Step(world, tick, 4);
                 breakOverloadedPlanks(world, &pins, &planks);
-                if (not crossed) crossed = finishCrossing(duckShape, ground, level.finish);
                 elapsed -= tick;
             }
         }
@@ -890,7 +855,7 @@ fun main() = {
 
         drawFps();
         drawCoords(point.col, point.row);
-        drawMode(editing, crossed);
+        drawMode(editing);
         let roadSegments = math.max(0, level.road.length() - 1);
         drawBudget(bridge.planks.length() - roadSegments);
         rl.EndDrawing();
