@@ -222,6 +222,26 @@ fun createDuck(world: b2.b2WorldId, feet: Vec2, mass: f32) -> b2.b2ShapeId = {
     return foot;
 }
 
+fun updateDuckMass(mass: ref mut f32) -> bool = {
+    let up = rl.IsKeyPressed(rl.KEY_UP);
+    let down = rl.IsKeyPressed(rl.KEY_DOWN);
+    if (up == down) return false;
+
+    let step = if up then 5.0f32 else -5.0f32;
+    let next = math.max(1.0f32, mass + step);
+    if (next == mass) return false;
+    mass = next;
+    return true;
+}
+
+fun resizeDuck(shape: b2.b2ShapeId, mass: f32) = {
+    let body = b2.b2Shape_GetBody(shape);
+    let capsule = duckCapsule(mass);
+    b2.b2Shape_SetCapsule(shape, &capsule);
+    applyDuckMass(body, mass);
+    b2.b2Body_SetAwake(body, true);
+}
+
 fun onGround(duck: b2.b2ShapeId, ground: b2.b2BodyId) -> bool = {
     let capacity = b2.b2Shape_GetContactCapacity(duck);
     if (capacity == 0) return false;
@@ -736,7 +756,7 @@ fun main() = {
     var world: b2.b2WorldId;
     var ground: b2.b2BodyId;
     var crossed = false;
-    let duckMass = 35.0f32;
+    var duckMass = 35.0f32;
     var duckShape: b2.b2ShapeId;
     var pins: List[List[Attachment]];
     var planks: List[Plank];
@@ -773,6 +793,7 @@ fun main() = {
             }
         }
 
+        if (updateDuckMass(&duckMass) and not editing) resizeDuck(duckShape, duckMass);
         updateCamera(&camera, initialZoom);
         let mouse = mousePosition(&camera);
         let point = GridPoint(gridIndex(mouse.x), gridIndex(mouse.y));
