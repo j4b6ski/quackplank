@@ -351,6 +351,8 @@ class GridPoint {
 }
 
 const gridStep = 0.25;
+const maxBeamCells = 7;
+const maxBeamLength = (maxBeamCells as f32) * gridStep;
 
 fun gridIndex(position: f32) -> i32 = {
     let index = position / gridStep;
@@ -364,6 +366,200 @@ fun mousePosition(camera: ref rl.Camera2D) -> Vec2 = {
 
 fun gridPosition(point: GridPoint) -> Vec2 =
     Vec2((point.col as f32) * gridStep, (point.row as f32) * gridStep);
+
+fun crossesBank(a: Vec2, b: Vec2, bank: ref List[Vec2]) -> bool = {
+    var enter = 0.0f32;
+    var leave = 1.0f32;
+    var i = 0;
+    while (i < bank.length()) {
+        let p = bank.pointer[i];
+        let q = bank.pointer[(i + 1) % bank.length()];
+        let dx = q.x - p.x;
+        let dy = q.y - p.y;
+        let start = dx * (a.y - p.y) - dy * (a.x - p.x);
+        let end = dx * (b.y - p.y) - dy * (b.x - p.x);
+        if (start <= 0.0 and end <= 0.0) return false;
+        if (start <= 0.0) enter = math.max(enter, start / (start - end));
+        if (end <= 0.0) leave = math.min(leave, start / (start - end));
+        i += 1;
+    }
+    return enter < leave;
+}
+
+fun canPlaceBeam(bridge: ref Bridge, terrain: ref List[List[Vec2]], start: i64, b: Vec2) -> bool = {
+    let a = bridge.joints.pointer[start].position;
+    let dx = b.x - a.x;
+    let dy = b.y - a.y;
+    let lengthSquared = dx * dx + dy * dy;
+    if (lengthSquared == 0.0 or lengthSquared > maxBeamLength * maxBeamLength) return false;
+    var i = 0;
+    while (i < terrain.length()) {
+        if (crossesBank(a, b, &terrain.pointer[i])) return false;
+        i += 1;
+    }
+    let end = jointAt(&bridge.joints, b);
+    if (end < 0) return true;
+    i = 0;
+    while (i < bridge.planks.length()) {
+        let plank = bridge.planks.pointer[i];
+        if ((plank.a == start and plank.b == end) or
+            (plank.a == end and plank.b == start)) return false;
+        i += 1;
+    }
+    return true;
+}
+
+fun onBankEdge(point: Vec2, terrain: ref List[List[Vec2]]) -> bool = {
+    var i = 0;
+    while (i < terrain.length()) {
+        let bank = &terrain.pointer[i];
+        var j = 0;
+        while (j < bank.length()) {
+            let a = bank.pointer[j];
+            let b = bank.pointer[(j + 1) % bank.length()];
+            if ((point.x - a.x) * (b.y - a.y) == (point.y - a.y) * (b.x - a.x) and
+                (point.x - a.x) * (point.x - b.x) + (point.y - a.y) * (point.y - b.y) <= 0.0)
+                return true;
+            j += 1;
+        }
+        i += 1;
+    }
+    return false;
+}
+
+fun beamEndpoint(bridge: ref Bridge, terrain: ref List[List[Vec2]], start: i64,
+                 snapped: Vec2, mouse: Vec2) -> Vec2 = {
+    let a = bridge.joints.pointer[start].position;
+    let dx = snapped.x - a.x;
+    let dy = snapped.y - a.y;
+    if (dx * dx + dy * dy <= maxBeamLength * maxBeamLength) return snapped;
+
+    var best = a;
+    var nearest = -1.0f32;
+    var row = -maxBeamCells;
+    while (row <= maxBeamCells) {
+        var col = -maxBeamCells;
+        while (col <= maxBeamCells) {
+            let point = Vec2(a.x + (col as f32) * gridStep, a.y + (row as f32) * gridStep);
+            let x = point.x - mouse.x;
+            let y = point.y - mouse.y;
+            let distance = x * x + y * y;
+            if ((nearest < 0.0 or distance < nearest) and canPlaceBeam(bridge, terrain, start, point) and
+                (not onBankEdge(point, terrain) or jointAt(&bridge.joints, point) >= 0)) {
+                nearest = distance;
+                best = point;
+            }
+            col += 1;
+        }
+        row += 1;
+    }
+    return best;
+}
+
+fun jointAt(joints: ref List[Joint], point: Vec2) -> i64 = {
+    var i = 0;
+    while (i < joints.length()) {
+        let p = joints.pointer[i].position;
+        if (p.x == point.x and p.y == point.y) return i;
+        i += 1;
+    }
+    return -1;
+}
+
+fun removeUnusedJoint(bridge: ref mut Bridge, index: i64) = {
+    if (bridge.joints.pointer[index].fixed) return;
+    var i = 0;
+    while (i < bridge.planks.length()) {
+        let plank = bridge.planks.pointer[i];
+        if (plank.a == index or plank.b == index) return;
+        i += 1;
+    }
+    let last = bridge.joints.pop();
+    let moved = bridge.joints.length();
+    if (index == moved) return;
+    bridge.joints.pointer[index] = last;
+    i = 0;
+    while (i < bridge.planks.length()) {
+        let plank = &bridge.planks.pointer[i];
+        if (plank.a == moved) plank.a = index;
+        if (plank.b == moved) plank.b = index;
+        i += 1;
+    }
+}
+
+fun beamAtMouse(bridge: ref Bridge, mouse: Vec2, zoom: f32) -> i64 = {
+    let point = b2.b2Vec2(mouse.x, mouse.y);
+    let radius = plankThickness / 2.0 + 10.0 / zoom;
+    var nearest = radius * radius;
+    var index = -1;
+    var i = 0;
+    while (i < bridge.planks.length()) {
+        let plank = bridge.planks.pointer[i];
+        if (not plank.road) {
+            let a = bridge.joints.pointer[plank.a].position;
+            let b = bridge.joints.pointer[plank.b].position;
+            let hit = b2.b2SegmentDistance(b2.b2Vec2(a.x, a.y), b2.b2Vec2(b.x, b.y), point, point);
+            if (hit.distanceSquared <= nearest) {
+                nearest = hit.distanceSquared;
+                index = i;
+            }
+        }
+        i += 1;
+    }
+    return index;
+}
+
+fun deleteBeam(bridge: ref mut Bridge, index: i64) = {
+    let removed = bridge.planks.pointer[index];
+    let last = bridge.planks.pop();
+    if (index < bridge.planks.length()) bridge.planks.pointer[index] = last;
+    removeUnusedJoint(bridge, math.max(removed.a, removed.b));
+    removeUnusedJoint(bridge, math.min(removed.a, removed.b));
+}
+
+class BeamTarget {
+    point: Vec2;
+    joint: i64;
+    beam: i64;
+    valid: bool;
+}
+
+fun beamTarget(bridge: ref Bridge, terrain: ref List[List[Vec2]], start: i64,
+               snapped: Vec2, mouse: Vec2, zoom: f32) -> BeamTarget = {
+    if (start < 0) {
+        let joint = jointAt(&bridge.joints, snapped);
+        return BeamTarget(snapped, joint, beamAtMouse(bridge, mouse, zoom), joint >= 0);
+    }
+    let end = beamEndpoint(bridge, terrain, start, snapped, mouse);
+    return BeamTarget(end, jointAt(&bridge.joints, end), -1, canPlaceBeam(bridge, terrain, start, end));
+}
+
+fun editBridge(bridge: ref mut Bridge, start: ref mut i64, target: ref BeamTarget) -> bool = {
+    if (rl.IsMouseButtonPressed(rl.MOUSE_BUTTON_RIGHT)) {
+        if (start < 0 and target.beam >= 0) {
+            deleteBeam(bridge, target.beam);
+            return true;
+        }
+        start = -1;
+        return false;
+    }
+    if (not rl.IsMouseButtonPressed(rl.MOUSE_BUTTON_LEFT)) return false;
+    if (start < 0) {
+        start = target.joint;
+        return false;
+    }
+
+    let first: i64 = start;
+    start = -1;
+    if (not target.valid) return false;
+    var end = target.joint;
+    if (end < 0) {
+        end = bridge.joints.length();
+        bridge.joints.push(Joint(target.point, fixed=false));
+    }
+    bridge.planks.push(PlankDef(first, end, road=false));
+    return true;
+}
 
 fun drawGrid(camera: ref rl.Camera2D) = {
     let color = rl.Color(40u8, 40u8, 40u8, 255u8);
@@ -413,13 +609,13 @@ fun drawJoint(p: Vec2, fixed: bool) = {
     rl.DrawCircleV(Vec2(p.x, -p.y), gridStep / 5.0, color);
 }
 
-fun drawBridge(bridge: ref Bridge) = {
+fun drawBridge(bridge: ref Bridge, hovered: i64) = {
     for (road in [false, true]) {
         var i = 0;
         while (i < bridge.planks.length()) {
             let plank = bridge.planks.pointer[i];
             if (plank.road == road) {
-                let color = if road then rl.WHITE else rl.DARKGRAY;
+                let color = if road then rl.WHITE else (if i == hovered then rl.RED else rl.DARKGRAY);
                 drawPlank(bridge.joints.pointer[plank.a].position,
                           bridge.joints.pointer[plank.b].position, color);
             }
@@ -546,8 +742,10 @@ fun main() = {
     var planks: List[Plank];
     var elapsed = 0.0;
     var editing = true;
+    var beamStart: i64 = -1;
     while (not rl.WindowShouldClose()) {
         if (rl.IsKeyPressed(rl.KEY_SPACE)) {
+            beamStart = -1;
             editing = not editing;
             if (editing) {
                 b2.b2DestroyWorld(world);
@@ -579,14 +777,27 @@ fun main() = {
         let mouse = mousePosition(&camera);
         let point = GridPoint(gridIndex(mouse.x), gridIndex(mouse.y));
 
+        var target: BeamTarget;
+        if (editing) {
+            let snapped = gridPosition(point);
+            let previousStart: i64 = beamStart;
+            target = beamTarget(&bridge, &level.terrain, beamStart, snapped, mouse, camera.zoom);
+            let changed = editBridge(&bridge, &beamStart, &target);
+            if (changed) budget = beamCost(&bridge.planks);
+            if (changed or beamStart != previousStart)
+                target = beamTarget(&bridge, &level.terrain, beamStart, snapped, mouse, camera.zoom);
+        }
+
         rl.BeginDrawing();
         rl.ClearBackground(rl.BLACK);
         rl.BeginMode2D(camera);
         if (editing) drawGrid(&camera);
         drawTerrain(&level.terrain);
         if (editing) {
-            drawBridge(&bridge);
-            drawCursor(gridPosition(point));
+            drawBridge(&bridge, target.beam);
+            if (beamStart >= 0 and target.valid)
+                drawPlank(bridge.joints.pointer[beamStart].position, target.point, rl.GRAY);
+            if (target.valid) drawCursor(target.point);
         } else {
             drawSimulatedBridge(&bridge, &planks);
         }
