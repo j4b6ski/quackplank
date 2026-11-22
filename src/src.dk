@@ -1,38 +1,328 @@
 import b2;
+import b2.b2ContactData;
 import rl;
 import rl.Vector2 as Vec2;
 import std.math as math;
-const gridStep = 0.25;
-const initialZoom = 40.0;
-const maxZoomFactor = 8.0;
 
-fun check(ok: bool) = {
-    if (not ok)
-        panicking.panic();
+class Joint {
+    position: Vec2;
+    fixed: bool;
 }
 
-fun updateCamera(camera: ref mut rl.Camera2D) = {
-    if (rl.IsMouseButtonDown(rl.MOUSE_BUTTON_RIGHT)) {
-        let delta = rl.GetMouseDelta();
-        camera.target.x -= delta.x / camera.zoom;
-        camera.target.y -= delta.y / camera.zoom;
+class PlankDef {
+    a: i64;
+    b: i64;
+    road: bool;
+}
+
+class Bridge {
+    joints: List[Joint];
+    planks: List[PlankDef];
+}
+
+class Level {
+    terrain: List[List[Vec2]];
+    road: List[Joint];
+    anchors: List[Vec2];
+    start: Vec2;
+    finish: f32;
+}
+
+fun level1() -> Level = {
+    var level: Level;
+    level.start = Vec2(-4.5, 0.0);
+    level.finish = 4.5;
+
+    for (vertices in [
+        [Vec2(-10.0, 0.0), Vec2(-10.0, -7.5), Vec2(-1.0, -7.5),
+         Vec2(-1.75, -3.75), Vec2(-3.0, 0.0)],
+        [Vec2(3.0, 0.0), Vec2(1.75, -3.75), Vec2(1.0, -7.5),
+         Vec2(10.0, -7.5), Vec2(10.0, 0.0)]
+    ]) {
+        var bank: List[Vec2];
+        for (vertex in vertices) bank.push(vertex);
+        level.terrain.push(move bank);
     }
 
+    for (joint in [
+        Joint(Vec2(-3.0, 0.0), fixed=true),
+        Joint(Vec2(-1.5, 0.0), fixed=false),
+        Joint(Vec2(0.0, 0.0), fixed=false),
+        Joint(Vec2(1.5, 0.0), fixed=false),
+        Joint(Vec2(3.0, 0.0), fixed=true)
+    ]) level.road.push(joint);
+    for (anchor in [Vec2(-2.0, -3.0), Vec2(2.0, -3.0)])
+        level.anchors.push(anchor);
+    return level;
+}
+
+fun initialBridge(level: ref Level) -> Bridge = {
+    var bridge: Bridge;
+    var i = 0;
+    while (i < level.road.length()) {
+        bridge.joints.push(level.road.pointer[i]);
+        if (i > 0) bridge.planks.push(PlankDef(i - 1, i, road=true));
+        i += 1;
+    }
+    i = 0;
+    while (i < level.anchors.length()) {
+        bridge.joints.push(Joint(level.anchors.pointer[i], fixed=true));
+        i += 1;
+    }
+    return bridge;
+}
+
+class Plank {
+    body: b2.b2BodyId;
+    halfLength: f32;
+    load: f32;
+    releasePin: i64;
+}
+
+class Attachment {
+    plank: i64;
+    body: b2.b2BodyId;
+    anchor: b2.b2Vec2;
+    hinge: b2.b2JointId;
+    load: f32;
+}
+
+const terrainCategory = 2u64;
+const plankThickness = 0.05f32;
+
+fun createTerrain(world: b2.b2WorldId, terrain: ref List[List[Vec2]]) -> b2.b2BodyId = {
+    let def = b2.b2DefaultBodyDef();
+    let ground = b2.b2CreateBody(world, &def);
+    var shape = b2.b2DefaultShapeDef();
+    shape.filter.categoryBits = terrainCategory;
+    shape.material.friction = 1.0;
+    var i = 0;
+    while (i < terrain.length()) {
+        let bank = &terrain.pointer[i];
+        var vertices: List[b2.b2Vec2];
+        var j = 0;
+        while (j < bank.length()) {
+            let p = bank.pointer[j];
+            vertices.push(b2.b2Vec2(p.x, p.y));
+            j += 1;
+        }
+        let hull = b2.b2ComputeHull(&vertices);
+        let polygon = b2.b2MakePolygon(&hull, 0.0);
+        b2.b2CreatePolygonShape(ground, &shape, &polygon);
+        i += 1;
+    }
+    return ground;
+}
+
+fun createPlankBody(world: b2.b2WorldId, a: Vec2, b: Vec2,
+                    length: f32, road: bool) -> b2.b2BodyId = {
+    var board = b2.b2DefaultBodyDef();
+    board.type_ = b2.b2_dynamicBody;
+    board.angularDamping = 64.0;
+    board.position = b2.b2Vec2((a.x + b.x) / 2.0, (a.y + b.y) / 2.0);
+    board.rotation = b2.b2Rot((b.x - a.x) / length, (b.y - a.y) / length);
+    let body = b2.b2CreateBody(world, &board);
+    var shape = b2.b2DefaultShapeDef();
+    shape.material.friction = 1.0;
+    shape.density = 10.0 / plankThickness;
+    shape.filter.groupIndex = -1;
+    if (not road) shape.filter.maskBits = terrainCategory;
+    let polygon = b2.b2MakeBox(length / 2.0, plankThickness / 2.0);
+    b2.b2CreatePolygonShape(body, &shape, &polygon);
+    return body;
+}
+
+fun connectPin(world: b2.b2WorldId, ends: ref mut List[Attachment]) = {
+    var i = 1;
+    while (i < ends.length()) {
+        let base = ends.pointer[0];
+        let end = ends.pointer[i];
+        var hinge = b2.b2DefaultRevoluteJointDef();
+        hinge.bodyIdA = base.body;
+        hinge.bodyIdB = end.body;
+        hinge.localAnchorA = base.anchor;
+        hinge.localAnchorB = end.anchor;
+        hinge.collideConnected = true;
+        ends.pointer[i].hinge = b2.b2CreateRevoluteJoint(world, &hinge);
+        i += 1;
+    }
+}
+
+fun createBridge(world: b2.b2WorldId, ground: b2.b2BodyId, bridge: ref Bridge,
+                 pins: ref mut List[List[Attachment]], planks: ref mut List[Plank]) = {
+    var i = 0;
+    while (i < bridge.joints.length()) {
+        let joint = bridge.joints.pointer[i];
+        var ends: List[Attachment];
+        if (joint.fixed) {
+            let anchor = b2.b2Vec2(joint.position.x, joint.position.y);
+            ends.push(Attachment(-1, ground, anchor, b2.b2_nullJointId, 0.0));
+        }
+        pins.push(move ends);
+        i += 1;
+    }
+    i = 0;
+    while (i < bridge.planks.length()) {
+        let def = bridge.planks.pointer[i];
+        let first = math.min(def.a, def.b);
+        let second = math.max(def.a, def.b);
+        let a = bridge.joints.pointer[first].position;
+        let b = bridge.joints.pointer[second].position;
+        let length = b2.b2Distance(b2.b2Vec2(a.x, a.y), b2.b2Vec2(b.x, b.y));
+        let half = length / 2.0;
+        let body = createPlankBody(world, a, b, length, def.road);
+        planks.push(Plank(body, half, 0.0, -1));
+        pins.pointer[first].push(Attachment(i, body, b2.b2Vec2(-half, 0.0), b2.b2_nullJointId, 0.0));
+        pins.pointer[second].push(Attachment(i, body, b2.b2Vec2(half, 0.0), b2.b2_nullJointId, 0.0));
+        i += 1;
+    }
+    i = 0;
+    while (i < pins.length()) {
+        connectPin(world, &pins.pointer[i]);
+        i += 1;
+    }
+}
+
+fun duckHeight(mass: f32) -> f32 = mass / 100.0;
+
+fun duckCapsule(mass: f32) -> b2.b2Capsule = {
+    let radius = duckHeight(mass) / 4.0;
+    return b2.b2Capsule(b2.b2Vec2(0.0, radius), b2.b2Vec2(0.0, 3.0 * radius), radius);
+}
+
+fun applyDuckMass(body: b2.b2BodyId, mass: f32) = {
+    b2.b2Body_SetMassData(body, b2.b2MassData(mass, b2.b2Vec2(0.0, duckHeight(mass) / 2.0), 0.0));
+}
+
+fun createDuck(world: b2.b2WorldId, feet: Vec2, mass: f32) -> b2.b2ShapeId = {
+    var def = b2.b2DefaultBodyDef();
+    def.type_ = b2.b2_dynamicBody;
+    def.position = b2.b2Vec2(feet.x, feet.y);
+    def.fixedRotation = true;
+    let body = b2.b2CreateBody(world, &def);
+    let capsule = duckCapsule(mass);
+    var shape = b2.b2DefaultShapeDef();
+    shape.material.friction = 1.0;
+    shape.material.tangentSpeed = 1.0;
+    let foot = b2.b2CreateCapsuleShape(body, &shape, &capsule);
+    applyDuckMass(body, mass);
+    return foot;
+}
+
+fun onGround(duck: b2.b2ShapeId, ground: b2.b2BodyId) -> bool = {
+    let capacity = b2.b2Shape_GetContactCapacity(duck);
+    if (capacity == 0) return false;
+    var contacts: List[b2ContactData];
+    contacts.reserve(capacity);
+    let count = b2.b2Shape_GetContactData(duck, contacts.pointer as cptr mut b2ContactData, capacity);
+    var i = 0;
+    while (i < count) {
+        let c = contacts.pointer[i];
+        let groundA = b2.B2_ID_EQUALS(b2.b2Shape_GetBody(c.shapeIdA), ground);
+        let groundB = b2.B2_ID_EQUALS(b2.b2Shape_GetBody(c.shapeIdB), ground);
+        if ((groundA and c.manifold.normal.y > 0.0) or (groundB and c.manifold.normal.y < 0.0))
+            return true;
+        i += 1;
+    }
+    return false;
+}
+
+fun bodyPosition(body: b2.b2BodyId) -> Vec2 = {
+    let p = b2.b2Body_GetPosition(body);
+    return Vec2(p.x, p.y);
+}
+
+fun releaseEnd(world: b2.b2WorldId, ends: ref mut List[Attachment], plank: i64) = {
+    var i = 0;
+    while (ends.pointer[i].plank != plank) i += 1;
+    let rebuild = i == 0;
+    if (rebuild) {
+        var j = 1;
+        while (j < ends.length()) {
+            b2.b2DestroyJoint(ends.pointer[j].hinge);
+            j += 1;
+        }
+    } else {
+        b2.b2DestroyJoint(ends.pointer[i].hinge);
+    }
+    let last = ends.pop();
+    if (i < ends.length()) ends.pointer[i] = last;
+    if (rebuild and ends.length() > 0) {
+        ends.pointer[0].hinge = b2.b2_nullJointId;
+        connectPin(world, ends);
+    }
+}
+
+fun recordLoad(planks: ref mut List[Plank], end: ref mut Attachment, pin: i64, force: b2.b2Vec2) = {
+    end.load += (b2.b2Length(force) - end.load) / 8.0;
+    let plank = &planks.pointer[end.plank];
+    if (end.load > plank.load) {
+        plank.load = end.load;
+        plank.releasePin = pin;
+    }
+}
+
+fun breakOverloadedPlanks(world: b2.b2WorldId, pins: ref mut List[List[Attachment]],
+                         planks: ref mut List[Plank]) = {
+    const breakForce = 4500.0;
+    var i = 0;
+    while (i < pins.length()) {
+        let ends = &pins.pointer[i];
+        if (ends.length() > 1 and ends.pointer[0].plank >= 0) {
+            var net = b2.b2Vec2_zero;
+            var j = 1;
+            while (j < ends.length()) {
+                let end = ends.pointer[j];
+                let force = b2.b2Joint_GetConstraintForce(end.hinge);
+                recordLoad(planks, &ends.pointer[j], i, force);
+                net = b2.b2Sub(net, force);
+                j += 1;
+            }
+            recordLoad(planks, &ends.pointer[0], i, net);
+        }
+        i += 1;
+    }
+    i = 0;
+    while (i < planks.length()) {
+        if (planks.pointer[i].load > breakForce) {
+            releaseEnd(world, &pins.pointer[planks.pointer[i].releasePin], i);
+            b2.b2Body_SetAngularDamping(planks.pointer[i].body, 0.0);
+        }
+        planks.pointer[i].load = 0.0;
+        i += 1;
+    }
+}
+
+fun finishCrossing(duck: b2.b2ShapeId, ground: b2.b2BodyId, finish: f32) -> bool = {
+    if (bodyPosition(b2.b2Shape_GetBody(duck)).x < finish or not onGround(duck, ground))
+        return false;
+
+    var material = b2.b2Shape_GetSurfaceMaterial(duck);
+    material.tangentSpeed = 0.0;
+    b2.b2Shape_SetSurfaceMaterial(duck, material);
+    return true;
+}
+
+fun updateCamera(camera: ref mut rl.Camera2D, initialZoom: f32) = {
     let wheel = rl.GetMouseWheelMove();
     if (wheel != 0.0) {
         let mouse = rl.GetMousePosition();
         camera.target = rl.GetScreenToWorld2D(mouse, camera);
         camera.offset = mouse;
-        camera.zoom = math.min(initialZoom * maxZoomFactor,
-                               camera.zoom * math.exp(wheel / 5.0));
+        camera.zoom *= math.exp(wheel / 5.0);
     }
 
+    constrainCamera(camera, initialZoom);
+}
+
+fun constrainCamera(camera: ref mut rl.Camera2D, initialZoom: f32) = {
     let mapWidth = 20.0;
     let mapHeight = 15.0;
     let width = rl.GetScreenWidth() as f32;
     let height = rl.GetScreenHeight() as f32;
     let minZoom = math.max(initialZoom, math.max(width / mapWidth, height / mapHeight));
-    camera.zoom = math.max(camera.zoom, minZoom);
+    const maxZoomFactor = 8.0;
+    camera.zoom = math.max(minZoom, math.min(camera.zoom, initialZoom * maxZoomFactor));
 
     let minX = camera.offset.x / camera.zoom - mapWidth / 2.0;
     let maxX = mapWidth / 2.0 - (width - camera.offset.x) / camera.zoom;
@@ -41,6 +331,26 @@ fun updateCamera(camera: ref mut rl.Camera2D) = {
     camera.target.x = math.min(maxX, math.max(minX, camera.target.x));
     camera.target.y = math.min(maxY, math.max(minY, camera.target.y));
 }
+
+class GridPoint {
+    col: i32;
+    row: i32;
+}
+
+const gridStep = 0.25;
+
+fun gridIndex(position: f32) -> i32 = {
+    let index = position / gridStep;
+    return (if index >= 0.0 then index + 0.5 else index - 0.5) as i32;
+}
+
+fun mousePosition(camera: ref rl.Camera2D) -> Vec2 = {
+    let mouse = rl.GetScreenToWorld2D(rl.GetMousePosition(), camera);
+    return Vec2(mouse.x, -mouse.y);
+}
+
+fun gridPosition(point: GridPoint) -> Vec2 =
+    Vec2((point.col as f32) * gridStep, (point.row as f32) * gridStep);
 
 fun drawGrid(camera: ref rl.Camera2D) = {
     let color = rl.Color(40u8, 40u8, 40u8, 255u8);
@@ -64,41 +374,6 @@ fun drawGrid(camera: ref rl.Camera2D) = {
     }
 }
 
-class Level {
-    terrain: List[List[Vec2]];
-    road: List[Vec2];
-    anchors: List[Vec2];
-}
-
-fun level1() -> Level = {
-    var terrain: List[List[Vec2]];
-    var road: List[Vec2];
-    for (p in [Vec2(-3.0, 0.0), Vec2(-1.5, 0.0), Vec2(0.0, 0.0),
-               Vec2(1.5, 0.0), Vec2(3.0, 0.0)]) {
-        road.push(p);
-    }
-
-    var left: List[Vec2];
-    for (p in [Vec2(-10.0, 0.0), Vec2(-10.0, -7.5), Vec2(-1.0, -7.5),
-               Vec2(-1.75, -3.75), road.pointer[0]]) {
-        left.push(p);
-    }
-    terrain.push(move left);
-
-    var right: List[Vec2];
-    for (p in [road.pointer[road.length() - 1], Vec2(1.75, -3.75), Vec2(1.0, -7.5),
-               Vec2(10.0, -7.5), Vec2(10.0, 0.0)]) {
-        right.push(p);
-    }
-    terrain.push(move right);
-    var anchors: List[Vec2];
-    anchors.push(road.pointer[0]);
-    anchors.push(road.pointer[road.length() - 1]);
-    anchors.push(Vec2(-2.0, -3.0));
-    anchors.push(Vec2(2.0, -3.0));
-    return Level(move terrain, move road, move anchors);
-}
-
 fun drawTerrain(terrain: ref List[List[Vec2]]) = {
     var i = 0;
     while (i < terrain.length()) {
@@ -116,91 +391,68 @@ fun drawTerrain(terrain: ref List[List[Vec2]]) = {
     }
 }
 
-fun drawRoad(road: ref List[Vec2]) = {
-    var i = 1;
-    while (i < road.length()) {
-        let a = road.pointer[i - 1];
-        let b = road.pointer[i];
-        rl.DrawLineV(Vec2(a.x, -a.y), Vec2(b.x, -b.y), rl.WHITE);
-        i += 1;
+fun drawPlank(a: Vec2, b: Vec2, color: rl.Color) = {
+    rl.DrawLineEx(Vec2(a.x, -a.y), Vec2(b.x, -b.y), plankThickness, color);
+}
+
+fun drawJoint(p: Vec2, fixed: bool) = {
+    let color = if fixed then rl.WHITE else rl.GRAY;
+    rl.DrawCircleV(Vec2(p.x, -p.y), gridStep / 5.0, color);
+}
+
+fun drawBridge(bridge: ref Bridge) = {
+    for (road in [false, true]) {
+        var i = 0;
+        while (i < bridge.planks.length()) {
+            let plank = bridge.planks.pointer[i];
+            if (plank.road == road) {
+                let color = if road then rl.WHITE else rl.DARKGRAY;
+                drawPlank(bridge.joints.pointer[plank.a].position,
+                          bridge.joints.pointer[plank.b].position, color);
+            }
+            i += 1;
+        }
+    }
+    var j = 0;
+    while (j < bridge.joints.length()) {
+        let joint = bridge.joints.pointer[j];
+        drawJoint(joint.position, joint.fixed);
+        j += 1;
     }
 }
 
-fun drawJoints(points: ref List[Vec2], color: rl.Color) = {
-    var i = 0;
-    while (i < points.length()) {
-        let p = points.pointer[i];
-        rl.DrawCircleV(Vec2(p.x, -p.y), gridStep / 5.0, color);
-        i += 1;
+fun drawSimulatedBridge(bridge: ref Bridge, planks: ref List[Plank]) = {
+    for (road in [false, true]) {
+        var i = 0;
+        while (i < bridge.planks.length()) {
+            if (bridge.planks.pointer[i].road == road) {
+                let plank = planks.pointer[i];
+                let a = b2.b2Body_GetWorldPoint(plank.body, b2.b2Vec2(-plank.halfLength, 0.0));
+                let b = b2.b2Body_GetWorldPoint(plank.body, b2.b2Vec2(plank.halfLength, 0.0));
+                drawPlank(Vec2(a.x, a.y), Vec2(b.x, b.y), if road then rl.WHITE else rl.DARKGRAY);
+            }
+            i += 1;
+        }
+    }
+    var j = 0;
+    while (j < bridge.joints.length()) {
+        let joint = bridge.joints.pointer[j];
+        if (joint.fixed) drawJoint(joint.position, fixed=true);
+        j += 1;
     }
 }
 
-fun drawCursor(connection: Vec2) = {
-    let x = connection.x;
-    let y = -connection.y;
+fun drawCursor(point: Vec2) = {
+    let x = point.x;
+    let y = -point.y;
     let gap = gridStep * 0.25;
     let arm = gridStep * 0.5;
 
-    rl.DrawLineV(Vec2(x - arm, y), Vec2(x - gap, y), rl.RED);
-    rl.DrawLineV(Vec2(x + gap, y), Vec2(x + arm, y), rl.RED);
-    rl.DrawLineV(Vec2(x, y - arm), Vec2(x, y - gap), rl.RED);
-    rl.DrawLineV(Vec2(x, y + gap), Vec2(x, y + arm), rl.RED);
+    rl.DrawLineV(Vec2(x - arm, y), Vec2(x - gap, y), rl.GREEN);
+    rl.DrawLineV(Vec2(x + gap, y), Vec2(x + arm, y), rl.GREEN);
+    rl.DrawLineV(Vec2(x, y - arm), Vec2(x, y - gap), rl.GREEN);
+    rl.DrawLineV(Vec2(x, y + gap), Vec2(x, y + arm), rl.GREEN);
 }
-
-fun drawFps() = {
-    rl.DrawText(f"{rl.GetFPS()}", posX=4, posY=4, fontSize=12, color=rl.GREEN);
-}
-
-fun drawCoords(col: i32, row: i32) = {
-    rl.DrawText(f"{col}, {row}", 4, rl.GetScreenHeight() - 16, 12, rl.WHITE);
-}
-
-fun drawMode(edit: bool) = {
-    let mode = if edit then "Edit" else "Test";
-    let x = (rl.GetScreenWidth() - rl.MeasureText(mode, 12)) / 2;
-    rl.DrawText(mode, x, rl.GetScreenHeight() - 16, 12, rl.WHITE);
-}
-
-fun createRoad(world: b2.b2WorldId, road: ref List[Vec2],
-               bodies: ref mut List[b2.b2BodyId]) = {
-    var anchor = b2.b2DefaultBodyDef();
-    let left = road.pointer[0];
-    anchor.position = b2.b2Vec2(left.x, left.y);
-    bodies.push(b2.b2CreateBody(world, &anchor));
-    var def = b2.b2DefaultBodyDef();
-    def.type_ = b2.b2_dynamicBody;
-    let mass = b2.b2MassData(1.0, b2.b2Vec2_zero, 0.0);
-    var i = 1;
-    while (i < road.length() - 1) {
-        let point = road.pointer[i];
-        def.position = b2.b2Vec2(point.x, point.y);
-        let body = b2.b2CreateBody(world, &def);
-        b2.b2Body_SetMassData(body, mass);
-        bodies.push(body);
-        i += 1;
-    }
-
-    let right = road.pointer[road.length() - 1];
-    anchor.position = b2.b2Vec2(right.x, right.y);
-    bodies.push(b2.b2CreateBody(world, &anchor));
-
-    var spring = b2.b2DefaultDistanceJointDef();
-    spring.enableSpring = true;
-    spring.hertz = 5.0;
-    spring.dampingRatio = 0.75;
-    i = 1;
-    while (i < bodies.length()) {
-        spring.bodyIdA = bodies.pointer[i - 1];
-        spring.bodyIdB = bodies.pointer[i];
-        let a = b2.b2Body_GetPosition(spring.bodyIdA);
-        let b = b2.b2Body_GetPosition(spring.bodyIdB);
-        spring.length = b2.b2Distance(a, b);
-        b2.b2CreateDistanceJoint(world, &spring);
-        i += 1;
-    }
-}
-
-fun duckHeight(mass: f32) -> f32 = mass / 100.0;
 
 fun drawDuck(texture: rl.Texture2D, feet: Vec2, mass: f32) = {
     let w = texture.width as f32;
@@ -212,90 +464,107 @@ fun drawDuck(texture: rl.Texture2D, feet: Vec2, mass: f32) = {
                       Vec2(0.0, 0.0), 0.0, rl.WHITE);
 }
 
+const fontSize: i32 = 20;
+
+fun drawFps() = {
+    rl.DrawText(f"{rl.GetFPS()}", posX=4, posY=4, fontSize=fontSize, color=rl.DARKGRAY);
+}
+
+fun drawCoords(col: i32, row: i32) = {
+    rl.DrawText(f"{col}, {row}", 4, rl.GetScreenHeight() - fontSize - 4, fontSize, rl.WHITE);
+}
+
+fun drawMode(editing: bool, crossed: bool) = {
+    let mode = if editing then "Edit" else (if crossed then "Success" else "Test");
+    let x = (rl.GetScreenWidth() - rl.MeasureText(mode, fontSize)) / 2;
+    rl.DrawText(mode, x, rl.GetScreenHeight() - fontSize - 4, fontSize, rl.WHITE);
+}
+
 fun main() = {
     rl.InitWindow(800, 600, "QuackPlank");
-    check(rl.IsWindowReady());
+    if (not rl.IsWindowReady())
+        panicking.panic();
 
     let duck = rl.LoadTexture("src/duck.png");
-    check(rl.IsTextureValid(duck));
+    if (not rl.IsTextureValid(duck))
+        panicking.panic();
     rl.SetTextureFilter(duck, rl.TEXTURE_FILTER_BILINEAR);
 
+    let level = level1();
+    var bridge = initialBridge(&level);
+    const initialZoom = 40.0;
     var camera = rl.Camera2D(
         offset=rl.Vector2(rl.GetScreenWidth() as f32 / 2.0,
                           rl.GetScreenHeight() as f32 / 2.0),
         target=rl.Vector2(0.0, 0.0),
         rotation=0.0,
-        zoom=initialZoom,
+        zoom=initialZoom * 2.0,
     );
 
-    let level = level1();
-    var road = copy level.road;
-    const tick = 1.0 / 60.0;
+    var world: b2.b2WorldId;
+    var ground: b2.b2BodyId;
+    var crossed = false;
+    let duckMass = 35.0f32;
+    var duckShape: b2.b2ShapeId;
+    var pins: List[List[Attachment]];
+    var planks: List[Plank];
     var elapsed = 0.0;
-    var edit = true;
-    var world = b2.b2_nullWorldId;
-    var roadBodies: List[b2.b2BodyId];
+    var editing = true;
     while (not rl.WindowShouldClose()) {
         if (rl.IsKeyPressed(rl.KEY_SPACE)) {
-            if (edit) {
+            editing = not editing;
+            if (editing) {
+                b2.b2DestroyWorld(world);
+                pins.clear();
+                planks.clear();
+            } else {
                 let def = b2.b2DefaultWorldDef();
                 world = b2.b2CreateWorld(&def);
-                createRoad(world, &level.road, &roadBodies);
+                ground = createTerrain(world, &level.terrain);
+                createBridge(world, ground, &bridge, &pins, &planks);
+                duckShape = createDuck(world, level.start, duckMass);
+                crossed = false;
                 elapsed = 0.0;
-            } else {
-                b2.b2DestroyWorld(world);
-                roadBodies.clear();
             }
-            edit = not edit;
         }
 
-        if (not edit) {
+        if (not editing) {
+            const tick = 1.0f32 / 60.0;
             elapsed += rl.GetFrameTime();
             while (elapsed >= tick) {
-                b2.b2World_Step(world, tick as f32, 4);
+                b2.b2World_Step(world, tick, 4);
+                breakOverloadedPlanks(world, &pins, &planks);
+                if (not crossed) crossed = finishCrossing(duckShape, ground, level.finish);
                 elapsed -= tick;
-            }
-            var i = 0;
-            while (i < roadBodies.length()) {
-                let point = b2.b2Body_GetPosition(roadBodies.pointer[i]);
-                road.pointer[i] = Vec2(point.x, point.y);
-                i += 1;
             }
         }
 
-        updateCamera(&camera);
-
-        let mouse = rl.GetScreenToWorld2D(rl.GetMousePosition(), camera);
-        let x = mouse.x / gridStep;
-        let y = -mouse.y / gridStep;
-        let col = (if x >= 0.0 then x + 0.5 else x - 0.5) as i32;
-        let row = (if y >= 0.0 then y + 0.5 else y - 0.5) as i32;
-        let connection = rl.Vector2((col as f32) * gridStep, (row as f32) * gridStep);
+        updateCamera(&camera, initialZoom);
+        let mouse = mousePosition(&camera);
+        let point = GridPoint(gridIndex(mouse.x), gridIndex(mouse.y));
 
         rl.BeginDrawing();
         rl.ClearBackground(rl.BLACK);
-
         rl.BeginMode2D(camera);
-        if (edit)
-            drawGrid(&camera);
+        if (editing) drawGrid(&camera);
         drawTerrain(&level.terrain);
-        let points = if edit then &level.road else &road;
-        drawRoad(points);
-        drawJoints(points, rl.GRAY);
-        drawJoints(&level.anchors, rl.WHITE);
-        if (edit)
-            drawCursor(connection);
-        drawDuck(duck, Vec2(-4.5, 0.0), 35.0);
+        if (editing) {
+            drawBridge(&bridge);
+            drawCursor(gridPosition(point));
+        } else {
+            drawSimulatedBridge(&bridge, &planks);
+        }
+        let feet = if editing then level.start else bodyPosition(b2.b2Shape_GetBody(duckShape));
+        drawDuck(duck, feet, duckMass);
         rl.EndMode2D();
 
         drawFps();
-        drawCoords(col, row);
-        drawMode(edit);
+        drawCoords(point.col, point.row);
+        drawMode(editing, crossed);
         rl.EndDrawing();
     }
+    if (not editing) b2.b2DestroyWorld(world);
 
-    if (not edit)
-        b2.b2DestroyWorld(world);
     rl.UnloadTexture(duck);
     rl.CloseWindow();
     return 0;
