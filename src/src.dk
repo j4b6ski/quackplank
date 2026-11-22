@@ -756,6 +756,7 @@ fun main() = {
 
     let level = level1();
     var bridge = initialBridge(&level);
+    let roadSegments = bridge.planks.length();
     const initialZoom = 40.0;
     var camera = rl.Camera2D(
         offset=rl.Vector2(rl.GetScreenWidth() as f32 / 2.0,
@@ -841,7 +842,6 @@ fun main() = {
         drawFps();
         drawCoords(point.col, point.row);
         drawMode(editing);
-        let roadSegments = math.max(0, level.road.length() - 1);
         drawBudget(bridge.planks.length() - roadSegments);
         rl.EndDrawing();
     }
