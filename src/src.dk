@@ -1,8 +1,50 @@
 import b2;
 import b2.b2ContactData;
+import b2.b2Manifold;
+import b2.b2ShapeId;
 import rl;
 import rl.Vector2 as Vec2;
 import std.math as math;
+
+class RoadAnchor {
+    road: b2.b2ShapeId;
+    bank: b2.b2ShapeId;
+    point: b2.b2Vec2;
+}
+
+const RoadAnchors = List[RoadAnchor];
+
+extern("C") fundecl registerPreSolve(world: b2.b2WorldId, context: cptr u8) -> ();
+
+extern("C") fun preSolve(a: b2.b2ShapeId, b: b2.b2ShapeId,
+                        manifold: cptr mut b2Manifold, context: cptr mut u8) -> bool = {
+    let lists = context as manyptr RoadAnchors;
+    let anchors = &lists[0];
+    let manifolds = manifold as manyptr mut b2Manifold;
+    let contact = &manifolds[0];
+    const clearance = 0.05f32;
+    var i = 0;
+    while (i < anchors.length()) {
+        let anchor = anchors.pointer[i];
+        let matches = (b2.B2_ID_EQUALS(a, anchor.road) and b2.B2_ID_EQUALS(b, anchor.bank)) or
+                      (b2.B2_ID_EQUALS(b, anchor.road) and b2.B2_ID_EQUALS(a, anchor.bank));
+        if (matches) {
+            var kept = 0;
+            var j = 0;
+            while (j < contact.pointCount) {
+                let point = contact.points[j];
+                if (b2.b2DistanceSquared(point.point, anchor.point) > clearance * clearance) {
+                    contact.points[kept] = point;
+                    kept += 1;
+                }
+                j += 1;
+            }
+            contact.pointCount = kept;
+        }
+        i += 1;
+    }
+    return contact.pointCount > 0;
+}
 
 class Joint {
     position: Vec2;
@@ -103,7 +145,7 @@ class Attachment {
 const terrainCategory = 2u64;
 const plankThickness = 0.05f32;
 
-fun createTerrain(world: b2.b2WorldId, terrain: ref List[List[Vec2]]) -> b2.b2BodyId = {
+fun createTerrain(world: b2.b2WorldId, terrain: ref List[List[Vec2]], banks: ref mut List[b2ShapeId]) -> b2.b2BodyId = {
     let def = b2.b2DefaultBodyDef();
     let ground = b2.b2CreateBody(world, &def);
     var shape = b2.b2DefaultShapeDef();
@@ -121,7 +163,7 @@ fun createTerrain(world: b2.b2WorldId, terrain: ref List[List[Vec2]]) -> b2.b2Bo
         }
         let hull = b2.b2ComputeHull(&vertices);
         let polygon = b2.b2MakePolygon(&hull, 0.0);
-        b2.b2CreatePolygonShape(ground, &shape, &polygon);
+        banks.push(b2.b2CreatePolygonShape(ground, &shape, &polygon));
         i += 1;
     }
     return ground;
@@ -194,6 +236,36 @@ fun createBridge(world: b2.b2WorldId, ground: b2.b2BodyId, bridge: ref Bridge,
         connectPin(world, &pins.pointer[i]);
         i += 1;
     }
+}
+
+fun findRoadAnchors(bridge: ref Bridge, planks: ref List[Plank],
+                    banks: ref List[b2ShapeId]) -> List[RoadAnchor] = {
+    var anchors: List[RoadAnchor];
+    var i = 0;
+    while (i < bridge.planks.length()) {
+        let plank = bridge.planks.pointer[i];
+        if (plank.road) {
+            for (end in [plank.a, plank.b]) {
+                let joint = bridge.joints.pointer[end];
+                if (joint.fixed) {
+                    let point = b2.b2Vec2(joint.position.x, joint.position.y);
+                    var road: b2ShapeId;
+                    b2.b2Body_GetShapes(planks.pointer[i].body, &road as cptr mut b2ShapeId, 1);
+                    var j = 0;
+                    while (j < banks.length()) {
+                        let bank = banks.pointer[j];
+                        if (b2.b2Shape_TestPoint(bank, point)) {
+                            anchors.push(RoadAnchor(road, bank, point));
+                            b2.b2Shape_EnablePreSolveEvents(road, true);
+                        }
+                        j += 1;
+                    }
+                }
+            }
+        }
+        i += 1;
+    }
+    return anchors;
 }
 
 fun duckHeight(mass: f32) -> f32 = mass / 100.0;
@@ -754,6 +826,7 @@ fun main() = {
     );
 
     var world: b2.b2WorldId;
+    var roadAnchors: List[RoadAnchor];
     var ground: b2.b2BodyId;
     var crossed = false;
     var duckMass = 35.0f32;
@@ -774,8 +847,11 @@ fun main() = {
             } else {
                 let def = b2.b2DefaultWorldDef();
                 world = b2.b2CreateWorld(&def);
-                ground = createTerrain(world, &level.terrain);
+                var banks: List[b2ShapeId];
+                ground = createTerrain(world, &level.terrain, &banks);
                 createBridge(world, ground, &bridge, &pins, &planks);
+                roadAnchors = findRoadAnchors(&bridge, &planks, &banks);
+                registerPreSolve(world, &roadAnchors as cptr u8);
                 duckShape = createDuck(world, level.start, duckMass);
                 crossed = false;
                 elapsed = 0.0;

@@ -434,3 +434,10 @@ b2JointId b2LoadJointId_(uint64_t x)
 {
     return b2LoadJointId(x);
 }
+
+extern b2PreSolveFcn preSolve __attribute__((weak));
+
+void registerPreSolve(b2WorldId world, void *context)
+{
+    b2World_SetPreSolveCallback(world, preSolve, context);
+}
