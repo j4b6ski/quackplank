@@ -111,19 +111,6 @@ fun initialBridge(level: ref Level) -> Bridge = {
     return bridge;
 }
 
-fun addLevel1TestBeams(bridge: ref mut Bridge) = {
-    for (point in [Vec2(-2.5, -0.75), Vec2(-1.5, -1.75), Vec2(2.0, -1.25)])
-        bridge.joints.push(Joint(point, fixed=false));
-    for (plank in [
-        PlankDef(7, 0, road=false),
-        PlankDef(7, 1, road=false),
-        PlankDef(8, 1, road=false),
-        PlankDef(8, 5, road=false),
-        PlankDef(9, 6, road=false),
-        PlankDef(9, 3, road=false)
-    ]) bridge.planks.push(plank);
-}
-
 class Plank {
     body: b2.b2BodyId;
     halfLength: f32;
@@ -770,7 +757,6 @@ fun main() = {
 
     let level = level1();
     var bridge = initialBridge(&level);
-    addLevel1TestBeams(&bridge);
     const initialZoom = 40.0;
     var camera = rl.Camera2D(
         offset=rl.Vector2(rl.GetScreenWidth() as f32 / 2.0,
