@@ -365,26 +365,6 @@ bool B2_IS_NON_NULL_b2JointId_(b2JointId id)
     return B2_IS_NON_NULL(id);
 }
 
-bool B2_ID_EQUALS_b2BodyId_(b2BodyId id1, b2BodyId id2)
-{
-    return B2_ID_EQUALS(id1, id2);
-}
-
-bool B2_ID_EQUALS_b2ShapeId_(b2ShapeId id1, b2ShapeId id2)
-{
-    return B2_ID_EQUALS(id1, id2);
-}
-
-bool B2_ID_EQUALS_b2ChainId_(b2ChainId id1, b2ChainId id2)
-{
-    return B2_ID_EQUALS(id1, id2);
-}
-
-bool B2_ID_EQUALS_b2JointId_(b2JointId id1, b2JointId id2)
-{
-    return B2_ID_EQUALS(id1, id2);
-}
-
 uint32_t b2StoreWorldId_(b2WorldId id)
 {
     return b2StoreWorldId(id);

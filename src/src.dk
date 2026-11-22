@@ -25,8 +25,8 @@ extern("C") fun preSolve(a: b2.b2ShapeId, b: b2.b2ShapeId,
     var i = 0;
     while (i < anchors.length()) {
         let anchor = anchors.pointer[i];
-        let matches = (b2.B2_ID_EQUALS(a, anchor.road) and b2.B2_ID_EQUALS(b, anchor.bank)) or
-                      (b2.B2_ID_EQUALS(b, anchor.road) and b2.B2_ID_EQUALS(a, anchor.bank));
+        let matches = (a == anchor.road and b == anchor.bank) or
+                      (b == anchor.road and a == anchor.bank);
         if (matches) {
             var kept = 0;
             var j = 0;
@@ -507,8 +507,7 @@ fun beamEndpoint(bridge: ref Bridge, terrain: ref List[List[Vec2]], start: i64,
 fun jointAt(joints: ref List[Joint], point: Vec2) -> i64 = {
     var i = 0;
     while (i < joints.length()) {
-        let p = joints.pointer[i].position;
-        if (p.x == point.x and p.y == point.y) return i;
+        if (joints.pointer[i].position == point) return i;
         i += 1;
     }
     return -1;

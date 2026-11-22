@@ -604,14 +604,6 @@ extern("C") {
     private fundecl B2_IS_NON_NULL_(id: b2ChainId) -> bool;
     @c_symbol_name("B2_IS_NON_NULL_b2JointId_")
     private fundecl B2_IS_NON_NULL_(id: b2JointId) -> bool;
-    @c_symbol_name("B2_ID_EQUALS_b2BodyId_")
-    private fundecl B2_ID_EQUALS_(id1: b2BodyId, id2: b2BodyId) -> bool;
-    @c_symbol_name("B2_ID_EQUALS_b2ShapeId_")
-    private fundecl B2_ID_EQUALS_(id1: b2ShapeId, id2: b2ShapeId) -> bool;
-    @c_symbol_name("B2_ID_EQUALS_b2ChainId_")
-    private fundecl B2_ID_EQUALS_(id1: b2ChainId, id2: b2ChainId) -> bool;
-    @c_symbol_name("B2_ID_EQUALS_b2JointId_")
-    private fundecl B2_ID_EQUALS_(id1: b2JointId, id2: b2JointId) -> bool;
     private fundecl b2StoreWorldId_(id: b2WorldId) -> u32;
     private fundecl b2LoadWorldId_(x: u32) -> b2WorldId;
     private fundecl b2StoreBodyId_(id: b2BodyId) -> u64;
@@ -2079,10 +2071,10 @@ fun B2_IS_NON_NULL(id: b2BodyId) -> bool = B2_IS_NON_NULL_(id);
 fun B2_IS_NON_NULL(id: b2ShapeId) -> bool = B2_IS_NON_NULL_(id);
 fun B2_IS_NON_NULL(id: b2ChainId) -> bool = B2_IS_NON_NULL_(id);
 fun B2_IS_NON_NULL(id: b2JointId) -> bool = B2_IS_NON_NULL_(id);
-fun B2_ID_EQUALS(id1: b2BodyId, id2: b2BodyId) -> bool = B2_ID_EQUALS_(id1, id2);
-fun B2_ID_EQUALS(id1: b2ShapeId, id2: b2ShapeId) -> bool = B2_ID_EQUALS_(id1, id2);
-fun B2_ID_EQUALS(id1: b2ChainId, id2: b2ChainId) -> bool = B2_ID_EQUALS_(id1, id2);
-fun B2_ID_EQUALS(id1: b2JointId, id2: b2JointId) -> bool = B2_ID_EQUALS_(id1, id2);
+fun B2_ID_EQUALS(id1: b2BodyId, id2: b2BodyId) -> bool = id1 == id2;
+fun B2_ID_EQUALS(id1: b2ShapeId, id2: b2ShapeId) -> bool = id1 == id2;
+fun B2_ID_EQUALS(id1: b2ChainId, id2: b2ChainId) -> bool = id1 == id2;
+fun B2_ID_EQUALS(id1: b2JointId, id2: b2JointId) -> bool = id1 == id2;
 fun b2StoreWorldId(id: b2WorldId) -> u32 = b2StoreWorldId_(id);
 fun b2LoadWorldId(x: u32) -> b2WorldId = b2LoadWorldId_(x);
 fun b2StoreBodyId(id: b2BodyId) -> u64 = b2StoreBodyId_(id);
