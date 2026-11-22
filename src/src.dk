@@ -626,31 +626,26 @@ fun beamTarget(bridge: ref Bridge, terrain: ref List[List[Vec2]], start: i64,
     return BeamTarget(end, jointAt(&bridge.joints, end), -1, canPlaceBeam(bridge, terrain, start, end));
 }
 
-fun editBridge(bridge: ref mut Bridge, start: ref mut i64, target: ref BeamTarget) -> bool = {
-    if (rl.IsMouseButtonPressed(rl.MOUSE_BUTTON_RIGHT)) {
-        if (start < 0 and target.beam >= 0) {
-            deleteBeam(bridge, target.beam);
-            return true;
-        }
+fun editBridge(bridge: ref mut Bridge, start: ref mut i64, target: ref BeamTarget, rightClick: bool) = {
+    if (rightClick) {
+        if (start < 0 and target.beam >= 0) deleteBeam(bridge, target.beam);
         start = -1;
-        return false;
+        return;
     }
-    if (not rl.IsMouseButtonPressed(rl.MOUSE_BUTTON_LEFT)) return false;
     if (start < 0) {
         start = target.joint;
-        return false;
+        return;
     }
 
     let first: i64 = start;
     start = -1;
-    if (not target.valid) return false;
+    if (not target.valid) return;
     var end = target.joint;
     if (end < 0) {
         end = bridge.joints.length();
         bridge.joints.push(Joint(target.point, fixed=false));
     }
     bridge.planks.push(PlankDef(first, end, road=false));
-    return true;
 }
 
 fun drawGrid(camera: ref rl.Camera2D) = {
@@ -781,17 +776,9 @@ fun drawMode(editing: bool, crossed: bool) = {
     rl.DrawText(mode, x, rl.GetScreenHeight() - fontSize - 4, fontSize, rl.WHITE);
 }
 
-fun beamCost(planks: ref List[PlankDef]) -> String = {
-    var spent = 0;
-    var i = 0;
-    while (i < planks.length()) {
-        if (not planks.pointer[i].road) spent += 100;
-        i += 1;
-    }
-    return f"{spent}";
-}
-
-fun drawBudget(text: str) = {
+fun drawBudget(beams: i64) = {
+    let amount = f"{beams * 100}";
+    let text = amount.asSlice();
     let x = rl.GetScreenWidth() - rl.MeasureText(text, fontSize) - 4;
     let y = rl.GetScreenHeight() - fontSize - 4;
     let pixel = fontSize / 10;
@@ -815,7 +802,6 @@ fun main() = {
     let level = level1();
     var bridge = initialBridge(&level);
     addLevel1TestBeams(&bridge);
-    var budget = beamCost(&bridge.planks);
     const initialZoom = 40.0;
     var camera = rl.Camera2D(
         offset=rl.Vector2(rl.GetScreenWidth() as f32 / 2.0,
@@ -877,12 +863,12 @@ fun main() = {
         var target: BeamTarget;
         if (editing) {
             let snapped = gridPosition(point);
-            let previousStart: i64 = beamStart;
             target = beamTarget(&bridge, &level.terrain, beamStart, snapped, mouse, camera.zoom);
-            let changed = editBridge(&bridge, &beamStart, &target);
-            if (changed) budget = beamCost(&bridge.planks);
-            if (changed or beamStart != previousStart)
+            let rightClick = rl.IsMouseButtonPressed(rl.MOUSE_BUTTON_RIGHT);
+            if (rightClick or rl.IsMouseButtonPressed(rl.MOUSE_BUTTON_LEFT)) {
+                editBridge(&bridge, &beamStart, &target, rightClick);
                 target = beamTarget(&bridge, &level.terrain, beamStart, snapped, mouse, camera.zoom);
+            }
         }
 
         rl.BeginDrawing();
@@ -905,7 +891,8 @@ fun main() = {
         drawFps();
         drawCoords(point.col, point.row);
         drawMode(editing, crossed);
-        drawBudget(budget.asSlice());
+        let roadSegments = math.max(0, level.road.length() - 1);
+        drawBudget(bridge.planks.length() - roadSegments);
         rl.EndDrawing();
     }
     if (not editing) b2.b2DestroyWorld(world);
