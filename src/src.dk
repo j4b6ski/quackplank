@@ -72,6 +72,19 @@ fun initialBridge(level: ref Level) -> Bridge = {
     return bridge;
 }
 
+fun addLevel1TestBeams(bridge: ref mut Bridge) = {
+    for (point in [Vec2(-2.5, -0.75), Vec2(-1.5, -1.75), Vec2(2.0, -1.25)])
+        bridge.joints.push(Joint(point, fixed=false));
+    for (plank in [
+        PlankDef(7, 0, road=false),
+        PlankDef(7, 1, road=false),
+        PlankDef(8, 1, road=false),
+        PlankDef(8, 5, road=false),
+        PlankDef(9, 6, road=false),
+        PlankDef(9, 3, road=false)
+    ]) bridge.planks.push(plank);
+}
+
 class Plank {
     body: b2.b2BodyId;
     halfLength: f32;
@@ -480,6 +493,27 @@ fun drawMode(editing: bool, crossed: bool) = {
     rl.DrawText(mode, x, rl.GetScreenHeight() - fontSize - 4, fontSize, rl.WHITE);
 }
 
+fun beamCost(planks: ref List[PlankDef]) -> String = {
+    var spent = 0;
+    var i = 0;
+    while (i < planks.length()) {
+        if (not planks.pointer[i].road) spent += 100;
+        i += 1;
+    }
+    return f"{spent}";
+}
+
+fun drawBudget(text: str) = {
+    let x = rl.GetScreenWidth() - rl.MeasureText(text, fontSize) - 4;
+    let y = rl.GetScreenHeight() - fontSize - 4;
+    let pixel = fontSize / 10;
+    let euroX = x - rl.MeasureText("C", fontSize) - pixel;
+    rl.DrawText("C", euroX, y, fontSize, rl.WHITE);
+    rl.DrawRectangle(euroX - pixel, y + 4 * pixel, 5 * pixel, pixel, rl.WHITE);
+    rl.DrawRectangle(euroX - pixel, y + 6 * pixel, 5 * pixel, pixel, rl.WHITE);
+    rl.DrawText(text, x, y, fontSize, rl.WHITE);
+}
+
 fun main() = {
     rl.InitWindow(800, 600, "QuackPlank");
     if (not rl.IsWindowReady())
@@ -492,6 +526,8 @@ fun main() = {
 
     let level = level1();
     var bridge = initialBridge(&level);
+    addLevel1TestBeams(&bridge);
+    var budget = beamCost(&bridge.planks);
     const initialZoom = 40.0;
     var camera = rl.Camera2D(
         offset=rl.Vector2(rl.GetScreenWidth() as f32 / 2.0,
@@ -561,6 +597,7 @@ fun main() = {
         drawFps();
         drawCoords(point.col, point.row);
         drawMode(editing, crossed);
+        drawBudget(budget.asSlice());
         rl.EndDrawing();
     }
     if (not editing) b2.b2DestroyWorld(world);
